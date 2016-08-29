@@ -1,0 +1,41 @@
+package Example;
+
+import java_cup.runtime.*;
+
+parser code {:
+    // Connect this parser to a scanner!
+    scanner s;
+    Parser(scanner s){ this.s=s; }
+:}
+
+/* define how to connect to the scanner! */
+init with {: s.init(); :};
+scan with {: return s.next_token(); :};
+
+/* Terminals (tokens returned by the scanner). */
+terminal            SEMI, PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN, LBRACE, RBRACE;
+
+terminal 			BOOL, BREAK, CLASS, CONTINUE, ELSE, FLOAT, FOR, IF, INTEGER, RETURN, VOID, WHILE, EXTERN;
+terminal Boolean	BOOL_LIT;
+terminal Integer    NUMBER;        // our scanner provides numbers as integers
+terminal Object		ID;
+
+/* Non terminals */
+non terminal            expr_list;
+non terminal 			expr;      // used to store evaluated subexpressions
+
+non terminal 	program_dec;
+
+
+/* Precedences */
+precedence left PLUS, MINUS;
+precedence left TIMES;
+
+/* The grammar rules */
+
+program 	::=  program class_dec
+			|	class_dec
+			;
+
+class_dec	::=  
+
