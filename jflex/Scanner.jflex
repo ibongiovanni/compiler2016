@@ -16,29 +16,28 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 	public Symbol symbol(String plaintext,int code){
 	    return sf.newSymbol(plaintext,code,new Location("",yyline+1, yycolumn +1,yychar), new Location("",yyline+1,yycolumn+yylength(),yychar));
 	}
-	public Symbol symbol(String plaintext,int code,Integer number){
-	    return sf.newSymbol(plaintext,code,new Location("",yyline+1, yycolumn +1,yychar), new Location("",yyline+1,yycolumn+yylength(),yychar),number);
+	public Symbol symbol(String plaintext,int code, Object value){
+	    return sf.newSymbol(plaintext,code,new Location("",yyline+1, yycolumn +1,yychar), new Location("",yyline+1,yycolumn+yylength(),yychar),value);
 	}
 	private ComplexSymbolFactory sf;
-%}
-%eofval{
-    return sf.newSymbol("EOF",sym.EOF);
-%eofval}
 
-%{   
-    /* To create a new java_cup.runtime.Symbol with information about
+	/* To create a new java_cup.runtime.Symbol with information about
        the current token, the token will have no value in this
        case. */
     private Symbol symbol(int type) {
-        /*return new Symbol(type, yyline, yycolumn);*/
+        return new Symbol(type, yyline, yycolumn);
     }
     
     /* Also creates a new java_cup.runtime.Symbol with information
        about the current token, but this object has a value. */
     private Symbol symbol(int type, Object value) {
-        /*return new Symbol(type, yyline, yycolumn, value);*/
+        return new Symbol(type, yyline, yycolumn, value);
     }
 %}
+%eofval{
+    return sf.newSymbol("EOF",sym.EOF);
+%eofval}
+
 
 
 /* Macros */
@@ -58,16 +57,19 @@ IdentifierLiteral = [A-Za-z_][A-Za-z_0-9]*
 	/* Return the token SEMI declared in the class sym that was found. */
     ";"                { System.out.print(" + "); return symbol(sym.SEMI); }
    
-    /* Print the token found that was declared in the class sym and then
-       return it. */
+    /* Math Operators */
     "+"                { System.out.print(" + "); return symbol(sym.PLUS); }
     "-"                { System.out.print(" - "); return symbol(sym.MINUS); }
     "*"                { System.out.print(" * "); return symbol(sym.TIMES); }
     "/"                { System.out.print(" / "); return symbol(sym.DIVIDE); }
+
+
     "("                { System.out.print(" ( "); return symbol(sym.LPAREN); }
     ")"                { System.out.print(" ) "); return symbol(sym.RPAREN); }
     "{"                { System.out.print(" ( "); return symbol(sym.LBRACE); }
     "}"                { System.out.print(" ) "); return symbol(sym.RBRACE); }
+
+    /* Boolean Literals */
     "false"				{ System.out.print(" false "); return symbol(sym.BOOL_LIT, false); }
     "true"				{ System.out.print(" true "); return symbol(sym.BOOL_LIT, true); }
 
