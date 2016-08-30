@@ -3,14 +3,16 @@ package Example;
 import java_cup.runtime.*;
 
 parser code {:
-    // Connect this parser to a scanner!
-    scanner s;
-    Parser(scanner s){ this.s=s; }
+    public static void main(String args[]) throws Exception {
+		ComplexSymbolFactory sf = new ComplexSymbolFactory();
+		if (args.length==0) {
+			new Parser(new Scanner(System.in,sf),sf).parse();
+		}
+		else {
+			new Parser(new Scanner(new java.io.FileInputStream(args[0]),sf),sf).parse();
+		}
+    }
 :}
-
-/* define how to connect to the scanner! */
-init with {: s.init(); :};
-scan with {: return s.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
 terminal            SEMI, PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN, LBRACE, RBRACE;
@@ -24,8 +26,8 @@ terminal Object		ID;
 non terminal            expr_list;
 non terminal 			expr;      // used to store evaluated subexpressions
 
-non terminal 	program_dec;
-
+non terminal 	program;
+non terminal 	class_dec;
 
 /* Precedences */
 precedence left PLUS, MINUS;
@@ -33,9 +35,12 @@ precedence left TIMES;
 
 /* The grammar rules */
 
-program 	::=  program class_dec
-			|	class_dec
+/*goal*/
+program 	::=  program class_dec	{:System.out.println("More than one class");:}	//More than one class 
+			|	 class_dec			{:System.out.println("One single class");:}	//One single class
 			;
 
-class_dec	::=  
+class_dec	::=  CLASS ID LBRACE RBRACE
+			//|	 CLASS ID LBRACE RBRACE
+			;
 
