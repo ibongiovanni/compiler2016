@@ -55,42 +55,42 @@ IdentifierLiteral = [A-Za-z_][A-Za-z_0-9]*
 
 <YYINITIAL> {
 	/* Return the token SEMI declared in the class sym that was found. */
-    ";"                { System.out.print(" + "); return symbol(sym.SEMI); }
+    ";"                { return symbol(";", sym.SEMI); }
    
     /* Math Operators */
-    "+"                { System.out.print(" + "); return symbol(sym.PLUS); }
-    "-"                { System.out.print(" - "); return symbol(sym.MINUS); }
-    "*"                { System.out.print(" * "); return symbol(sym.TIMES); }
-    "/"                { System.out.print(" / "); return symbol(sym.DIVIDE); }
+    "+"                { return symbol("+", sym.PLUS); }
+    "-"                { return symbol("-", sym.MINUS); }
+    "*"                { return symbol("*", sym.TIMES); }
+    "/"                { return symbol("/", sym.DIVIDE); }
 
 
-    "("                { System.out.print(" ( "); return symbol(sym.LPAREN); }
-    ")"                { System.out.print(" ) "); return symbol(sym.RPAREN); }
-    "{"                { System.out.print(" ( "); return symbol(sym.LBRACE); }
-    "}"                { System.out.print(" ) "); return symbol(sym.RBRACE); }
+    "("                { return symbol("(", sym.LPAREN); }
+    ")"                { return symbol(")", sym.RPAREN); }
+    "{"                { return symbol("{", sym.LBRACE); }
+    "}"                { return symbol("}", sym.RBRACE); }
 
     /* Boolean Literals */
-    "false"				{ System.out.print(" false "); return symbol(sym.BOOL_LIT, false); }
-    "true"				{ System.out.print(" true "); return symbol(sym.BOOL_LIT, true); }
+    "false"				{ return symbol("false", sym.BOOL_LIT, false); }
+    "true"				{ return symbol("true", sym.BOOL_LIT, true); }
 
     /* Keywords */ /* bool break class continue else false float for if integer return true void while extern */
-    "bool"				{ System.out.print(" bool "); return symbol(sym.BOOL); }
-	"break"				{ System.out.print(" break "); return symbol(sym.BREAK); }
-	"class"				{ System.out.print(" class "); return symbol(sym.CLASS); }
-	"continue"				{ System.out.print(" continue "); return symbol(sym.CONTINUE); }
-	"else"				{ System.out.print(" else "); return symbol(sym.ELSE); }	
-	"float"				{ System.out.print(" float "); return symbol(sym.FLOAT); }
-	"for"				{ System.out.print(" for "); return symbol(sym.FOR); }
-	"if"				{ System.out.print(" if "); return symbol(sym.IF); }
-	"integer"				{ System.out.print(" integer "); return symbol(sym.INTEGER); }
-	"return"				{ System.out.print(" return "); return symbol(sym.RETURN); }
-	"void"				{ System.out.print(" void "); return symbol(sym.VOID); }
-	"while"				{ System.out.print(" while "); return symbol(sym.WHILE); }
-	"extern"				{ System.out.print(" extern "); return symbol(sym.EXTERN); }
+    "bool"				{ return symbol("bool", sym.BOOL); }
+	"break"				{ return symbol("break", sym.BREAK); }
+	"class"				{ return symbol("class", sym.CLASS); }
+	"continue"			{ return symbol("continue", sym.CONTINUE); }
+	"else"				{ return symbol("else", sym.ELSE); }	
+	"float"				{ return symbol("float", sym.FLOAT); }
+	"for"				{ return symbol("for", sym.FOR); }
+	"if"				{ return symbol("if", sym.IF); }
+	"integer"			{ return symbol("integer", sym.INTEGER); }
+	"return"			{ return symbol("return", sym.RETURN); }
+	"void"				{ return symbol("void", sym.VOID); }
+	"while"				{ return symbol("while", sym.WHILE); }
+	"extern"			{ return symbol("extern", sym.EXTERN); }
 
-    {IntegerLiteral} 	{ System.out.print(yytext()); return symbol(sym.NUMBER, new Integer(yytext())); }
+    {IntegerLiteral} 	{ return symbol("Integer: "+yytext(), sym.NUMBER, new Integer(yytext())); }
    
-   	{IdentifierLiteral}	{ System.out.print(yytext()); return symbol(sym.ID, yytext());}
+   	{IdentifierLiteral}	{ return symbol("Identifier: "+yytext(), sym.ID, yytext());}
 
    	{WhiteSpace}		{ /* Do nothing*/ }
 
