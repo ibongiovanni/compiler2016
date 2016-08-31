@@ -1,0 +1,5 @@
+class claseuno {
+	int _num;
+	dat arr[3];
+}
+

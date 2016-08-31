@@ -1,0 +1,10 @@
+class claseuno {
+	integer metodo() {
+		return;
+		continue;
+		break;
+		;
+		{}
+	}
+}
+

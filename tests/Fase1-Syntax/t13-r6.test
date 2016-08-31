@@ -1,0 +1,6 @@
+class claseuno {
+	int num_, num2; 
+	int resta() {}
+	int metodo() {}
+}
+
