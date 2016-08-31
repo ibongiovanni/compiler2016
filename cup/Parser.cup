@@ -68,32 +68,124 @@ parser code {:
 :}
 
 /* Terminals (tokens returned by the scanner). */
-terminal            SEMI, PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN, LBRACE, RBRACE;
+terminal            SEMI, DOT, COMA, PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK, ASSIGN;
 
-terminal 			BOOL, BREAK, CLASS, CONTINUE, ELSE, FLOAT, FOR, IF, INTEGER, RETURN, VOID, WHILE, EXTERN;
+terminal 			EQUAL, AND, OR, LT, GT, LOET, GOET;
+terminal 			BOOL, BREAK, CLASS, CONTINUE, ELSE, FLOAT_TYPE, FOR, IF, INTEGER_TYPE, RETURN, VOID, WHILE, EXTERN;
 terminal Boolean	BOOL_LIT;
 terminal Integer    NUMBER;        // our scanner provides numbers as integers
 terminal Object		ID;
 
 /* Non terminals */
-non terminal            expr_list;
-non terminal 			expr;      // used to store evaluated subexpressions
+non terminal            expr_lst;
+non terminal 			expr;      
 
 non terminal 	program;
-non terminal 	class_dec;
+non terminal 	class_decl;
+non terminal 	field_decl;
+non terminal 	field_decl_lst;
+non terminal 	type;
+non terminal 	method_decl;
+non terminal 	method_decl_lst;
+non terminal 	body;
+non terminal 	block;
+non terminal 	statement;
+non terminal 	statement_lst;
+non terminal 	location;
+non terminal 	assign_op;
+non terminal 	method_call;
+non terminal 	literal;
+non terminal 	bin_op;
+non terminal 	arith_op;
+non terminal 	rel_op;
+non terminal 	eq_op;
+non terminal 	cond_op;
+non terminal 	float_literal;
+non terminal 	var_or_array_lst;
+non terminal 	var_or_array;
+non terminal 	arg_lst;
 
 /* Precedences */
 precedence left PLUS, MINUS;
 precedence left TIMES;
 
+precedence left ELSE;
+
 /* The grammar rules */
 
 /*goal*/
-program 	::=  program class_dec	{:System.out.println("More than one class");:}	//More than one class 
-			|	 class_dec			{:System.out.println("One single class");:}	//One single class
+program 	::=  program class_decl	{:System.out.println("R1 - More than one class");:}	//More than one class 
+			|	 class_decl			{:System.out.println("R2 - One single class");:}	//One single class
 			;
 
-class_dec	::=  CLASS ID LBRACE RBRACE
-			//|	 CLASS ID LBRACE RBRACE
+class_decl	::=  CLASS ID LBRACE RBRACE									{:System.out.println("R3 - class with no field or methods");:}
+			|	 CLASS ID LBRACE field_decl_lst RBRACE					{:System.out.println("R4 - class with one or more field and no methods");:}
+			|	 CLASS ID LBRACE method_decl_lst RBRACE					{:System.out.println("R5 - class with no field and one or more methods");:}
+			|	 CLASS ID LBRACE field_decl_lst method_decl_lst RBRACE	{:System.out.println("R6 - class with one or more field and one or more methods");:}
 			;
+
+field_decl_lst 	::=	field_decl_lst field_decl 		{:System.out.println("R7 - more than one field");:}
+				|	field_decl 						{:System.out.println("R8 - one single field");:}
+				;
+
+field_decl 	::=	type:t var_or_array_lst SEMI 			{:System.out.println("R9 - field declaration of type "+t);:}
+			;
+
+var_or_array_lst	::=	var_or_array_lst COMA var_or_array 	{:System.out.println("R10 - more than one attr");:}
+					|	var_or_array 						{:System.out.println("R11 - one single attr");:}
+					;
+
+var_or_array 	::=	ID:id 							{:System.out.println("R12 - var declaration, id: '"+id+"'");:}
+				|	ID LBRACK NUMBER RBRACK 		{:System.out.println("R13 - array declaration");:}
+				;
+
+method_decl_lst	::=	method_decl_lst method_decl 	{:System.out.println("R14 - more than one method");:} 
+				|	method_decl 					{:System.out.println("R15 - one single method");:}
+				;
+
+method_decl 	::= type ID:m LPAREN RPAREN body 			{:System.out.println("R16 - method: '"+m+"' with no args");:}
+				|	type ID:m LPAREN arg_lst RPAREN body	{:System.out.println("R17 - method: '"+m+"' with at least one arg");:}
+				;
+
+arg_lst	::=	arg_lst COMA type ID 	{:System.out.println("R18 - more than one arg");:}
+		|	type ID 				{:System.out.println("R19 - one single arg");:}
+		;
+
+
+body	::=	block		{:System.out.println("R20 - body block");:}
+		|	EXTERN SEMI	{:System.out.println("R21 - extern body");:}
+		;
+
+block	::=	LBRACE RBRACE 								{:System.out.println("R22 - empty block");:}
+		|	LBRACE field_decl_lst RBRACE 				{:System.out.println("R23 - block with one or more fields and no statement");:}
+		|	LBRACE statement_lst RBRACE 				{:System.out.println("R24 - block with no fields and one or more statement");:}
+		|	LBRACE field_decl_lst statement_lst RBRACE 	{:System.out.println("R25 - block with one or more field and one or more statement");:}	
+		;
+
+type 	::=	ID:id {: RESULT=id;:}	//R26
+		|	INTEGER_TYPE {: RESULT="Integer";:}	//R27
+		|	FLOAT_TYPE {: RESULT="Float";:}	//R28
+		|	BOOL {: RESULT="Bool";:}			//R29
+		|	VOID {: RESULT="Void";:}			//R30
+		;
+
+statement_lst	::=	statement_lst statement 	{:System.out.println("R31 - one statement and recursion");:}
+				|	statement 					{:System.out.println("R32 - one single statement");:}
+				;
+
+statement 	::=	location assign_op expr SEMI					{:System.out.println("R33 - assignement statement");:}
+			|	method_call SEMI								{:System.out.println("R34 - method call statement");:}
+			|	IF LPAREN expr RPAREN statement 				{:System.out.println("R35 - if (not else) statement");:}
+			|	IF LPAREN expr RPAREN statement ELSE statement 	{:System.out.println("R36 - if then else statement");:}
+			|	FOR ID ASSIGN expr COMA expr statement 			{:System.out.println("R37 - for statement");:}
+			|	WHILE expr statement 							{:System.out.println("R38 - while statement");:}
+			|	RETURN SEMI 									{:System.out.println("R39 - return empty statement");:}
+			|	RETURN expr SEMI								{:System.out.println("R40 - return expresion statement");:}
+			|	BREAK SEMI										{:System.out.println("R41 - break statement");:}
+			|	CONTINUE SEMI									{:System.out.println("R42 - continue statement");:}	
+			|	SEMI											{:System.out.println("R43 - empty statement");:}
+			|	block											{:System.out.println("R44 - inner block statement");:}
+			;
+
+
 

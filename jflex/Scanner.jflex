@@ -56,18 +56,31 @@ IdentifierLiteral = [A-Za-z_][A-Za-z_0-9]*
 <YYINITIAL> {
 	/* Return the token SEMI declared in the class sym that was found. */
     ";"                { return symbol(";", sym.SEMI); }
+    ","                { return symbol(",", sym.COMA); }
+    "."                { return symbol(".", sym.DOT); }
    
     /* Math Operators */
     "+"                { return symbol("+", sym.PLUS); }
     "-"                { return symbol("-", sym.MINUS); }
     "*"                { return symbol("*", sym.TIMES); }
     "/"                { return symbol("/", sym.DIVIDE); }
-
+    "="                { return symbol("=", sym.ASSIGN); }
+    
+    /* Boolean operators */
+	"=="                { return symbol("==", sym.EQUAL); }
+    "||"                { return symbol("||", sym.OR); }
+    "&&"                { return symbol("&&", sym.AND); }
+    "<"                	{ return symbol("<", sym.LT); }
+    ">"                	{ return symbol(">", sym.GT); }
+    "<="                { return symbol("<=", sym.LOET); }
+    ">="                { return symbol(">=", sym.GOET); }
 
     "("                { return symbol("(", sym.LPAREN); }
     ")"                { return symbol(")", sym.RPAREN); }
     "{"                { return symbol("{", sym.LBRACE); }
     "}"                { return symbol("}", sym.RBRACE); }
+    "["                { return symbol("[", sym.LBRACK); }
+  	"]"                { return symbol("]", sym.RBRACK); }
 
     /* Boolean Literals */
     "false"				{ return symbol("false", sym.BOOL_LIT, false); }
@@ -79,14 +92,17 @@ IdentifierLiteral = [A-Za-z_][A-Za-z_0-9]*
 	"class"				{ return symbol("class", sym.CLASS); }
 	"continue"			{ return symbol("continue", sym.CONTINUE); }
 	"else"				{ return symbol("else", sym.ELSE); }	
-	"float"				{ return symbol("float", sym.FLOAT); }
 	"for"				{ return symbol("for", sym.FOR); }
 	"if"				{ return symbol("if", sym.IF); }
-	"integer"			{ return symbol("integer", sym.INTEGER); }
+	
 	"return"			{ return symbol("return", sym.RETURN); }
 	"void"				{ return symbol("void", sym.VOID); }
 	"while"				{ return symbol("while", sym.WHILE); }
 	"extern"			{ return symbol("extern", sym.EXTERN); }
+
+	"integer"			{ return symbol("integer", sym.INTEGER_TYPE); }
+	"float"				{ return symbol("float", sym.FLOAT_TYPE); }
+
 
     {IntegerLiteral} 	{ return symbol("Integer: "+yytext(), sym.NUMBER, new Integer(yytext())); }
    
