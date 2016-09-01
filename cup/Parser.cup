@@ -68,18 +68,16 @@ parser code {:
 :}
 
 /* Terminals (tokens returned by the scanner). */
-terminal            SEMI, DOT, COMA, PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK, ASSIGN;
-
-terminal 			EQUAL, AND, OR, LT, GT, LOET, GOET;
+terminal            SEMI, DOT, COMA, PLUS, MINUS, TIMES, DIVIDE, MOD;
+terminal 			LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
+terminal 			ASSIGN, PLUSASSIGN, LESSASSIGN; 
+terminal 			EQUAL, AND, OR, LT, GT, LOET, GOET, NOT, NOTEQ;
 terminal 			BOOL, BREAK, CLASS, CONTINUE, ELSE, FLOAT_TYPE, FOR, IF, INTEGER_TYPE, RETURN, VOID, WHILE, EXTERN;
 terminal Boolean	BOOL_LIT;
-terminal Integer    NUMBER;        // our scanner provides numbers as integers
+terminal Integer    INT_LIT;        // our scanner provides numbers as integers
 terminal Object		ID;
 
-/* Non terminals */
-non terminal            expr_lst;
-non terminal 			expr;      
-
+/* Non terminals */     
 non terminal 	program;
 non terminal 	class_decl;
 non terminal 	field_decl;
@@ -94,6 +92,7 @@ non terminal 	statement_lst;
 non terminal 	location;
 non terminal 	assign_op;
 non terminal 	method_call;
+non terminal 	expr;
 non terminal 	literal;
 non terminal 	bin_op;
 non terminal 	arith_op;
@@ -104,11 +103,15 @@ non terminal 	float_literal;
 non terminal 	var_or_array_lst;
 non terminal 	var_or_array;
 non terminal 	arg_lst;
+non terminal 	sub_call_lst;
+non terminal    expr_lst;
 
 /* Precedences */
+precedence left LT, GT, LOET, GOET, AND, OR, EQUAL, NOTEQ;
 precedence left PLUS, MINUS;
-precedence left TIMES;
-
+precedence left TIMES, DIVIDE, MOD;
+precedence left NOT;
+precedence left LPAREN, RPAREN;
 precedence left ELSE;
 
 /* The grammar rules */
@@ -128,7 +131,7 @@ field_decl_lst 	::=	field_decl_lst field_decl 		{:System.out.println("R7 - more 
 				|	field_decl 						{:System.out.println("R8 - one single field");:}
 				;
 
-field_decl 	::=	type:t var_or_array_lst SEMI 			{:System.out.println("R9 - field declaration of type "+t);:}
+field_decl 	::=	type:t var_or_array_lst SEMI 		{:System.out.println("R9 - field declaration of type '"+t+"'");:}
 			;
 
 var_or_array_lst	::=	var_or_array_lst COMA var_or_array 	{:System.out.println("R10 - more than one attr");:}
@@ -136,7 +139,7 @@ var_or_array_lst	::=	var_or_array_lst COMA var_or_array 	{:System.out.println("R
 					;
 
 var_or_array 	::=	ID:id 							{:System.out.println("R12 - var declaration, id: '"+id+"'");:}
-				|	ID LBRACK NUMBER RBRACK 		{:System.out.println("R13 - array declaration");:}
+				|	ID LBRACK INT_LIT RBRACK 		{:System.out.println("R13 - array declaration");:}
 				;
 
 method_decl_lst	::=	method_decl_lst method_decl 	{:System.out.println("R14 - more than one method");:} 
@@ -162,9 +165,9 @@ block	::=	LBRACE RBRACE 								{:System.out.println("R22 - empty block");:}
 		|	LBRACE field_decl_lst statement_lst RBRACE 	{:System.out.println("R25 - block with one or more field and one or more statement");:}	
 		;
 
-type 	::=	ID:id {: RESULT=id;:}	//R26
+type 	::=	ID:id {: RESULT=id;:}				//R26
 		|	INTEGER_TYPE {: RESULT="Integer";:}	//R27
-		|	FLOAT_TYPE {: RESULT="Float";:}	//R28
+		|	FLOAT_TYPE {: RESULT="Float";:}		//R28
 		|	BOOL {: RESULT="Bool";:}			//R29
 		|	VOID {: RESULT="Void";:}			//R30
 		;
@@ -179,13 +182,79 @@ statement 	::=	location assign_op expr SEMI					{:System.out.println("R33 - assi
 			|	IF LPAREN expr RPAREN statement ELSE statement 	{:System.out.println("R36 - if then else statement");:}
 			|	FOR ID ASSIGN expr COMA expr statement 			{:System.out.println("R37 - for statement");:}
 			|	WHILE expr statement 							{:System.out.println("R38 - while statement");:}
-			|	RETURN SEMI 									{:System.out.println("R39 - return empty statement");:}
-			|	RETURN expr SEMI								{:System.out.println("R40 - return expresion statement");:}
+			|	RETURN SEMI 									{:System.out.println("R39 - return nothing statement");:}
+			|	RETURN expr SEMI								{:System.out.println("R40 - return an expresion statement");:}
 			|	BREAK SEMI										{:System.out.println("R41 - break statement");:}
 			|	CONTINUE SEMI									{:System.out.println("R42 - continue statement");:}	
 			|	SEMI											{:System.out.println("R43 - empty statement");:}
 			|	block											{:System.out.println("R44 - inner block statement");:}
 			;
 
+assign_op	::=	ASSIGN 		//R45 - =
+			|	PLUSASSIGN	//R46 - +=
+			|	LESSASSIGN	//R47 - -=
+			;
 
+method_call	::=	ID:id LPAREN RPAREN							{:System.out.println("R48 - simple method '"+id+"' call with no arguments");:}
+			|	ID:id LPAREN expr_lst RPAREN				{:System.out.println("R49 - simple method '"+id+"' call with a list of arguments");:}
+			|	ID:id sub_call_lst:m LPAREN RPAREN 			{:System.out.println("R50 - sub class method '"+m+"' call with no arguments");:}
+			|	ID:id sub_call_lst:m LPAREN expr_lst RPAREN {:System.out.println("R51 - sub class method '"+m+"' call with a list of arguments");:}
+			;
 
+sub_call_lst	::=	sub_call_lst DOT ID:id 		{:System.out.println("R52 - one class OR method call and apply recursion"); RESULT=id;:}
+				|	DOT ID:id 					{:System.out.println("R53 - sub class '"+id+"' call"); RESULT=id;:}
+				;
+
+location	::=	ID:id 									{:System.out.println("R54 - single var '"+id+"' location");:}
+			|	ID sub_call_lst							{:System.out.println("R55 - sub class var location");:}
+			|	ID LBRACK expr RBRACK					{:System.out.println("R56 - single array location");:}
+			|	ID sub_call_lst	LBRACK expr RBRACK		{:System.out.println("R57 - sub class array location");:}
+			;
+
+expr 	::=	location				{:System.out.println("R58 - location expr");:}
+		|	method_call				{:System.out.println("R59 - method call expr");:}
+		|	literal 				{:System.out.println("R60 - literal expr");:}
+		|	expr bin_op expr 		{:System.out.println("R61 - bin expr");:}
+		|	MINUS expr 				{:System.out.println("R62 - minus expr");:}
+		|	NOT expr 				{:System.out.println("R63 - negated expr");:}
+		|	LPAREN expr RPAREN		{:System.out.println("R64 - (expr)");:}
+		;
+
+expr_lst	::=	expr_lst COMA expr 	{:System.out.println("R65 - expresion and recursion");:}
+			|	expr 				{:System.out.println("R66 - one single expresion");:}
+			;
+
+bin_op	::=	arith_op 	{:System.out.println("R67 - aritmetical operation");:}
+		|	rel_op		{:System.out.println("R68 - relational operation");:}
+		|	eq_op		{:System.out.println("R69 - comparision operation");:}
+		|	cond_op		{:System.out.println("R70 - conditional operation");:}
+		;
+
+arith_op	::=	PLUS 	//R71
+			|	MINUS 	//R72
+			|	TIMES 	//R73
+			|	DIVIDE 	//R74
+			|	MOD 	//R75
+			;
+
+rel_op	::=	LT 		//R76
+		|	GT 		//R77
+		|	LOET	//R78
+		|	GOET	//R79	 
+		;
+
+eq_op	::=	EQUAL 	//R80
+		|	NOTEQ 	//R81
+		;
+
+cond_op	::=	AND 	//R82
+		|	OR 		//R83
+		;
+
+literal ::=	INT_LIT:l 		{:System.out.println("R84 - int literal: "+l);:}
+		|	float_literal:l	{:System.out.println("R85 - float literal: "+l);:}
+		|	BOOL_LIT:l		{:System.out.println("R86 - bool literal: "+l);:}
+		;
+
+float_literal	::=	INT_LIT:i DOT INT_LIT:d	{:RESULT=i+"."+d;:} //R87
+				;

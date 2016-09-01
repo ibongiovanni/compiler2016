@@ -64,7 +64,12 @@ IdentifierLiteral = [A-Za-z_][A-Za-z_0-9]*
     "-"                { return symbol("-", sym.MINUS); }
     "*"                { return symbol("*", sym.TIMES); }
     "/"                { return symbol("/", sym.DIVIDE); }
+    "%"                { return symbol("%", sym.MOD); }
+    
+    /* Assign Operators */
     "="                { return symbol("=", sym.ASSIGN); }
+    "+="               { return symbol("+=", sym.PLUSASSIGN); }
+    "-="               { return symbol("-=", sym.LESSASSIGN); }
     
     /* Boolean operators */
 	"=="                { return symbol("==", sym.EQUAL); }
@@ -74,6 +79,8 @@ IdentifierLiteral = [A-Za-z_][A-Za-z_0-9]*
     ">"                	{ return symbol(">", sym.GT); }
     "<="                { return symbol("<=", sym.LOET); }
     ">="                { return symbol(">=", sym.GOET); }
+    "!"                	{ return symbol("!", sym.NOT); }
+    "!="                { return symbol("!=", sym.NOTEQ); }
 
     "("                { return symbol("(", sym.LPAREN); }
     ")"                { return symbol(")", sym.RPAREN); }
@@ -104,7 +111,7 @@ IdentifierLiteral = [A-Za-z_][A-Za-z_0-9]*
 	"float"				{ return symbol("float", sym.FLOAT_TYPE); }
 
 
-    {IntegerLiteral} 	{ return symbol("Integer: "+yytext(), sym.NUMBER, new Integer(yytext())); }
+    {IntegerLiteral} 	{ return symbol("Integer: "+yytext(), sym.INT_LIT, new Integer(yytext())); }
    
    	{IdentifierLiteral}	{ return symbol("Identifier: "+yytext(), sym.ID, yytext());}
 
