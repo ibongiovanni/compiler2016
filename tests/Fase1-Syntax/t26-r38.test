@@ -1,0 +1,7 @@
+class claseuno {
+	integer metodo() {
+		while algo 
+			return exp();
+	}
+}
+

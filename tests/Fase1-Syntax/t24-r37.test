@@ -1,0 +1,7 @@
+class claseuno {
+	integer metodo() {
+		for i = k, expresion 
+			return;
+	}
+}
+

@@ -1,0 +1,13 @@
+class claseuno {
+	integer metodo() {
+		bool var;
+		float real, real2;
+
+		return;
+		continue;
+		break;
+		;
+		{}
+	}
+}
+

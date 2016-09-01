@@ -1,0 +1,9 @@
+class claseuno {
+	integer metodo() {
+		if (algo) 
+			continue;
+		else
+			break;
+	}
+}
+
