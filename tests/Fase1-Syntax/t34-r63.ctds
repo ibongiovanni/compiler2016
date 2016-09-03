@@ -1,0 +1,6 @@
+class claseuno {
+	integer metodo() {
+		return !e;
+	}
+}
+
