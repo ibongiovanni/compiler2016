@@ -50,6 +50,12 @@ IntegerLiteral = 0 | [1-9][0-9]*
 
 IdentifierLiteral = [A-Za-z_][A-Za-z_0-9]*
 
+/* comments */
+Comment = {TraditionalComment} | {EndOfLineComment}
+
+TraditionalComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?
+
 %%
 /* ------------------------Lexical Rules Section---------------------- */
 

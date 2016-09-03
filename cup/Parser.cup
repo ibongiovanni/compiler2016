@@ -15,14 +15,20 @@ parser code {:
 		System.out.println("\n\nParsing ended");
     }
 
+    /* internal function to get a symbol's name
+    */
+    private String getName(java_cup.runtime.ComplexSymbolFactory.ComplexSymbol s){
+    	String a = s.toString();
+    	return a.substring(8,a.indexOf(' ',8));
+    }
+
     /* Change the method report_error so it will display the line and
        column of where the error occurred in the input as well as the
        reason for the error which is passed into the method in the
        String 'message'. */
     public void report_error(String message, Object info) {
-   
         /* Create a StringBuilder called 'm' with the string 'Error' in it. */
-        StringBuilder m = new StringBuilder("Error");
+        StringBuilder m = new StringBuilder("ERROR.");
    
         /* Check if the information passed to the method is the same
            type as the type java_cup.runtime.Symbol. */
@@ -30,26 +36,27 @@ parser code {:
             /* Declare a java_cup.runtime.Symbol object 's' with the
                information in the object info that is being typecasted
                as a java_cup.runtime.Symbol object. */
-            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
-   
+            //java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+   			java_cup.runtime.ComplexSymbolFactory.ComplexSymbol s = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) info);
+            if (info instanceof java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) m.append(" \tSymbol: '"+getName(s)+"'");
             /* Check if the line number in the input is greater or
                equal to zero. */
             if (s.left >= 0) {                
                 /* Add to the end of the StringBuilder error message
                    the line number of the error in the input. */
-                m.append(" in line "+(s.left+1));   
+                m.append(" in line "+(s.xleft.getLine()));   
                 /* Check if the column number in the input is greater
                    or equal to zero. */
                 if (s.right >= 0)                    
                     /* Add to the end of the StringBuilder error message
                        the column number of the error in the input. */
-                    m.append(", column "+(s.right+1));
+                    m.append(", column "+(s.xright.getColumn()));
             }
         }
    
         /* Add to the end of the StringBuilder error message created in
            this method the message that was passed into this method. */
-        m.append(" : "+message);
+        m.append("\t : "+message);
    
         /* Print the contents of the StringBuilder 'm', which contains
            an error message, out on a line. */
@@ -62,6 +69,7 @@ parser code {:
        fatal error which is passed into the method in the object
        'message' and then exit.*/
     public void report_fatal_error(String message, Object info) {
+        System.err.print("FATAL ");
         report_error(message, info);
         System.exit(1);
     }
@@ -75,7 +83,7 @@ terminal 			EQUAL, AND, OR, LT, GT, LOET, GOET, NOT, NOTEQ;
 terminal 			BOOL, BREAK, CLASS, CONTINUE, ELSE, FLOAT_TYPE, FOR, IF, INTEGER_TYPE, RETURN, VOID, WHILE, EXTERN;
 terminal Boolean	BOOL_LIT;
 terminal Integer    INT_LIT;        // our scanner provides numbers as integers
-terminal Object		ID;
+terminal String		ID;
 
 /* Non terminals */     
 non terminal 	program;
@@ -224,31 +232,31 @@ expr_lst	::=	expr_lst COMA expr 	{:System.out.println("R65 - expresion and recur
 			|	expr 				{:System.out.println("R66 - one single expresion");:}
 			;
 
-bin_op	::=	arith_op 	{:System.out.println("R67 - aritmetical operation");:}
-		|	rel_op		{:System.out.println("R68 - relational operation");:}
-		|	eq_op		{:System.out.println("R69 - comparision operation");:}
-		|	cond_op		{:System.out.println("R70 - conditional operation");:}
+bin_op	::=	arith_op:op {:System.out.println("R67 - aritmetical operation "+op);:}
+		|	rel_op:op		{:System.out.println("R68 - relational operation "+op);:}
+		|	eq_op:op		{:System.out.println("R69 - comparision operation "+op);:}
+		|	cond_op:op		{:System.out.println("R70 - conditional operation "+op);:}
 		;
 
-arith_op	::=	PLUS 	//R71
-			|	MINUS 	//R72
-			|	TIMES 	//R73
-			|	DIVIDE 	//R74
-			|	MOD 	//R75
+arith_op	::=	PLUS 	{: RESULT="+"; :} 	//R71
+			|	MINUS 	{: RESULT="-"; :} 	//R72
+			|	TIMES 	{: RESULT="*"; :} 	//R73
+			|	DIVIDE 	{: RESULT="/"; :} 	//R74
+			|	MOD 	{: RESULT="%"; :} 	//R75
 			;
 
-rel_op	::=	LT 		//R76
-		|	GT 		//R77
-		|	LOET	//R78
-		|	GOET	//R79	 
+rel_op	::=	LT 		{: RESULT="<"; :} 	//R76
+		|	GT 		{: RESULT=">"; :} 	//R77
+		|	LOET 	{: RESULT="<="; :}	//R78
+		|	GOET 	{: RESULT=">="; :}	//R79	 
 		;
 
-eq_op	::=	EQUAL 	//R80
-		|	NOTEQ 	//R81
+eq_op	::=	EQUAL 	{: RESULT="=="; :} 	//R80
+		|	NOTEQ 	{: RESULT="!="; :} 	//R81
 		;
 
-cond_op	::=	AND 	//R82
-		|	OR 		//R83
+cond_op	::=	AND 	{: RESULT="&&"; :} 	//R82
+		|	OR 		{: RESULT="||"; :} 	//R83
 		;
 
 literal ::=	INT_LIT:l 		{:System.out.println("R84 - int literal: "+l);:}
