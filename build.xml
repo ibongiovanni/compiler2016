@@ -25,7 +25,9 @@
   <path id="libraries">
     <files includes="${lib}/java-cup-11b-runtime.jar" />
   </path>
+
   <target name="compile" depends="generate">
+    <copy file="JavaParser.java" todir="${src}/compiler" overwrite="true"></copy>
     <javac srcdir="${src}" destdir="${classes}">
       <classpath refid="libraries" />
     </javac>
@@ -34,12 +36,12 @@
   <target name="jar" depends="compile">
     <jar jarfile="${dist}/Compiler.jar" basedir="${classes}">
      <manifest>
-       <attribute name="Main-Class" value="Example.Parser" />
+       <attribute name="Main-Class" value="compiler.JavaParser" />
        <attribute name="Class-Path" value="java-cup-11b-runtime.jar" />
      </manifest>
     </jar>
     <copy todir="${dist}">
-	<fileset dir="${lib}" includes="**/**.jar"/>
+	    <fileset dir="${lib}" includes="**/**.jar"/>
     </copy>
   </target>
 
@@ -51,9 +53,7 @@
   </target>
 
   <target name="clean">
-    <delete file="${src}/Example/Scanner.java" />
-    <delete file="${src}/Example/Parser.java" />
-    <delete file="${src}/Example/sym.java" />
+    <delete dir="${src}" />
     <delete dir="${classes}" />
     <delete dir="${dist}" />
   </target>
