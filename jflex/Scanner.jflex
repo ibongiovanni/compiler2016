@@ -1,4 +1,4 @@
-package Example;
+package compiler;
 
 import java_cup.runtime.*;
 import java_cup.runtime.ComplexSymbolFactory.Location;
@@ -122,5 +122,7 @@ EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?
    	{IdentifierLiteral}	{ return symbol("Identifier: "+yytext(), sym.ID, yytext());}
 
    	{WhiteSpace}		{ /* Do nothing*/ }
+
+   	{Comment}			{ /* Do nothing*/ }
 
 }

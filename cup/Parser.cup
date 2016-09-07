@@ -1,19 +1,9 @@
-package Example;
+package compiler;
 
 import java_cup.runtime.*;
 
 parser code {:
-    public static void main(String args[]) throws Exception {
-		ComplexSymbolFactory sf = new ComplexSymbolFactory();
-		if (args.length==0) {
-			new Parser(new Scanner(System.in,sf),sf).parse();
-		}
-		else {
-			new Parser(new Scanner(new java.io.FileInputStream(args[0]),sf),sf).parse();
-		}
-
-		System.out.println("\n\nParsing ended");
-    }
+    
 
     /* internal function to get a symbol's name
     */
@@ -76,7 +66,7 @@ parser code {:
 :}
 
 /* Terminals (tokens returned by the scanner). */
-terminal            SEMI, DOT, COMA, PLUS, MINUS, TIMES, DIVIDE, MOD;
+terminal            SEMI, DOT, COMA, PLUS, MINUS, UMINUS, TIMES, DIVIDE, MOD;
 terminal 			LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
 terminal 			ASSIGN, PLUSASSIGN, LESSASSIGN; 
 terminal 			EQUAL, AND, OR, LT, GT, LOET, GOET, NOT, NOTEQ;
@@ -115,11 +105,13 @@ non terminal 	sub_call_lst;
 non terminal    expr_lst;
 
 /* Precedences */
-precedence left LT, GT, LOET, GOET, AND, OR, EQUAL, NOTEQ;
+
+precedence left LPAREN, RPAREN;
+precedence left AND, OR;
+precedence nonassoc LT, GT, LOET, GOET, EQUAL, NOTEQ;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE, MOD;
-precedence left NOT;
-precedence left LPAREN, RPAREN;
+precedence right NOT, UMINUS;
 precedence left ELSE;
 
 /* The grammar rules */
@@ -222,8 +214,21 @@ location	::=	ID:id 									{:System.out.println("R54 - single var '"+id+"' loca
 expr 	::=	location				{:System.out.println("R58 - location expr");:}
 		|	method_call				{:System.out.println("R59 - method call expr");:}
 		|	literal 				{:System.out.println("R60 - literal expr");:}
-		|	expr bin_op expr 		{:System.out.println("R61 - bin expr");:}
+		|	expr:le PLUS expr:re 	{:System.out.println("R71 - aritmetical bin expr");:}
+		|	expr:le MINUS expr:re 	{:System.out.println("R72 - aritmetical bin expr");:}
+		|	expr:le TIMES expr:re 	{:System.out.println("R73 - aritmetical bin expr");:}
+		|	expr:le DIVIDE expr:re 	{:System.out.println("R74 - aritmetical bin expr");:}
+		|	expr:le MOD expr:re 	{:System.out.println("R75 - aritmetical bin expr");:}
+		|	expr:le LT expr:re 		{:System.out.println("R76 - relational bin expr");:}
+		|	expr:le GT expr:re 		{:System.out.println("R77 - relational bin expr");:}
+		|	expr:le LOET expr:re 	{:System.out.println("R78 - relational bin expr");:}
+		|	expr:le GOET expr:re 	{:System.out.println("R79 - relational bin expr");:}
+		|	expr:le EQUAL expr:re 	{:System.out.println("R80 - comparision bin expr");:}
+		|	expr:le NOTEQ expr:re 	{:System.out.println("R81 - comparision bin expr");:}
+		|	expr:le AND expr:re 	{:System.out.println("R82 - conditional bin expr");:}
+		|	expr:le OR expr:re 		{:System.out.println("R83 - conditional bin expr");:}
 		|	MINUS expr 				{:System.out.println("R62 - minus expr");:}
+				%prec UMINUS
 		|	NOT expr 				{:System.out.println("R63 - negated expr");:}
 		|	LPAREN expr RPAREN		{:System.out.println("R64 - (expr)");:}
 		;
