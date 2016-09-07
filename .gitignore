@@ -1,7 +1,8 @@
 *.class
-*.java
+
 *~
 dist/
 src/
 bin/
 *.txt
+*.sublime-*
