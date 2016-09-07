@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>5</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>590</x>
+      <y>120</y>
+      <w>200</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>ir.ast::IfStmt
+--
+-condition: Expression
+-ifBlock: Block
+-elseBlock: Block
+--
++IfStmt(Expression cond, Block ifBl): ctor
++IfStmt(Expression cond, Block ifBl, Block elseBl): ctor
++getCondition(): Expression
++setCondition(Expression condition): void
++getIfBlock(): Block
++setIfBlock(Block ifBlock): void
++getElseBlock(): Block
++setElseBlock(Block elseBlock): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>565</x>
+      <y>335</y>
+      <w>235</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>ir.ast::AssignStmt
+--
+-location: Location
+-expr: Expression
+-operator: AssignOpType
+--
++AssignStmt(Location loc, AssignOpType op, Expression e): ctor
++setLocation(Location loc): void
++getLocation(): Location
++setExpression(Expression e): void
++getExpression(): Expression
++getOperator(): AssignOpType
++setOperator(AssignOpType operator): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>55</x>
+      <y>295</y>
+      <w>155</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>ir.ast::IntLiteral
+--
+-rawValue: String
+-value: Integer
+--
++IntLiteral(String val): ctor
++getType(): Type
++getStringValue(): String
++setStringValue(String stringValue): void
++getValue(): Integer
++setValue(int value): void
++getRawValue(): String
++setRawValue(String rawValue): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>265</x>
+      <y>295</y>
+      <w>150</w>
+      <h>115</h>
+    </coordinates>
+    <panel_attributes>ir.ast::Block
+--
+-statements: List&lt;Statement&gt;
+-blockId: int
+--
++Block(int bId): ctor
++Block(int bId, List&lt;Statement&gt; s): ctor
++addStatement(Statement s): void
++getStatements(): List&lt;Statement&gt;
++getBlockId(): int
++setBlockId(int blockId): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>430</x>
+      <y>10</y>
+      <w>125</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>/ir.ast::AST/
+--
+-lineNumber: int
+-colNumber: int
+--
++getLineNumber(): int
++setLineNumber(int ln): void
++getColumnNumber(): int
++setColumnNumber(int cn): void
++accept(ASTVisitor&lt;T&gt; v): T
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>95</x>
+      <y>460</y>
+      <w>165</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>ir.ast::ReturnStmt
+--
+-expression: Expression
+--
++ReturnStmt(Expression e): ctor
++ReturnStmt(): ctor
++getExpression(): Expression
++setExpression(Expression expression): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>265</x>
+      <y>460</y>
+      <w>110</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>ir.ast::VarLocation
+--
+-blockId: int
+--
++VarLocation(String id): ctor
++getBlockId(): int
++setBlockId(int blockId): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>380</x>
+      <y>460</y>
+      <w>90</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>/ir.ast::Expression/
+--
+#expr: Expression
+#type: Type
+--
++getType(): Type
++setType(Type t): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>475</x>
+      <y>460</y>
+      <w>85</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>/ir.ast::Location/
+--
+#id: String
+--
++setId(String id): void
++getId(): String
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>95</x>
+      <y>555</y>
+      <w>70</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>/ir.ast::Literal/
+--
+--
++getType(): Type
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>170</x>
+      <y>555</y>
+      <w>70</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>/ir.ast::Statement/
+--
+--
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>80</x>
+      <y>115</y>
+      <w>220</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinOpExpr
+--
+-operator: BinOpType
+-lOperand: Expression
+-rOperand: Expression
+--
++BinOpExpr(Expression l, BinOpType op, Expression r): ctor
++BinOpExpr(Expression e, TempExpression t): ctor
++getOperator(): BinOpType
++setOperator(BinOpType operator): void
++getLeftOperand(): Expression
++setLeftOperand(Expression lOperand): void
++getRightOperand(): Expression
++setRightOperand(Expression rOperand): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
