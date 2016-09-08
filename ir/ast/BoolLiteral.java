@@ -7,6 +7,7 @@ public class BoolLiteral extends Literal {
 
 	public BoolLiteral(Boolean value) {
 		this.value = value;
+		setType(Type.BOOL);
 	}
 
 	public void setValue(Boolean newValue) {
@@ -18,7 +19,13 @@ public class BoolLiteral extends Literal {
 	}
 
 	@Override
-	public Type getType() {
-		return Type.INT;
+	public String toString() {
+		return (value)? "true":"false";
 	}
+
+	@Override
+	public <T> T accept(ASTVisitor<T> v) {
+		return v.visit(this);
+	}
+
 }

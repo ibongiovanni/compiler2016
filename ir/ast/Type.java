@@ -2,6 +2,8 @@ package ir.ast;
 
 public enum Type {
 	INT,
+	FLOAT,
+	BOOL,
 	INTARRAY,
 	VOID,
 	UNDEFINED;
@@ -11,6 +13,10 @@ public enum Type {
 		switch(this) {
 			case INT:
 				return "int";
+			case BOOL:
+				return "bool";
+			case FLOAT:
+				return "float";
 			case VOID:
 				return "void";
 			case UNDEFINED:
