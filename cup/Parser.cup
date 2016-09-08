@@ -197,11 +197,11 @@ assign_op	::=	ASSIGN 		//R45 - =
 
 method_call	::=	ID:id LPAREN RPAREN							{:System.out.println("R48 - simple method '"+id+"' call with no arguments");:}
 			|	ID:id LPAREN expr_lst RPAREN				{:System.out.println("R49 - simple method '"+id+"' call with a list of arguments");:}
-			|	ID:id sub_call_lst:m LPAREN RPAREN 			{:System.out.println("R50 - sub class method '"+m+"' call with no arguments");:}
+			|	ID:id sub_call_lst:m LPAREN RPAREN 			{:System.out.println("R50 - sub class method '"+id+"."+m+"' call with no arguments");:}
 			|	ID:id sub_call_lst:m LPAREN expr_lst RPAREN {:System.out.println("R51 - sub class method '"+m+"' call with a list of arguments");:}
 			;
 
-sub_call_lst	::=	sub_call_lst DOT ID:id 		{:System.out.println("R52 - one class OR method call and apply recursion"); RESULT=id;:}
+sub_call_lst	::=	sub_call_lst:h DOT ID:id 		{:System.out.println("R52 - one class OR method call and apply recursion"); RESULT=h+"."+id;:}
 				|	DOT ID:id 					{:System.out.println("R53 - sub class '"+id+"' call"); RESULT=id;:}
 				;
 
