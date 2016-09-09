@@ -3,7 +3,7 @@ package ir.ast;
 import ir.ASTVisitor;
 
 public class VarLocation extends Location {
-	private int blockId;
+	protected int blockId;
 
 	public VarLocation(String id) {
 		this.id = id;

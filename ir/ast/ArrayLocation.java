@@ -3,8 +3,8 @@ package ir.ast;
 import ir.ASTVisitor;
 
 public class ArrayLocation extends Location {
-	private Integer index;
-	private int blockId;
+	protected Integer index;
+	protected int blockId;
 
 	public ArrayLocation(String id, Integer ind) {
 		this.id = id;

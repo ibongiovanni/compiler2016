@@ -5,6 +5,8 @@ public enum Type {
 	FLOAT,
 	BOOL,
 	INTARRAY,
+	FLOATARRAY,
+	BOOLARRAY,
 	VOID,
 	UNDEFINED;
 	
@@ -23,13 +25,18 @@ public enum Type {
 				return "undefined";
 			case INTARRAY:
 				return "int[]";
+			case FLOATARRAY:
+				return "float[]";
+			case BOOLARRAY:
+				return "bool[]";
+			
 		}
 		
 		return null;
 	}
 	
 	public boolean isArray() {
-		if (this == Type.INTARRAY) {
+		if (this == Type.INTARRAY || this == Type.FLOATARRAY || this == Type.BOOLARRAY) {
 			return true;
 		}
 		
