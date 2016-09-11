@@ -24,10 +24,10 @@ public class ReturnStmt extends Statement {
 	@Override
 	public String toString() {
 		if (expression == null) {
-			return "return";
+			return "return;";
 		}
 		else {
-			return "return " + expression;
+			return "return " + expression+";";
 		}
 	}
 

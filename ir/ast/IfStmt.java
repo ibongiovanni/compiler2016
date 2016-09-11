@@ -4,19 +4,19 @@ import ir.ASTVisitor;
 
 public class IfStmt extends Statement {
 	private Expression condition;
-	private Block ifBlock;
-	private Block elseBlock;
+	private Statement ifStmt;
+	private Statement elseStmt;
 	
-	public IfStmt(Expression cond, Block ifBl) {
+	public IfStmt(Expression cond, Statement ifSt) {
 		this.condition = cond;
-		this.ifBlock = ifBl;
-		this.elseBlock = null;
+		this.ifStmt = ifSt;
+		this.elseStmt = null;
 	}
 	
-	public IfStmt(Expression cond, Block ifBl, Block elseBl) {
+	public IfStmt(Expression cond, Statement ifSt, Statement elseSt) {
 		this.condition = cond;
-		this.ifBlock = ifBl;
-		this.elseBlock = elseBl;
+		this.ifStmt = ifSt;
+		this.elseStmt = elseSt;
 	}
 
 	public Expression getCondition() {
@@ -27,28 +27,28 @@ public class IfStmt extends Statement {
 		this.condition = condition;
 	}
 
-	public Block getIfBlock() {
-		return ifBlock;
+	public Statement getIfStmt() {
+		return ifStmt;
 	}
 
-	public void setIfBlock(Block ifBlock) {
-		this.ifBlock = ifBlock;
+	public void setIfStmt(Statement ifStmt) {
+		this.ifStmt = ifStmt;
 	}
 
-	public Block getElseBlock() {
-		return elseBlock;
+	public Statement getElseStmt() {
+		return elseStmt;
 	}
 
-	public void setElseBlock(Block elseBlock) {
-		this.elseBlock = elseBlock;
+	public void setElseStmt(Statement elseStmt) {
+		this.elseStmt = elseStmt;
 	}
 	
 	@Override
 	public String toString() {
-		String rtn = "if " + condition + '\n' + ifBlock.toString();
+		String rtn = "if (" + condition + ")\n\t" + ifStmt.toString()+"\n";
 		
-		if (elseBlock != null) {
-			rtn += "else \n" + elseBlock;
+		if (elseStmt != null) {
+			rtn += "else \n\t" + elseStmt+"\n";
 		}
 		
 		return rtn;
