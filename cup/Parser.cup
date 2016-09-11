@@ -92,11 +92,6 @@ non terminal 	assign_op;
 non terminal 	method_call;
 non terminal 	expr;
 non terminal 	literal;
-non terminal 	bin_op;
-non terminal 	arith_op;
-non terminal 	rel_op;
-non terminal 	eq_op;
-non terminal 	cond_op;
 non terminal 	float_literal;
 non terminal 	var_or_array_lst;
 non terminal 	var_or_array;
@@ -202,7 +197,7 @@ method_call	::=	ID:id LPAREN RPAREN							{:System.out.println("R48 - simple met
 			;
 
 sub_call_lst	::=	sub_call_lst:h DOT ID:id 		{:System.out.println("R52 - one class OR method '"+id+"' call and apply recursion"); RESULT=h+"."+id;:}
-				|	DOT ID:id 					{:System.out.println("R53 - sub class '"+id+"' call"); RESULT=id;:}
+				|	DOT ID:id 						{:System.out.println("R53 - sub class '"+id+"' call"); RESULT=id;:}
 				;
 
 location	::=	ID:id 									{:System.out.println("R54 - single var '"+id+"' location");:}
@@ -211,23 +206,23 @@ location	::=	ID:id 									{:System.out.println("R54 - single var '"+id+"' loca
 			|	ID sub_call_lst	LBRACK expr RBRACK		{:System.out.println("R57 - sub class array location");:}
 			;
 
-expr 	::=	location				{:System.out.println("R58 - location expr");:}
-		|	method_call				{:System.out.println("R59 - method call expr");:}
-		|	literal 				{:System.out.println("R60 - literal expr");:}
-		|	expr:le PLUS expr:re 	{:System.out.println("R71 - aritmetical bin expr");:}
-		|	expr:le MINUS expr:re 	{:System.out.println("R72 - aritmetical bin expr");:}
-		|	expr:le TIMES expr:re 	{:System.out.println("R73 - aritmetical bin expr");:}
-		|	expr:le DIVIDE expr:re 	{:System.out.println("R74 - aritmetical bin expr");:}
-		|	expr:le MOD expr:re 	{:System.out.println("R75 - aritmetical bin expr");:}
-		|	expr:le LT expr:re 		{:System.out.println("R76 - relational bin expr");:}
-		|	expr:le GT expr:re 		{:System.out.println("R77 - relational bin expr");:}
-		|	expr:le LOET expr:re 	{:System.out.println("R78 - relational bin expr");:}
-		|	expr:le GOET expr:re 	{:System.out.println("R79 - relational bin expr");:}
-		|	expr:le EQUAL expr:re 	{:System.out.println("R80 - comparision bin expr");:}
-		|	expr:le NOTEQ expr:re 	{:System.out.println("R81 - comparision bin expr");:}
-		|	expr:le AND expr:re 	{:System.out.println("R82 - conditional bin expr");:}
-		|	expr:le OR expr:re 		{:System.out.println("R83 - conditional bin expr");:}
-		|	MINUS expr 				{:System.out.println("R62 - minus expr");:}
+expr 	::=	location					{:System.out.println("R58 - location expr");:}
+		|	method_call					{:System.out.println("R59 - method call expr");:}
+		|	literal 					{:System.out.println("R60 - literal expr");:}
+		|	expr:le PLUS 	expr:re 	{:System.out.println("R71 - aritmetical bin expr");:}
+		|	expr:le MINUS 	expr:re 	{:System.out.println("R72 - aritmetical bin expr");:}
+		|	expr:le TIMES 	expr:re 	{:System.out.println("R73 - aritmetical bin expr");:}
+		|	expr:le DIVIDE 	expr:re 	{:System.out.println("R74 - aritmetical bin expr");:}
+		|	expr:le MOD 	expr:re 	{:System.out.println("R75 - aritmetical bin expr");:}
+		|	expr:le LT 		expr:re 	{:System.out.println("R76 - relational bin expr");:}
+		|	expr:le GT 		expr:re 	{:System.out.println("R77 - relational bin expr");:}
+		|	expr:le LOET 	expr:re 	{:System.out.println("R78 - relational bin expr");:}
+		|	expr:le GOET 	expr:re 	{:System.out.println("R79 - relational bin expr");:}
+		|	expr:le EQUAL 	expr:re 	{:System.out.println("R80 - comparision bin expr");:}
+		|	expr:le NOTEQ 	expr:re 	{:System.out.println("R81 - comparision bin expr");:}
+		|	expr:le AND 	expr:re 	{:System.out.println("R82 - conditional bin expr");:}
+		|	expr:le OR 		expr:re 	{:System.out.println("R83 - conditional bin expr");:}
+		|	MINUS expr 					{:System.out.println("R62 - minus expr");:}
 				%prec UMINUS
 		|	NOT expr 				{:System.out.println("R63 - negated expr");:}
 		|	LPAREN expr RPAREN		{:System.out.println("R64 - (expr)");:}
@@ -236,33 +231,6 @@ expr 	::=	location				{:System.out.println("R58 - location expr");:}
 expr_lst	::=	expr_lst COMA expr 	{:System.out.println("R65 - expresion and recursion");:}
 			|	expr 				{:System.out.println("R66 - one single expresion");:}
 			;
-
-bin_op	::=	arith_op:op {:System.out.println("R67 - aritmetical operation "+op);:}
-		|	rel_op:op		{:System.out.println("R68 - relational operation "+op);:}
-		|	eq_op:op		{:System.out.println("R69 - comparision operation "+op);:}
-		|	cond_op:op		{:System.out.println("R70 - conditional operation "+op);:}
-		;
-
-arith_op	::=	PLUS 	{: RESULT="+"; :} 	//R71
-			|	MINUS 	{: RESULT="-"; :} 	//R72
-			|	TIMES 	{: RESULT="*"; :} 	//R73
-			|	DIVIDE 	{: RESULT="/"; :} 	//R74
-			|	MOD 	{: RESULT="%"; :} 	//R75
-			;
-
-rel_op	::=	LT 		{: RESULT="<"; :} 	//R76
-		|	GT 		{: RESULT=">"; :} 	//R77
-		|	LOET 	{: RESULT="<="; :}	//R78
-		|	GOET 	{: RESULT=">="; :}	//R79	 
-		;
-
-eq_op	::=	EQUAL 	{: RESULT="=="; :} 	//R80
-		|	NOTEQ 	{: RESULT="!="; :} 	//R81
-		;
-
-cond_op	::=	AND 	{: RESULT="&&"; :} 	//R82
-		|	OR 		{: RESULT="||"; :} 	//R83
-		;
 
 literal ::=	INT_LIT:l 		{:System.out.println("R84 - int literal: "+l);:}
 		|	float_literal:l	{:System.out.println("R85 - float literal: "+l);:}
