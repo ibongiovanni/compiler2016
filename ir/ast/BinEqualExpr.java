@@ -5,9 +5,7 @@ import ir.ASTVisitor;
 public class BinEqualExpr extends BinOpExpr {
 	
 	public BinEqualExpr (Expression lo, Expression ro){
-		operator = BinOpType.CEQ;
-		lOperand = lo;
-		rOperand = ro;
+		super(lo,BinOpType.CEQ,ro);
 	}
 
 	@Override

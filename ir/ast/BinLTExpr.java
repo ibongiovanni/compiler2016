@@ -5,9 +5,7 @@ import ir.ASTVisitor;
 public class BinLTExpr extends BinOpExpr {
 	
 	public BinLTExpr (Expression lo, Expression ro){
-		operator = BinOpType.LE;
-		lOperand = lo;
-		rOperand = ro;
+		super(lo,BinOpType.LE,ro);
 	}
 
 	@Override

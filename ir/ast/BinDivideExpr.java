@@ -5,9 +5,7 @@ import ir.ASTVisitor;
 public class BinDivideExpr extends BinOpExpr {
 	
 	public BinDivideExpr (Expression lo, Expression ro){
-		operator = BinOpType.DIVIDE;
-		lOperand = lo;
-		rOperand = ro;
+		super(lo,BinOpType.DIVIDE,ro);
 	}
 
 	@Override

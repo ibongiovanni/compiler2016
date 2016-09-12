@@ -3,10 +3,14 @@ package ir.ast;
 import ir.ASTVisitor;
 
 public class ArrayLocation extends Location {
-	protected Integer index;
+	protected Expression index;
 	protected int blockId;
 
-	public ArrayLocation(String id, Integer ind) {
+	public ArrayLocation(){
+		
+	}
+
+	public ArrayLocation(String id, Expression ind) {
 		this.id = id;
 		index = ind;
 		this.blockId = -1;

@@ -16,7 +16,7 @@ public class FieldDecl extends Declaration {
 	//Assign its corresponding type to each var declared;
 	private void assignTypes(){
 		for ( VarDecl v : elements ) {
-			if !(v instanceof ArrayDecl) {
+			if (!(v instanceof ArrayDecl)) {
 				v.setType(type);
 			}
 			else{

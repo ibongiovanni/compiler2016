@@ -5,9 +5,7 @@ import ir.ASTVisitor;
 public class BinGOETExpr extends BinOpExpr {
 	
 	public BinGOETExpr (Expression lo, Expression ro){
-		operator = BinOpType.GEQ;
-		lOperand = lo;
-		rOperand = ro;
+		super(lo,BinOpType.GEQ,ro);
 	}
 
 	@Override

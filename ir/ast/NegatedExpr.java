@@ -2,9 +2,9 @@ package ir.ast;
 
 import ir.ASTVisitor;
 
-public class MinusExpr extends Expression {
+public class NegatedExpr extends Expression {
 	
-	public MinusExpr(Expression e){
+	public NegatedExpr(Expression e){
 		expr=e;
 	}
 

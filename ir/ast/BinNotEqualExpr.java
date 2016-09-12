@@ -5,9 +5,7 @@ import ir.ASTVisitor;
 public class BinNotEqualExpr extends BinOpExpr {
 	
 	public BinNotEqualExpr (Expression lo, Expression ro){
-		operator = BinOpType.NEQ;
-		lOperand = lo;
-		rOperand = ro;
+		super(lo,BinOpType.NEQ,ro);
 	}
 
 	@Override

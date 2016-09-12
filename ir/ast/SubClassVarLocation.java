@@ -3,6 +3,7 @@ package ir.ast;
 import ir.ASTVisitor;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Arrays;
 
 public class SubClassVarLocation extends VarLocation {
 	private List<String> classes;
@@ -16,7 +17,7 @@ public class SubClassVarLocation extends VarLocation {
 
 	@Override
 	public String toString() {
-		String rep;
+		String rep="";
 		for (String c : classes ) {
 			rep=rep+c+".";
 		}

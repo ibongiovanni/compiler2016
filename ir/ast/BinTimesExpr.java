@@ -5,9 +5,7 @@ import ir.ASTVisitor;
 public class BinTimesExpr extends BinOpExpr {
 	
 	public BinTimesExpr (Expression lo, Expression ro){
-		operator = BinOpType.MULTIPLY;
-		lOperand = lo;
-		rOperand = ro;
+		super(lo,BinOpType.MULTIPLY,ro);
 	}
 
 	@Override

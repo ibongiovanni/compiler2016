@@ -15,7 +15,7 @@ public class Block extends Statement {
 		blockId = bId;
 	}
 
-	public Block(int bId, List<FieldDecl> f) {
+	/*public Block(int bId, List<FieldDecl> f) {
 		blockId = bId;
 		declarations = f;
 		statements = new ArrayList<Statement>();
@@ -25,12 +25,22 @@ public class Block extends Statement {
 		blockId = bId;
 		declarations = new ArrayList<FieldDecl>();
 		statements = s;
-	}
+	}*/
 
 	public Block(int bId, List<FieldDecl> f, List<Statement> s) {
 		blockId = bId;
-		declarations = f;
-		statements = s;
+		if (f==null) {
+			declarations = new ArrayList<FieldDecl>();
+		}
+		else {
+			declarations = f;
+		}
+		if (s==null) {
+			statements = new ArrayList<Statement>();
+		}
+		else {
+			statements = s;
+		}
 	}
 	
 	public void addStatement(Statement s) {

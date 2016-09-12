@@ -10,10 +10,38 @@ public class ClassDecl extends AST {
 	private List<FieldDecl> fields;
 	private List<MethodDecl> methods;
 
-	public ClassDecl(String id, List<FieldDecl> fields, List<MethodDecl> methods){
+	public ClassDecl(String id){
+		this.id = id;
+		this.fields = new LinkedList<FieldDecl>();
+		this.methods = new LinkedList<MethodDecl>();
+	}
+
+	/*public ClassDecl(String id, List<FieldDecl> fields){
 		this.id = id;
 		this.fields = fields;
+		this.methods = new LinkedList<MethodDecl>();
+	}
+
+	public ClassDecl(String id, List<MethodDecl> methods){
+		this.id = id;
+		this.fields = new LinkedList<FieldDecl>();
 		this.methods = methods;
+	}*/
+
+	public ClassDecl(String id, List<FieldDecl> fields, List<MethodDecl> methods){
+		this.id = id;
+		if (fields==null) {
+			this.fields = new LinkedList<FieldDecl>();
+		}
+		else {
+			this.fields = fields;
+		}
+		if (methods==null) {
+			this.methods = new LinkedList<MethodDecl>();		
+		}
+		else {
+			this.methods = methods;	
+		}
 	}
 
 	public String getId(){ return id; }
