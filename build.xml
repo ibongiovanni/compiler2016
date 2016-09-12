@@ -28,6 +28,12 @@
 
   <target name="compile" depends="generate">
     <copy file="JavaParser.java" todir="${src}/compiler" overwrite="true"></copy>
+    <copy todir="${src}" overwrite="true">
+      <fileset dir="ir"/>
+    </copy>
+    <copy todir="${src}" overwrite="true">
+      <fileset dir="error"/>
+    </copy>
     <javac srcdir="${src}" destdir="${classes}">
       <classpath refid="libraries" />
     </javac>
