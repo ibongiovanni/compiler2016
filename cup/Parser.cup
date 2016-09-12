@@ -1,6 +1,14 @@
 package compiler;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import java_cup.runtime.*;
+import ir.ast.*;
+import ir.ASTVisitor;
+import ir.semcheck.*;
+
 
 parser code {:
     
@@ -76,28 +84,28 @@ terminal Integer    INT_LIT;        // our scanner provides numbers as integers
 terminal String		ID;
 
 /* Non terminals */     
-non terminal 	program;
-non terminal 	class_decl;
-non terminal 	field_decl;
-non terminal 	field_decl_lst;
-non terminal 	type;
-non terminal 	method_decl;
-non terminal 	method_decl_lst;
-non terminal 	body;
-non terminal 	block;
-non terminal 	statement;
-non terminal 	statement_lst;
-non terminal 	location;
-non terminal 	assign_op;
-non terminal 	method_call;
-non terminal 	expr;
-non terminal 	literal;
-non terminal 	float_literal;
-non terminal 	var_or_array_lst;
-non terminal 	var_or_array;
-non terminal 	arg_lst;
-non terminal 	sub_call_lst;
-non terminal    expr_lst;
+non terminal 	List<ClassDecl> program;
+non terminal 	ClassDecl	class_decl;
+non terminal 	FieldDecl	field_decl;
+non terminal 	List<FieldDecl>	field_decl_lst;
+non terminal 	Type	type;
+non terminal 	MethodDecl	method_decl;
+non terminal 	List<MethodDecl>	method_decl_lst;
+non terminal 	Body	body;
+non terminal 	Block	block;
+non terminal 	Statement 	statement;
+non terminal 	List<Statement>	statement_lst;
+non terminal 	ir.ast.Location	location;
+non terminal 	AssignOpType	assign_op;
+non terminal 	MethodCallExpr	method_call;
+non terminal 	Expression	expr;
+non terminal 	Literal	literal;
+non terminal 	FloatLiteral	float_literal;
+non terminal 	List<VarDecl>	var_or_array_lst;
+non terminal 	VarDecl	var_or_array;
+non terminal 	List<FormalParam>	arg_lst;
+non terminal 	String	sub_call_lst;
+non terminal    List<Expression>	expr_lst;
 
 /* Precedences */
 
@@ -112,130 +120,130 @@ precedence left ELSE;
 /* The grammar rules */
 
 /*goal*/
-program 	::=  program class_decl	{:System.out.println("R1 - More than one class");:}	//More than one class 
-			|	 class_decl			{:System.out.println("R2 - One single class");:}	//One single class
+program 	::=  program:clst class_decl:cd	{:clst.add(cd); RESULT=clst; System.out.println("R1 - More than one class");:}	//More than one class 
+			|	 class_decl:cd			{:List<ClassDecl> dec = new LinkedList<ClassDecl>(); dec.add(cd); RESULT=dec; System.out.println("R2 - One single class");:}	//One single class
 			;
 
-class_decl	::=  CLASS ID LBRACE RBRACE									{:System.out.println("R3 - class with no field or methods");:}
-			|	 CLASS ID LBRACE field_decl_lst RBRACE					{:System.out.println("R4 - class with one or more field and no methods");:}
-			|	 CLASS ID LBRACE method_decl_lst RBRACE					{:System.out.println("R5 - class with no field and one or more methods");:}
-			|	 CLASS ID LBRACE field_decl_lst method_decl_lst RBRACE	{:System.out.println("R6 - class with one or more field and one or more methods");:}
+class_decl	::=  CLASS ID:id LBRACE RBRACE									{:RESULT= new ClassDecl(id); System.out.println("R3 - class with no field or methods");:}
+			|	 CLASS ID:id LBRACE field_decl_lst:fields RBRACE					{:RESULT= new ClassDecl(id,fields,null); System.out.println("R4 - class with one or more field and no methods");:}
+			|	 CLASS ID:id LBRACE method_decl_lst:methods RBRACE					{:RESULT= new ClassDecl(id,null,methods); System.out.println("R5 - class with no field and one or more methods");:}
+			|	 CLASS ID:id LBRACE field_decl_lst:fields method_decl_lst:methods RBRACE	{:RESULT= new ClassDecl(id,fields,methods); System.out.println("R6 - class with one or more field and one or more methods");:}
 			;
 
-field_decl_lst 	::=	field_decl_lst field_decl 		{:System.out.println("R7 - more than one field");:}
-				|	field_decl 						{:System.out.println("R8 - one single field");:}
+field_decl_lst 	::=	field_decl_lst:fields field_decl:f 		{:fields.add(f); RESULT=fields; System.out.println("R7 - more than one field");:}
+				|	field_decl:f 						{:List<FieldDecl> fields = new LinkedList<FieldDecl>(); fields.add(f); RESULT=fields; System.out.println("R8 - one single field");:}
 				;
 
-field_decl 	::=	type:t var_or_array_lst SEMI 		{:System.out.println("R9 - field declaration of type '"+t+"'");:}
+field_decl 	::=	type:t var_or_array_lst:els SEMI 		{:RESULT= new FieldDecl(t,els) ; System.out.println("R9 - field declaration of type '"+t+"'");:}
 			;
 
-var_or_array_lst	::=	var_or_array_lst COMA var_or_array 	{:System.out.println("R10 - more than one attr");:}
-					|	var_or_array 						{:System.out.println("R11 - one single attr");:}
+var_or_array_lst	::=	var_or_array_lst:lst COMA var_or_array:v 	{:lst.add(v); RESULT=lst; System.out.println("R10 - more than one attr");:}
+					|	var_or_array:v 						{:List<VarDecl> lst= new LinkedList<VarDecl>(); lst.add(v); RESULT=lst; System.out.println("R11 - one single attr");:}
 					;
 
-var_or_array 	::=	ID:id 							{:System.out.println("R12 - var declaration, id: '"+id+"'");:}
-				|	ID LBRACK INT_LIT RBRACK 		{:System.out.println("R13 - array declaration");:}
+var_or_array 	::=	ID:id 							{:RESULT= new VarDecl(id); System.out.println("R12 - var declaration, id: '"+id+"'");:}
+				|	ID:id LBRACK INT_LIT:s RBRACK 		{:RESULT= new ArrayDecl(id,s); System.out.println("R13 - array declaration");:}
 				;
 
-method_decl_lst	::=	method_decl_lst method_decl 	{:System.out.println("R14 - more than one method");:} 
-				|	method_decl 					{:System.out.println("R15 - one single method");:}
+method_decl_lst	::=	method_decl_lst:lst method_decl:m 	{:lst.add(m); RESULT=lst; System.out.println("R14 - more than one method");:} 
+				|	method_decl:m 					{:List<MethodDecl> lst=new LinkedList<MethodDecl>(); lst.add(m); RESULT=lst; System.out.println("R15 - one single method");:}
 				;
 
-method_decl 	::= type ID:m LPAREN RPAREN body 			{:System.out.println("R16 - method: '"+m+"' with no args");:}
-				|	type ID:m LPAREN arg_lst RPAREN body	{:System.out.println("R17 - method: '"+m+"' with at least one arg");:}
+method_decl 	::= type:t ID:m LPAREN RPAREN body:b 			{:RESULT= new MethodDecl(t,m,b); System.out.println("R16 - method: '"+m+"' with no args");:}
+				|	type:t ID:m LPAREN arg_lst:args RPAREN body:b	{:RESULT= new MethodDecl(t,m,args,b); System.out.println("R17 - method: '"+m+"' with at least one arg");:}
 				;
 
-arg_lst	::=	arg_lst COMA type ID 	{:System.out.println("R18 - more than one arg");:}
-		|	type ID 				{:System.out.println("R19 - one single arg");:}
+arg_lst	::=	arg_lst:lst COMA type:t ID:id 	{:FormalParam p=new FormalParam(t,id); lst.add(p); RESULT=lst; System.out.println("R18 - more than one arg");:}
+		|	type:t ID:id 				{: List<FormalParam> lst=new LinkedList<FormalParam>(); FormalParam p=new FormalParam(t,id); lst.add(p); RESULT=lst; System.out.println("R19 - one single arg");:}
 		;
 
 
-body	::=	block		{:System.out.println("R20 - body block");:}
-		|	EXTERN SEMI	{:System.out.println("R21 - extern body");:}
+body	::=	block:b		{:RESULT= new Body(b); System.out.println("R20 - body block");:}
+		|	EXTERN SEMI	{:RESULT= new Body(); System.out.println("R21 - extern body");:}
 		;
 
-block	::=	LBRACE RBRACE 								{:System.out.println("R22 - empty block");:}
-		|	LBRACE field_decl_lst RBRACE 				{:System.out.println("R23 - block with one or more fields and no statement");:}
-		|	LBRACE statement_lst RBRACE 				{:System.out.println("R24 - block with no fields and one or more statement");:}
-		|	LBRACE field_decl_lst statement_lst RBRACE 	{:System.out.println("R25 - block with one or more field and one or more statement");:}	
+block	::=	LBRACE RBRACE 								{:RESULT= new Block(1); System.out.println("R22 - empty block");:}
+		|	LBRACE field_decl_lst:f RBRACE 				{:RESULT= new Block(1,f,null);System.out.println("R23 - block with one or more fields and no statement");:}
+		|	LBRACE statement_lst:s RBRACE 				{:RESULT= new Block(1,null,s);System.out.println("R24 - block with no fields and one or more statement");:}
+		|	LBRACE field_decl_lst:f statement_lst:s RBRACE 	{:RESULT= new Block(1,f,s); System.out.println("R25 - block with one or more field and one or more statement");:}	
 		;
 
-type 	::=	ID:id {: RESULT=id;:}				//R26
-		|	INTEGER_TYPE {: RESULT="Integer";:}	//R27
-		|	FLOAT_TYPE {: RESULT="Float";:}		//R28
-		|	BOOL {: RESULT="Bool";:}			//R29
-		|	VOID {: RESULT="Void";:}			//R30
+type 	::=	ID:id {: RESULT=Type.UNDEFINED;:}				//R26
+		|	INTEGER_TYPE {: RESULT=Type.INT;:}	//R27
+		|	FLOAT_TYPE {: RESULT=Type.FLOAT;:}		//R28
+		|	BOOL {: RESULT=Type.BOOL;:}			//R29
+		|	VOID {: RESULT=Type.VOID;:}			//R30
 		;
 
-statement_lst	::=	statement_lst statement 	{:System.out.println("R31 - one statement and recursion");:}
-				|	statement 					{:System.out.println("R32 - one single statement");:}
+statement_lst	::=	statement_lst:lst statement:s 	{:lst.add(s); RESULT=lst; System.out.println("R31 - one statement and recursion");:}
+				|	statement:s 					{:List<Statement> lst=new LinkedList<Statement>(); lst.add(s); RESULT=lst; System.out.println("R32 - one single statement");:}
 				;
 
-statement 	::=	location assign_op expr SEMI					{:System.out.println("R33 - assignement statement");:}
-			|	method_call SEMI								{:System.out.println("R34 - method call statement");:}
-			|	IF LPAREN expr RPAREN statement 				{:System.out.println("R35 - if (not else) statement");:}
-			|	IF LPAREN expr RPAREN statement ELSE statement 	{:System.out.println("R36 - if then else statement");:}
-			|	FOR ID ASSIGN expr COMA expr statement 			{:System.out.println("R37 - for statement");:}
-			|	WHILE expr statement 							{:System.out.println("R38 - while statement");:}
-			|	RETURN SEMI 									{:System.out.println("R39 - return nothing statement");:}
-			|	RETURN expr SEMI								{:System.out.println("R40 - return an expresion statement");:}
-			|	BREAK SEMI										{:System.out.println("R41 - break statement");:}
-			|	CONTINUE SEMI									{:System.out.println("R42 - continue statement");:}	
-			|	SEMI											{:System.out.println("R43 - empty statement");:}
-			|	block											{:System.out.println("R44 - inner block statement");:}
+statement 	::=	location:l assign_op:op expr:e SEMI					{:RESULT= new AssignStmt(l,op,e); System.out.println("R33 - assignement statement");:}
+			|	method_call:mc SEMI								{:RESULT= new MethodCallStmt(mc); System.out.println("R34 - method call statement");:}
+			|	IF LPAREN expr:con RPAREN statement:ifs 				{:RESULT= new IfStmt(con,ifs); System.out.println("R35 - if (not else) statement");:}
+			|	IF LPAREN expr:con RPAREN statement:ifs ELSE statement:els 	{:RESULT= new IfStmt(con,ifs,els); System.out.println("R36 - if then else statement");:}
+			|	FOR ID:id ASSIGN expr:e1 COMA expr:e2 statement:st 			{:RESULT= new ForStmt(id,e1,e2,st); System.out.println("R37 - for statement");:}
+			|	WHILE expr:cond statement:st 							{:RESULT= new WhileStmt(cond, st); System.out.println("R38 - while statement");:}
+			|	RETURN SEMI 									{:RESULT= new ReturnStmt(); System.out.println("R39 - return nothing statement");:}
+			|	RETURN expr:e SEMI								{:RESULT= new ReturnStmt(e); System.out.println("R40 - return an expresion statement");:}
+			|	BREAK SEMI										{:RESULT= new BreakStmt(); System.out.println("R41 - break statement");:}
+			|	CONTINUE SEMI									{:RESULT= new ContinueStmt(); System.out.println("R42 - continue statement");:}	
+			|	SEMI											{:RESULT= new EmptyStmt(); System.out.println("R43 - empty statement");:}
+			|	block:b											{:RESULT= b ; System.out.println("R44 - inner block statement");:}
 			;
 
-assign_op	::=	ASSIGN 		//R45 - =
-			|	PLUSASSIGN	//R46 - +=
-			|	LESSASSIGN	//R47 - -=
+assign_op	::=	ASSIGN 		{:RESULT=AssignOpType.ASSIGN;:} //R45 - =
+			|	PLUSASSIGN	{:RESULT=AssignOpType.INCREMENT;:}//R46 - +=
+			|	LESSASSIGN	{:RESULT=AssignOpType.DECREMENT;:}//R47 - -=
 			;
 
-method_call	::=	ID:id LPAREN RPAREN							{:System.out.println("R48 - simple method '"+id+"' call with no arguments");:}
-			|	ID:id LPAREN expr_lst RPAREN				{:System.out.println("R49 - simple method '"+id+"' call with a list of arguments");:}
-			|	ID:id sub_call_lst:m LPAREN RPAREN 			{:System.out.println("R50 - sub class method '"+id+"."+m+"' call with no arguments");:}
-			|	ID:id sub_call_lst:m LPAREN expr_lst RPAREN {:System.out.println("R51 - sub class method '"+m+"' call with a list of arguments");:}
+method_call	::=	ID:id LPAREN RPAREN								{:RESULT= new MethodCallExpr(new VarLocation(id)); System.out.println("R48 - simple method '"+id+"' call with no arguments");:}
+			|	ID:id LPAREN expr_lst:es RPAREN					{:RESULT= new MethodCallExpr(new VarLocation(id),es); System.out.println("R49 - simple method '"+id+"' call with a list of arguments");:}
+			|	ID:id sub_call_lst:m LPAREN RPAREN 				{:RESULT= new MethodCallExpr(new SubClassVarLocation(id+"."+m)); System.out.println("R50 - sub class method '"+id+"."+m+"' call with no arguments");:}
+			|	ID:id sub_call_lst:m LPAREN expr_lst:es RPAREN 	{:RESULT= new MethodCallExpr(new SubClassVarLocation(id+"."+m),es); System.out.println("R51 - sub class method '"+m+"' call with a list of arguments");:}
 			;
 
-sub_call_lst	::=	sub_call_lst:h DOT ID:id 		{:System.out.println("R52 - one class OR method '"+id+"' call and apply recursion"); RESULT=h+"."+id;:}
-				|	DOT ID:id 						{:System.out.println("R53 - sub class '"+id+"' call"); RESULT=id;:}
+sub_call_lst	::=	sub_call_lst:h DOT ID:id 		{:RESULT=h+"."+id; System.out.println("R52 - one class OR method '"+id+"' call and apply recursion");:}
+				|	DOT ID:id 						{:RESULT=id; System.out.println("R53 - sub class '"+id+"' call");:}
 				;
 
-location	::=	ID:id 									{:System.out.println("R54 - single var '"+id+"' location");:}
-			|	ID sub_call_lst							{:System.out.println("R55 - sub class var location");:}
-			|	ID LBRACK expr RBRACK					{:System.out.println("R56 - single array location");:}
-			|	ID sub_call_lst	LBRACK expr RBRACK		{:System.out.println("R57 - sub class array location");:}
+location	::=	ID:id 									{:RESULT= new VarLocation(id); System.out.println("R54 - single var '"+id+"' location");:}
+			|	ID:id sub_call_lst:sc							{:RESULT= new SubClassVarLocation(id+"."+sc); System.out.println("R55 - sub class var location");:}
+			|	ID:id LBRACK expr:e RBRACK					{:RESULT= new ArrayLocation(id,e); System.out.println("R56 - single array location");:}
+			|	ID:id sub_call_lst:sc	LBRACK expr:e RBRACK		{:RESULT= new SubClassArrayLocation(id+"."+sc,e); System.out.println("R57 - sub class array location");:}
 			;
 
-expr 	::=	location					{:System.out.println("R58 - location expr");:}
-		|	method_call					{:System.out.println("R59 - method call expr");:}
-		|	literal 					{:System.out.println("R60 - literal expr");:}
-		|	expr:le PLUS 	expr:re 	{:System.out.println("R71 - aritmetical bin expr");:}
-		|	expr:le MINUS 	expr:re 	{:System.out.println("R72 - aritmetical bin expr");:}
-		|	expr:le TIMES 	expr:re 	{:System.out.println("R73 - aritmetical bin expr");:}
-		|	expr:le DIVIDE 	expr:re 	{:System.out.println("R74 - aritmetical bin expr");:}
-		|	expr:le MOD 	expr:re 	{:System.out.println("R75 - aritmetical bin expr");:}
-		|	expr:le LT 		expr:re 	{:System.out.println("R76 - relational bin expr");:}
-		|	expr:le GT 		expr:re 	{:System.out.println("R77 - relational bin expr");:}
-		|	expr:le LOET 	expr:re 	{:System.out.println("R78 - relational bin expr");:}
-		|	expr:le GOET 	expr:re 	{:System.out.println("R79 - relational bin expr");:}
-		|	expr:le EQUAL 	expr:re 	{:System.out.println("R80 - comparision bin expr");:}
-		|	expr:le NOTEQ 	expr:re 	{:System.out.println("R81 - comparision bin expr");:}
-		|	expr:le AND 	expr:re 	{:System.out.println("R82 - conditional bin expr");:}
-		|	expr:le OR 		expr:re 	{:System.out.println("R83 - conditional bin expr");:}
-		|	MINUS expr 					{:System.out.println("R62 - minus expr");:}
+expr 	::=	location:l					{:RESULT=l; System.out.println("R58 - location expr");:}
+		|	method_call:mc					{:RESULT=mc; System.out.println("R59 - method call expr");:}
+		|	literal:l 					{:RESULT=l; System.out.println("R60 - literal expr");:}
+		|	expr:le PLUS 	expr:re 	{:RESULT=new BinPlusExpr(le,re); System.out.println("R71 - aritmetical bin expr");:}
+		|	expr:le MINUS 	expr:re 	{:RESULT=new BinMinusExpr(le,re); System.out.println("R72 - aritmetical bin expr");:}
+		|	expr:le TIMES 	expr:re 	{:RESULT=new BinTimesExpr(le,re); System.out.println("R73 - aritmetical bin expr");:}
+		|	expr:le DIVIDE 	expr:re 	{:RESULT=new BinDivideExpr(le,re); System.out.println("R74 - aritmetical bin expr");:}
+		|	expr:le MOD 	expr:re 	{:RESULT=new BinModExpr(le,re); System.out.println("R75 - aritmetical bin expr");:}
+		|	expr:le LT 		expr:re 	{:RESULT=new BinLTExpr(le,re); System.out.println("R76 - relational bin expr");:}
+		|	expr:le GT 		expr:re 	{:RESULT=new BinGTExpr(le,re); System.out.println("R77 - relational bin expr");:}
+		|	expr:le LOET 	expr:re 	{:RESULT=new BinLOETExpr(le,re); System.out.println("R78 - relational bin expr");:}
+		|	expr:le GOET 	expr:re 	{:RESULT=new BinGOETExpr(le,re); System.out.println("R79 - relational bin expr");:}
+		|	expr:le EQUAL 	expr:re 	{:RESULT=new BinEqualExpr(le,re); System.out.println("R80 - comparision bin expr");:}
+		|	expr:le NOTEQ 	expr:re 	{:RESULT=new BinNotEqualExpr(le,re); System.out.println("R81 - comparision bin expr");:}
+		|	expr:le AND 	expr:re 	{:RESULT=new BinAndExpr(le,re); System.out.println("R82 - conditional bin expr");:}
+		|	expr:le OR 		expr:re 	{:RESULT=new BinOrExpr(le,re); System.out.println("R83 - conditional bin expr");:}
+		|	MINUS expr:e 					{:RESULT= new MinusExpr(e); System.out.println("R62 - minus expr");:}
 				%prec UMINUS
-		|	NOT expr 				{:System.out.println("R63 - negated expr");:}
-		|	LPAREN expr RPAREN		{:System.out.println("R64 - (expr)");:}
+		|	NOT expr:e 				{:RESULT=new NegatedExpr(e); System.out.println("R63 - negated expr");:}
+		|	LPAREN expr:e RPAREN		{:RESULT=new BracketExpr(e); System.out.println("R64 - (expr)");:}
 		;
 
-expr_lst	::=	expr_lst COMA expr 	{:System.out.println("R65 - expresion and recursion");:}
-			|	expr 				{:System.out.println("R66 - one single expresion");:}
+expr_lst	::=	expr_lst:lst COMA expr:e 	{:lst.add(e); RESULT=lst; System.out.println("R65 - expresion and recursion");:}
+			|	expr:e 				{:List<Expression> lst=new LinkedList<Expression>(); lst.add(e); RESULT=lst; System.out.println("R66 - one single expresion");:}
 			;
 
-literal ::=	INT_LIT:l 		{:System.out.println("R84 - int literal: "+l);:}
-		|	float_literal:l	{:System.out.println("R85 - float literal: "+l);:}
-		|	BOOL_LIT:l		{:System.out.println("R86 - bool literal: "+l);:}
+literal ::=	INT_LIT:l 		{:RESULT=new IntLiteral(l); System.out.println("R84 - int literal: "+l);:}
+		|	float_literal:l	{:RESULT=l; System.out.println("R85 - float literal: "+l);:}
+		|	BOOL_LIT:l		{:RESULT=new BoolLiteral(l); System.out.println("R86 - bool literal: "+l);:}
 		;
 
-float_literal	::=	INT_LIT:i DOT INT_LIT:d	{:RESULT=i+"."+d;:} //R87
+float_literal	::=	INT_LIT:i DOT INT_LIT:d	{:RESULT=new FloatLiteral(i+"."+d);:} //R87
 				;
