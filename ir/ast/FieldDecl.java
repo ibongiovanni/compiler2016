@@ -37,6 +37,10 @@ public class FieldDecl extends Declaration {
 		return Type.UNDEFINED;
 	}
 
+	public List<VarDecl> getElements(){
+		return elements;
+	}
+
 	@Override
 	public String toString() {
 		String rep;

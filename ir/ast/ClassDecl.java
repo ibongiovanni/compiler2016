@@ -45,6 +45,8 @@ public class ClassDecl extends AST {
 	}
 
 	public String getId(){ return id; }
+	public List<FieldDecl> getFields(){ return fields; }
+	public List<MethodDecl> getMethods() { return methods; }
 
 	@Override
 	public String toString() {

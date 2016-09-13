@@ -14,16 +14,6 @@ public class TypeCheckVisitor implements ASTVisitor<Type> {
 	private List<Error> errors;
 
 	@Override
-	public Type visit(AssignStmt stmt) {
-		return Type.UNDEFINED;
-	}
-
-	@Override
-	public Type visit(BinOpExpr expr) {
-		return Type.UNDEFINED;
-	}
-
-	@Override
 	public Type visit(ClassDecl dec){
 		return Type.UNDEFINED;
 	}
@@ -60,6 +50,11 @@ public class TypeCheckVisitor implements ASTVisitor<Type> {
 
 
 // visit statements
+	@Override
+	public Type visit(AssignStmt stmt) {
+		return Type.UNDEFINED;
+	}
+
 	@Override
 	public Type visit(ReturnStmt stmt){
 		return Type.UNDEFINED;
@@ -107,6 +102,11 @@ public class TypeCheckVisitor implements ASTVisitor<Type> {
 
 
 // visit expressions
+	@Override
+	public Type visit(BinOpExpr expr) {
+		return Type.UNDEFINED;
+	}
+
 	@Override
 	public Type visit(BinAndExpr expr){
 		return Type.UNDEFINED;
@@ -198,39 +198,39 @@ public class TypeCheckVisitor implements ASTVisitor<Type> {
 	public Type visit(IntLiteral lit){
 		return Type.UNDEFINED;
 	}
-	
+
 	@Override
 	public Type visit(FloatLiteral lit){
 		return Type.UNDEFINED;
 	}
-	
+
 	@Override
 	public Type visit(BoolLiteral lit){
 		return Type.UNDEFINED;
 	}
-	
+
 
 // visit locations	
 	@Override
 	public Type visit(VarLocation loc){
 		return Type.UNDEFINED;
 	}
-	
+
 	@Override
 	public Type visit(SubClassVarLocation loc){
 		return Type.UNDEFINED;
 	}
-	
+
 	@Override
 	public Type visit(ArrayLocation loc){
 		return Type.UNDEFINED;
 	}
-	
+
 	@Override
 	public Type visit(SubClassArrayLocation loc){
 		return Type.UNDEFINED;
 	}
-	
+
 
 
 	private void addError(AST a, String desc) {

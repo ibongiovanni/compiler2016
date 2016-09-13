@@ -23,6 +23,18 @@ public class MethodDecl extends Declaration {
 		this.body = body;
 	}
 
+	public String getId(){
+		return id;
+	}
+
+	public  List<FormalParam> getArgs(){
+		return args;
+	}
+
+	public Body getBody(){
+		return body;
+	}
+
 	@Override
 	public String toString() {
 		String rep;
@@ -30,7 +42,7 @@ public class MethodDecl extends Declaration {
 		for ( FormalParam a : args ) {
 			rep = rep+" "+a.toString()+",";
 		} //Sobra una coma al final
-		rep = rep+") "+body.toString()+"\n";
+		rep = rep+") "+body.toString();
 		return rep;
 	}
 

@@ -13,6 +13,14 @@ public class Body extends AST {
 		block = b;
 	}
 
+	public Boolean isExtern(){
+		return block == null;
+	}
+
+	public Block getBlock(){
+		return block;
+	}
+
 	@Override
 	public String toString() {
 		return (block != null)? block.toString() : "extern;";
