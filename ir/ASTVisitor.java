@@ -5,6 +5,7 @@ import ir.ast.*;
 // Abstract visitor
 public interface ASTVisitor<T> {
 // Visit declarations
+	T visit(Program dec);
 	T visit(ClassDecl dec);
 	T visit(FieldDecl dec);
 	T visit(MethodDecl dec);

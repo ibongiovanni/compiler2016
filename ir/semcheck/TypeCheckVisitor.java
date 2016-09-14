@@ -14,6 +14,11 @@ public class TypeCheckVisitor implements ASTVisitor<Type> {
 	private List<Error> errors;
 
 	@Override
+	public Type visit(Program dec){
+		return Type.UNDEFINED;
+	}
+
+	@Override
 	public Type visit(ClassDecl dec){
 		return Type.UNDEFINED;
 	}

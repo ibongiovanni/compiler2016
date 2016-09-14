@@ -24,7 +24,15 @@ public class PrintVisitor implements ASTVisitor<String> {
 	}
 
 
-
+	@Override
+	public String visit(Program dec){
+		String rep="";
+		List<ClassDecl> classes=dec.getClasses();
+		for ( ClassDecl c : classes ) {
+			rep += c.toString()+"\n\n";
+		}
+		return rep;
+	}
 
 	@Override
 	public String visit(ClassDecl dec){
@@ -322,39 +330,39 @@ public class PrintVisitor implements ASTVisitor<String> {
 // visit literals	
 	@Override
 	public String visit(IntLiteral lit){
-		return "";
+		return lit.toString();
 	}
 
 	@Override
 	public String visit(FloatLiteral lit){
-		return "";
+		return lit.toString();
 	}
 
 	@Override
 	public String visit(BoolLiteral lit){
-		return "";
+		return lit.toString();
 	}
 
 
 // visit locations	
 	@Override
 	public String visit(VarLocation loc){
-		return "";
+		return loc.toString();
 	}
 
 	@Override
 	public String visit(SubClassVarLocation loc){
-		return "";
+		return loc.toString();
 	}
 
 	@Override
 	public String visit(ArrayLocation loc){
-		return "";
+		return loc.toString();
 	}
 
 	@Override
 	public String visit(SubClassArrayLocation loc){
-		return "";
+		return loc.toString();
 	}
 
 
