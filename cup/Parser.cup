@@ -12,6 +12,7 @@ import ir.semcheck.*;
 
 parser code {:
     
+    //public 
 
     /* internal function to get a symbol's name
     */
@@ -84,7 +85,8 @@ terminal Integer    INT_LIT;        // our scanner provides numbers as integers
 terminal String		ID;
 
 /* Non terminals */     
-non terminal 	List<ClassDecl> program;
+non terminal 	Program program;
+non terminal 	List<ClassDecl> class_decl_lst;
 non terminal 	ClassDecl	class_decl;
 non terminal 	FieldDecl	field_decl;
 non terminal 	List<FieldDecl>	field_decl_lst;
@@ -120,9 +122,13 @@ precedence left ELSE;
 /* The grammar rules */
 
 /*goal*/
-program 	::=  program:clst class_decl:cd	{:clst.add(cd); RESULT=clst; System.out.println("R1 - More than one class");:}	//More than one class 
-			|	 class_decl:cd			{:List<ClassDecl> dec = new LinkedList<ClassDecl>(); dec.add(cd); RESULT=dec; System.out.println("R2 - One single class");:}	//One single class
+
+program 	::= class_decl_lst:lst 	{:RESULT= new Program(lst); :}
 			;
+
+class_decl_lst 	::=  class_decl_lst:clst class_decl:cd	{:clst.add(cd); RESULT=clst; System.out.println("R1 - More than one class");:}	//More than one class 
+				|	 class_decl:cd			{:List<ClassDecl> dec = new LinkedList<ClassDecl>(); dec.add(cd); RESULT=dec; System.out.println("R2 - One single class");:}	//One single class
+				;
 
 class_decl	::=  CLASS ID:id LBRACE RBRACE									{:RESULT= new ClassDecl(id); System.out.println("R3 - class with no field or methods");:}
 			|	 CLASS ID:id LBRACE field_decl_lst:fields RBRACE					{:RESULT= new ClassDecl(id,fields,null); System.out.println("R4 - class with one or more field and no methods");:}
