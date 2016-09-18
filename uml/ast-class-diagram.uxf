@@ -1,120 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.2">
-  <zoom_level>5</zoom_level>
+  <zoom_level>1</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>590</x>
-      <y>120</y>
-      <w>200</w>
-      <h>140</h>
-    </coordinates>
-    <panel_attributes>ir.ast::IfStmt
---
--condition: Expression
--ifBlock: Block
--elseBlock: Block
---
-+IfStmt(Expression cond, Block ifBl): ctor
-+IfStmt(Expression cond, Block ifBl, Block elseBl): ctor
-+getCondition(): Expression
-+setCondition(Expression condition): void
-+getIfBlock(): Block
-+setIfBlock(Block ifBlock): void
-+getElseBlock(): Block
-+setElseBlock(Block elseBlock): void
-+toString(): String
-+accept(ASTVisitor&lt;T&gt; v): T
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>565</x>
-      <y>335</y>
-      <w>235</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>ir.ast::AssignStmt
---
--location: Location
--expr: Expression
--operator: AssignOpType
---
-+AssignStmt(Location loc, AssignOpType op, Expression e): ctor
-+setLocation(Location loc): void
-+getLocation(): Location
-+setExpression(Expression e): void
-+getExpression(): Expression
-+getOperator(): AssignOpType
-+setOperator(AssignOpType operator): void
-+toString(): String
-+accept(ASTVisitor&lt;T&gt; v): T
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>55</x>
-      <y>295</y>
-      <w>155</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>ir.ast::IntLiteral
---
--rawValue: String
--value: Integer
---
-+IntLiteral(String val): ctor
-+getType(): Type
-+getStringValue(): String
-+setStringValue(String stringValue): void
-+getValue(): Integer
-+setValue(int value): void
-+getRawValue(): String
-+setRawValue(String rawValue): void
-+toString(): String
-+accept(ASTVisitor&lt;T&gt; v): T
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>265</x>
-      <y>295</y>
-      <w>150</w>
-      <h>115</h>
-    </coordinates>
-    <panel_attributes>ir.ast::Block
---
--statements: List&lt;Statement&gt;
--blockId: int
---
-+Block(int bId): ctor
-+Block(int bId, List&lt;Statement&gt; s): ctor
-+addStatement(Statement s): void
-+getStatements(): List&lt;Statement&gt;
-+getBlockId(): int
-+setBlockId(int blockId): void
-+toString(): String
-+accept(ASTVisitor&lt;T&gt; v): T
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>430</x>
-      <y>10</y>
-      <w>125</w>
-      <h>90</h>
+      <x>541</x>
+      <y>290</y>
+      <w>26</w>
+      <h>17</h>
     </coordinates>
     <panel_attributes>/ir.ast::AST/
 --
@@ -133,10 +26,1389 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>95</x>
-      <y>460</y>
-      <w>165</w>
-      <h>90</h>
+      <x>10</x>
+      <y>328</y>
+      <w>29</w>
+      <h>13</h>
+    </coordinates>
+    <panel_attributes>ir.ast::Program
+--
+#classes: List&lt;ClassDecl&gt;
+--
++Program(List&lt;ClassDecl&gt; cls): ctor
++getClasses(): List&lt;ClassDecl&gt;
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>42</x>
+      <y>328</y>
+      <w>58</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>ir.ast::ClassDecl
+--
+-id: String
+-fields: List&lt;FieldDecl&gt;
+-methods: List&lt;MethodDecl&gt;
+--
++ClassDecl(String id): ctor
++ClassDecl(String id, List&lt;FieldDecl&gt; fields, List&lt;MethodDecl&gt; methods): ctor
++getId(): String
++getFields(): List&lt;FieldDecl&gt;
++getMethods(): List&lt;MethodDecl&gt;
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>104</x>
+      <y>328</y>
+      <w>23</w>
+      <h>17</h>
+    </coordinates>
+    <panel_attributes>ir.ast::Body
+--
+#block: Block
+--
++Body(): ctor
++Body(Block b): ctor
++isExtern(): Boolean
++getBlock(): Block
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>130</x>
+      <y>334</y>
+      <w>19</w>
+      <h>11</h>
+    </coordinates>
+    <panel_attributes>/ir.ast::Declaration/
+--
+#type: Type
+--
++getType(): Type
++setType(Type t): void
+--
+
+group=10</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>453</x>
+      <y>325</y>
+      <w>23</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>/ir.ast::Expression/
+--
+#expr: Expression
+#type: Type
+--
++getType(): Type
++setType(Type t): void
++getExpression(): Expression
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>889</x>
+      <y>331</y>
+      <w>15</w>
+      <h>5</h>
+    </coordinates>
+    <panel_attributes>/ir.ast::Statement/
+--
+--
+--
+
+group=9</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>96</x>
+      <y>360</y>
+      <w>38</w>
+      <h>17</h>
+    </coordinates>
+    <panel_attributes>ir.ast::FieldDecl
+--
+#elements: List&lt;VarDecl&gt;
+--
++FieldDecl(Type t, List&lt;VarDecl&gt; elements): ctor
+-assignTypes(): void
+-toArrayType(Type t): Type
++getElements(): List&lt;VarDecl&gt;
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=10</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>152</x>
+      <y>360</y>
+      <w>15</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>/ir.ast::NamedDecl/
+--
+#id: String
+--
++getId(): String
+--
+
+group=10</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>100</x>
+      <y>383</y>
+      <w>29</w>
+      <h>10</h>
+    </coordinates>
+    <panel_attributes>ir.ast::FormalParam
+--
+--
++FormalParam(Type t, String id): ctor
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=10</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>132</x>
+      <y>383</y>
+      <w>55</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>ir.ast::MethodDecl
+--
+#args: List&lt;FormalParam&gt;
+#body: Body
+--
++MethodDecl(Type t, String id, Body body): ctor
++MethodDecl(Type t, String id, List&lt;FormalParam&gt; args, Body body): ctor
++getArgs(): List&lt;FormalParam&gt;
++getBody(): Body
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=10</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>190</x>
+      <y>383</y>
+      <w>23</w>
+      <h>10</h>
+    </coordinates>
+    <panel_attributes>ir.ast::VarDecl
+--
+--
++VarDecl(String id): ctor
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=10</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>139</x>
+      <y>344</y>
+      <w>22</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;110.0;200.0;110.0;200.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>114</x>
+      <y>344</y>
+      <w>28</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>260.0;10.0;260.0;110.0;10.0;110.0;10.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>158</x>
+      <y>368</y>
+      <w>3</w>
+      <h>17</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>115</x>
+      <y>368</y>
+      <w>46</w>
+      <h>17</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>440.0;10.0;440.0;110.0;10.0;110.0;10.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>186</x>
+      <y>404</y>
+      <w>30</w>
+      <h>13</h>
+    </coordinates>
+    <panel_attributes>ir.ast::ArrayDecl
+--
+#size: int
+--
++ArrayDecl(String id, Integer size): ctor
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=10</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>201</x>
+      <y>392</y>
+      <w>3</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>158</x>
+      <y>368</y>
+      <w>46</w>
+      <h>17</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;110.0;440.0;110.0;440.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>191</x>
+      <y>358</y>
+      <w>26</w>
+      <h>10</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BracketExpr
+--
+--
++BracketExpr(Expression e): ctor
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>220</x>
+      <y>358</y>
+      <w>28</w>
+      <h>10</h>
+    </coordinates>
+    <panel_attributes>ir.ast::MinusExpr
+--
+--
++MinusExpr(Expression e): ctor
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>250</x>
+      <y>358</y>
+      <w>30</w>
+      <h>10</h>
+    </coordinates>
+    <panel_attributes>ir.ast::NegatedExpr
+--
+--
++NegatedExpr(Expression e): ctor
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>282</x>
+      <y>358</y>
+      <w>48</w>
+      <h>17</h>
+    </coordinates>
+    <panel_attributes>ir.ast::MethodCallExpr
+--
+#method: VarLocation
+#params: List&lt;Expression&gt;
+--
++MethodCallExpr(VarLocation m, List&lt;Expression&gt; ps): ctor
++MethodCallExpr(VarLocation m): ctor
++getMethod(): VarLocation
++getParams(): List&lt;Expression&gt;
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>342</x>
+      <y>358</y>
+      <w>15</w>
+      <h>5</h>
+    </coordinates>
+    <panel_attributes>/ir.ast::Literal/
+--
+--
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>420</x>
+      <y>358</y>
+      <w>22</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>/ir.ast::Location/
+--
+#id: String
+#ref: Declaration
+--
++getRef(): Declaration
++setRef(Declaration r): void
++setId(String id): void
++getId(): String
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>634</x>
+      <y>359</y>
+      <w>48</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinOpExpr
+--
+-operator: BinOpType
+-lOperand: Expression
+-rOperand: Expression
+--
++BinOpExpr(Expression l, BinOpType op, Expression r): ctor
++getOperator(): BinOpType
++setOperator(BinOpType operator): void
++getLeftOperand(): Expression
++setLeftOperand(Expression lOperand): void
++getRightOperand(): Expression
++setRightOperand(Expression rOperand): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>308</x>
+      <y>380</y>
+      <w>26</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BoolLiteral
+--
+-value: Boolean
+--
++BoolLiteral(Boolean value): ctor
++setValue(Boolean newValue): void
++getValue(): Boolean
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>337</x>
+      <y>380</y>
+      <w>24</w>
+      <h>17</h>
+    </coordinates>
+    <panel_attributes>ir.ast::FloatLiteral
+--
+-value: Float
+--
++FloatLiteral(Float value): ctor
++FloatLiteral(String value): ctor
++setValue(Float newValue): void
++getValue(): Float
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>364</x>
+      <y>380</y>
+      <w>32</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>ir.ast::IntLiteral
+--
+-rawValue: String
+-value: Integer
+--
++IntLiteral(String val): ctor
++IntLiteral(Integer val): ctor
++getStringValue(): String
++setStringValue(String stringValue): void
++getValue(): Integer
++setValue(int value): void
++getRawValue(): String
++setRawValue(String rawValue): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>203</x>
+      <y>339</y>
+      <w>263</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>2610.0;10.0;2610.0;150.0;10.0;150.0;10.0;190.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>234</x>
+      <y>339</y>
+      <w>232</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>2300.0;10.0;2300.0;150.0;10.0;150.0;10.0;190.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>264</x>
+      <y>339</y>
+      <w>202</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>2000.0;10.0;2000.0;150.0;10.0;150.0;10.0;190.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>320</x>
+      <y>362</y>
+      <w>32</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>300.0;10.0;300.0;150.0;10.0;150.0;10.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>349</x>
+      <y>362</y>
+      <w>3</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>349</x>
+      <y>362</y>
+      <w>34</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0;320.0;150.0;320.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>404</x>
+      <y>380</y>
+      <w>22</w>
+      <h>17</h>
+    </coordinates>
+    <panel_attributes>ir.ast::VarLocation
+--
+#blockId: int
+--
++VarLocation(): ctor
++VarLocation(String id): ctor
++getBlockId(): int
++setBlockId(int blockId): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>434</x>
+      <y>380</y>
+      <w>38</w>
+      <h>17</h>
+    </coordinates>
+    <panel_attributes>ir.ast::ArrayLocation
+--
+#index: Expression
+#blockId: int
+--
++ArrayLocation(): ctor
++ArrayLocation(String id, Expression ind): ctor
++getBlockId(): int
++setBlockId(int blockId): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>431</x>
+      <y>410</y>
+      <w>46</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>ir.ast::SubClassArrayLocation
+--
+-classes: List&lt;String&gt;
+-splitted: String[]
+--
++SubClassArrayLocation(String calls, Expression ind): ctor
++getClasses(): List&lt;String&gt;
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>396</x>
+      <y>410</y>
+      <w>34</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>ir.ast::SubClassVarLocation
+--
+-classes: List&lt;String&gt;
+-splitted: String[]
+--
++SubClassVarLocation(String calls): ctor
++getClasses(): List&lt;String&gt;
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>413</x>
+      <y>396</y>
+      <w>3</w>
+      <h>16</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>451</x>
+      <y>396</y>
+      <w>3</w>
+      <h>16</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>430</x>
+      <y>372</y>
+      <w>24</w>
+      <h>10</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0;220.0;50.0;220.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>413</x>
+      <y>372</y>
+      <w>20</w>
+      <h>10</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>180.0;10.0;180.0;50.0;10.0;50.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>743</x>
+      <y>410</y>
+      <w>36</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinAndExpr
+--
+--
++BinAndExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>528</x>
+      <y>422</y>
+      <w>37</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinDivideExpr
+--
+--
++BinDivideExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>665</x>
+      <y>410</y>
+      <w>36</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinEqualExpr
+--
+--
++BinEqualExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>620</x>
+      <y>422</y>
+      <w>37</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinGOETExpr
+--
+--
++BinGOETExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>626</x>
+      <y>410</y>
+      <w>36</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinGTExpr
+--
+--
++BinGTExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>578</x>
+      <y>422</y>
+      <w>37</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinLOETExpr
+--
+--
++BinLOETExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>573</x>
+      <y>410</y>
+      <w>36</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinLTExpr
+--
+--
++BinLTExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>530</x>
+      <y>410</y>
+      <w>37</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinMinusExpr
+--
+--
++BinMinusExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>506</x>
+      <y>434</y>
+      <w>37</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinModExpr
+--
+--
++BinModExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>702</x>
+      <y>410</y>
+      <w>38</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinNotEqualExpr
+--
+--
++BinNotEqualExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>780</x>
+      <y>410</y>
+      <w>36</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinOrExpr
+--
+--
++BinOrExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>481</x>
+      <y>410</y>
+      <w>37</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinPlusExpr
+--
+--
++BinPlusExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>484</x>
+      <y>422</y>
+      <w>36</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BinTimesExpr
+--
+--
++BinTimesExpr(Expression lo, Expression ro): ctor
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>502</x>
+      <y>392</y>
+      <w>46</w>
+      <h>7</h>
+    </coordinates>
+    <panel_attributes>ir.ast::ArithBinExpr
+--
+--
++ArithBinExpr(Expression l, BinOpType op, Expression r): ctor
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>678</x>
+      <y>392</y>
+      <w>47</w>
+      <h>7</h>
+    </coordinates>
+    <panel_attributes>ir.ast::CompBinExpr
+--
+--
++CompBinExpr(Expression l, BinOpType op, Expression r): ctor
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>757</x>
+      <y>392</y>
+      <w>46</w>
+      <h>7</h>
+    </coordinates>
+    <panel_attributes>ir.ast::CondBinExpr
+--
+--
++CondBinExpr(Expression l, BinOpType op, Expression r): ctor
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>595</x>
+      <y>392</y>
+      <w>45</w>
+      <h>7</h>
+    </coordinates>
+    <panel_attributes>ir.ast::RelBinExpr
+--
+--
++RelBinExpr(Expression l, BinOpType op, Expression r): ctor
+--
+
+group=8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>524</x>
+      <y>398</y>
+      <w>3</w>
+      <h>38</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;360.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>499</x>
+      <y>398</y>
+      <w>28</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>260.0;10.0;260.0;70.0;10.0;70.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>502</x>
+      <y>398</y>
+      <w>25</w>
+      <h>26</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>230.0;10.0;230.0;220.0;10.0;220.0;10.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>524</x>
+      <y>398</y>
+      <w>27</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0;250.0;70.0;250.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>524</x>
+      <y>398</y>
+      <w>28</w>
+      <h>26</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;220.0;260.0;220.0;260.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>617</x>
+      <y>398</y>
+      <w>29</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;80.0;270.0;80.0;270.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>589</x>
+      <y>398</y>
+      <w>31</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>290.0;10.0;290.0;80.0;10.0;80.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>617</x>
+      <y>398</y>
+      <w>24</w>
+      <h>26</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;220.0;220.0;220.0;220.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>596</x>
+      <y>398</y>
+      <w>24</w>
+      <h>26</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>220.0;10.0;220.0;220.0;10.0;220.0;10.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>700</x>
+      <y>398</y>
+      <w>22</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;80.0;200.0;80.0;200.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>682</x>
+      <y>398</y>
+      <w>21</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>190.0;10.0;190.0;80.0;10.0;80.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>778</x>
+      <y>398</y>
+      <w>23</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0;210.0;70.0;210.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>761</x>
+      <y>398</y>
+      <w>20</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>180.0;10.0;180.0;70.0;10.0;70.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>524</x>
+      <y>382</y>
+      <w>135</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>1330.0;10.0;1330.0;70.0;10.0;70.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>618</x>
+      <y>382</y>
+      <w>41</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>390.0;10.0;390.0;70.0;10.0;70.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>656</x>
+      <y>382</y>
+      <w>47</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0;450.0;70.0;450.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>656</x>
+      <y>382</y>
+      <w>125</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0;1230.0;70.0;1230.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>305</x>
+      <y>339</y>
+      <w>161</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>1590.0;10.0;1590.0;150.0;10.0;150.0;10.0;190.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>349</x>
+      <y>339</y>
+      <w>117</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>1150.0;10.0;1150.0;150.0;10.0;150.0;10.0;190.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>430</x>
+      <y>339</y>
+      <w>36</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>340.0;10.0;340.0;150.0;10.0;150.0;10.0;190.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>463</x>
+      <y>339</y>
+      <w>195</w>
+      <h>22</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0;1930.0;150.0;1930.0;200.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>814</x>
+      <y>354</y>
+      <w>44</w>
+      <h>26</h>
+    </coordinates>
+    <panel_attributes>ir.ast::Block
+--
+-declarations: List&lt;FieldDecl&gt;
+-statements: List&lt;Statement&gt;
+-blockId: int
+--
++Block(int bId): ctor
++Block(int bId, List&lt;FieldDecl&gt; f, List&lt;Statement&gt; s): ctor
++addStatement(Statement s): void
++addField(FieldDecl f): void
++getStatements(): List&lt;Statement&gt;
++getFields(): List&lt;FieldDecl&gt;
++getBlockId(): int
++setBlockId(int blockId): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=9</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>925</x>
+      <y>353</y>
+      <w>47</w>
+      <h>26</h>
+    </coordinates>
+    <panel_attributes>ir.ast::IfStmt
+--
+-condition: Expression
+-ifStmt: Statement
+-elseStmt: Statement
+--
++IfStmt(Expression cond, Statement ifSt): ctor
++IfStmt(Expression cond, Statement ifSt, Statement elseSt): ctor
++getCondition(): Expression
++setCondition(Expression condition): void
++getIfStmt(): Statement
++setIfStmt(Statement ifStmt): void
++getElseStmt(): Statement
++setElseStmt(Statement elseStmt): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=9</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>827</x>
+      <y>389</y>
+      <w>47</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>ir.ast::AssignStmt
+--
+-location: Location
+-expr: Expression
+-operator: AssignOpType
+--
++AssignStmt(Location loc, AssignOpType op, Expression e): ctor
++setLocation(Location loc): void
++getLocation(): Location
++setExpression(Expression e): void
++getExpression(): Expression
++getOperator(): AssignOpType
++setOperator(AssignOpType operator): void
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=9</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>919</x>
+      <y>388</y>
+      <w>50</w>
+      <h>23</h>
+    </coordinates>
+    <panel_attributes>ir.ast::ForStmt
+--
+-id: String
+-expr1: Expression
+-expr2: Expression
+-body: Statement
+--
++ForStmt(String id, Expression e1, Expression e2, Statement b): ctor
++getId(): String
++getExpr1(): Expression
++getExpr2(): Expression
++getBody(): Statement
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=9</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>847</x>
+      <y>421</y>
+      <w>33</w>
+      <h>16</h>
     </coordinates>
     <panel_attributes>ir.ast::ReturnStmt
 --
@@ -149,124 +1421,282 @@
 +toString(): String
 +accept(ASTVisitor&lt;T&gt; v): T
 --
-</panel_attributes>
+
+group=9</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>265</x>
-      <y>460</y>
-      <w>110</w>
-      <h>80</h>
+      <x>914</x>
+      <y>421</y>
+      <w>33</w>
+      <h>16</h>
     </coordinates>
-    <panel_attributes>ir.ast::VarLocation
+    <panel_attributes>ir.ast::WhileStmt
 --
--blockId: int
+-condition: Expression
+-body: Statement
 --
-+VarLocation(String id): ctor
-+getBlockId(): int
-+setBlockId(int blockId): void
++WhileStmt(Expression c, Statement b): ctor
++getCondition(): Expression
++getBody(): Statement
 +toString(): String
 +accept(ASTVisitor&lt;T&gt; v): T
 --
-</panel_attributes>
+
+group=9</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>380</x>
-      <y>460</y>
-      <w>90</w>
-      <h>60</h>
+      <x>859</x>
+      <y>444</y>
+      <w>31</w>
+      <h>13</h>
     </coordinates>
-    <panel_attributes>/ir.ast::Expression/
+    <panel_attributes>ir.ast::MethodCallStmt
 --
-#expr: Expression
-#type: Type
+#call: MethodCallExpr
 --
-+getType(): Type
-+setType(Type t): void
++MethodCallStmt(MethodCallExpr c): ctor
++getCall(): MethodCallExpr
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
 --
-</panel_attributes>
+
+group=9</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>475</x>
-      <y>460</y>
-      <w>85</w>
+      <x>872</x>
+      <y>462</y>
+      <w>22</w>
+      <h>7</h>
+    </coordinates>
+    <panel_attributes>ir.ast::BreakStmt
+--
+--
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=9</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>901</x>
+      <y>462</y>
+      <w>24</w>
+      <h>7</h>
+    </coordinates>
+    <panel_attributes>ir.ast::ContinueStmt
+--
+--
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=9</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>908</x>
+      <y>444</y>
+      <w>23</w>
+      <h>7</h>
+    </coordinates>
+    <panel_attributes>ir.ast::EmptyStmt
+--
+--
++toString(): String
++accept(ASTVisitor&lt;T&gt; v): T
+--
+
+group=9</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>837</x>
+      <y>335</y>
+      <w>61</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>590.0;10.0;590.0;90.0;10.0;90.0;10.0;190.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>895</x>
+      <y>335</y>
+      <w>57</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0;550.0;90.0;550.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>895</x>
+      <y>335</y>
+      <w>52</w>
       <h>55</h>
     </coordinates>
-    <panel_attributes>/ir.ast::Location/
---
-#id: String
---
-+setId(String id): void
-+getId(): String
---
-</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;470.0;500.0;470.0;500.0;530.0</additional_attributes>
   </element>
   <element>
-    <id>UMLClass</id>
+    <id>Relation</id>
     <coordinates>
-      <x>95</x>
-      <y>555</y>
-      <w>70</w>
-      <h>35</h>
+      <x>851</x>
+      <y>335</y>
+      <w>47</w>
+      <h>56</h>
     </coordinates>
-    <panel_attributes>/ir.ast::Literal/
---
---
-+getType(): Type
---
-</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>450.0;10.0;450.0;470.0;10.0;470.0;10.0;540.0</additional_attributes>
   </element>
   <element>
-    <id>UMLClass</id>
+    <id>Relation</id>
     <coordinates>
-      <x>170</x>
-      <y>555</y>
-      <w>70</w>
+      <x>895</x>
+      <y>335</y>
+      <w>37</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;790.0;350.0;790.0;350.0;860.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>863</x>
+      <y>335</y>
+      <w>35</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>330.0;10.0;330.0;790.0;10.0;790.0;10.0;860.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>895</x>
+      <y>335</y>
+      <w>27</w>
+      <h>111</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1040.0;250.0;1040.0;250.0;1090.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>874</x>
+      <y>335</y>
+      <w>24</w>
+      <h>111</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>220.0;10.0;220.0;1040.0;10.0;1040.0;10.0;1090.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>895</x>
+      <y>335</y>
+      <w>20</w>
+      <h>129</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1240.0;180.0;1240.0;180.0;1270.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>882</x>
+      <y>335</y>
+      <w>16</w>
+      <h>129</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>140.0;10.0;140.0;1240.0;10.0;1240.0;10.0;1270.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>24</x>
+      <y>306</y>
+      <w>533</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>5310.0;10.0;5310.0;90.0;10.0;90.0;10.0;220.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>72</x>
+      <y>306</y>
+      <w>485</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>4830.0;10.0;4830.0;90.0;10.0;90.0;10.0;220.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>116</x>
+      <y>306</y>
+      <w>441</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>4390.0;10.0;4390.0;90.0;10.0;90.0;10.0;220.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>139</x>
+      <y>306</y>
+      <w>418</w>
       <h>30</h>
     </coordinates>
-    <panel_attributes>/ir.ast::Statement/
---
---
---
-</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>4160.0;10.0;4160.0;90.0;10.0;90.0;10.0;280.0</additional_attributes>
   </element>
   <element>
-    <id>UMLClass</id>
+    <id>Relation</id>
     <coordinates>
-      <x>80</x>
-      <y>115</y>
-      <w>220</w>
-      <h>140</h>
+      <x>462</x>
+      <y>306</y>
+      <w>95</w>
+      <h>21</h>
     </coordinates>
-    <panel_attributes>ir.ast::BinOpExpr
---
--operator: BinOpType
--lOperand: Expression
--rOperand: Expression
---
-+BinOpExpr(Expression l, BinOpType op, Expression r): ctor
-+BinOpExpr(Expression e, TempExpression t): ctor
-+getOperator(): BinOpType
-+setOperator(BinOpType operator): void
-+getLeftOperand(): Expression
-+setLeftOperand(Expression lOperand): void
-+getRightOperand(): Expression
-+setRightOperand(Expression rOperand): void
-+toString(): String
-+accept(ASTVisitor&lt;T&gt; v): T
---
-</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>930.0;10.0;930.0;90.0;10.0;90.0;10.0;190.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>554</x>
+      <y>306</y>
+      <w>344</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0;3420.0;90.0;3420.0;250.0</additional_attributes>
   </element>
 </diagram>
