@@ -125,7 +125,7 @@ public class PrintVisitor implements ASTVisitor<String> {
 		if (elseStmt != null) {
 			rep += "else \n\t" + elseStmt.accept(this)+"\n";
 		}
-		return "";
+		return rep;
 	}
 
 	@Override
