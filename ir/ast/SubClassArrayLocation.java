@@ -17,6 +17,10 @@ public class SubClassArrayLocation extends ArrayLocation {
 		this.blockId = -1;
 	}
 
+	public List<String> getClasses(){
+		return classes;
+	}
+
 	@Override
 	public String toString() {
 		String rep="";

@@ -15,6 +15,10 @@ public class SubClassVarLocation extends VarLocation {
 		this.id = classes.remove(classes.size()-1);
 	}
 
+	public List<String> getClasses(){
+		return classes;
+	}
+
 	@Override
 	public String toString() {
 		String rep="";
