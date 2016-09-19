@@ -1,4 +1,4 @@
 class claseuno {
-	dat arr[3];
+	bool arr[3];
 }
 

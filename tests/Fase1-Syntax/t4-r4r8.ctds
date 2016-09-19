@@ -1,4 +1,4 @@
 class claseuno {
-	int nu_m;
+	integer nu_m;
 }
 
