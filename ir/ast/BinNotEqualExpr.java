@@ -2,7 +2,7 @@ package ir.ast;
 
 import ir.ASTVisitor;
 
-public class BinNotEqualExpr extends BinOpExpr {
+public class BinNotEqualExpr extends CompBinExpr {
 	
 	public BinNotEqualExpr (Expression lo, Expression ro){
 		super(lo,BinOpType.NEQ,ro);

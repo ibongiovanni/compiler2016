@@ -2,7 +2,7 @@ package ir.ast;
 
 import ir.ASTVisitor;
 
-public class BinMinusExpr extends BinOpExpr {
+public class BinMinusExpr extends ArithBinExpr {
 	
 	public BinMinusExpr (Expression lo, Expression ro){
 		super(lo,BinOpType.MINUS,ro);

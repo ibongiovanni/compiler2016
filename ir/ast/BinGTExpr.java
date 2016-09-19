@@ -2,7 +2,7 @@ package ir.ast;
 
 import ir.ASTVisitor;
 
-public class BinGTExpr extends BinOpExpr {
+public class BinGTExpr extends RelBinExpr {
 	
 	public BinGTExpr (Expression lo, Expression ro){
 		super(lo,BinOpType.GE,ro);
