@@ -2,8 +2,7 @@ package ir.ast;
 
 import ir.ASTVisitor;
 
-public class FormalParam extends Declaration {
-	protected String id;
+public class FormalParam extends NamedDecl {
 
 	public FormalParam(Type t, String id){
 		setType(t);

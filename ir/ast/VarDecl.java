@@ -2,8 +2,7 @@ package ir.ast;
 
 import ir.ASTVisitor;
 
-public class VarDecl extends Declaration {
-	protected String id;
+public class VarDecl extends NamedDecl {
 	
 	public VarDecl(String id){
 		this.id = id;

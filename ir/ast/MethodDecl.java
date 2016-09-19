@@ -4,8 +4,7 @@ import ir.ASTVisitor;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MethodDecl extends Declaration {
-	protected String id;
+public class MethodDecl extends NamedDecl {
 	protected List<FormalParam> args;
 	protected Body body;
 
@@ -21,10 +20,6 @@ public class MethodDecl extends Declaration {
 		this.id = id;
 		this.args = args;
 		this.body = body;
-	}
-
-	public String getId(){
-		return id;
 	}
 
 	public  List<FormalParam> getArgs(){
