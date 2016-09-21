@@ -7,6 +7,7 @@ import java_cup.runtime.*;
 import ir.ast.*;
 import ir.ASTVisitor;
 import ir.semcheck.*;
+import error.Error;
 
 public class JavaParser {
 	
@@ -15,6 +16,20 @@ public class JavaParser {
 		String programRep="== PROGRAM REPRESENTATION ==\n\n";
 		programRep += pv.visit(prog)+"\n\n";
 		System.out.println(programRep);
+	}
+
+	public static void build(Program prog){
+		BuilderVisitor bv = new BuilderVisitor();
+		System.out.println("=== Building References ===\n");
+		if (prog.accept(bv)) {
+			System.out.println(" -Succesfuly Checked References");
+		}
+		else {
+			List<Error> errors = bv.getErrors();
+			for ( Error e : errors ) {
+				System.out.println(e.toString());
+			}
+		}
 	}
 
 	public static void main(String args[]) throws Exception {
@@ -30,7 +45,9 @@ public class JavaParser {
 		s=par.parse();
 		System.out.println("\n\nParsing ended");
 
-		print((Program) s.value);
+		Program prog = (Program) s.value; 
+		print(prog);
+		build(prog);
 
     }
 }
