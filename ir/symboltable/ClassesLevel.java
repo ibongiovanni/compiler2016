@@ -15,5 +15,7 @@ public class ClassesLevel extends TableLevel {
 		return (!classes.contains(c))?  classes.add(c) : false;
 	}
 
-	
+	public boolean searchClass(String c){
+		return classes.contains(c);
+	}
 }

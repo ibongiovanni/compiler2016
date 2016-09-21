@@ -18,16 +18,17 @@ public class SymbolTable {
 
 	public void newLevel(AST caller){
 		if (caller instanceof Program ) {
-			table.add(new ClassesLevel());
+			table.add(0,new ClassesLevel());
 		}
 		if (caller instanceof ClassDecl ) {
-			table.add(new ClassLocalDeclLevel((ClassDecl)caller));
+			//System.out.println("New ClassLocalDeclLevel"); //elim
+			table.add(0,new ClassLocalDeclLevel((ClassDecl)caller));
 		}
 		if (caller instanceof MethodDecl ) {
-			table.add(new MethodArgsLevel());
+			table.add(0,new MethodArgsLevel());
 		}
 		if (caller instanceof Block ) {
-			table.add(new BlockLevel((Block)caller));
+			table.add(0,new BlockLevel((Block)caller));
 		}
 		top = table.get(0);
 	} //hace falta un metodo para cada tipo?
@@ -51,14 +52,19 @@ public class SymbolTable {
 			ClassLocalDeclLevel aux = (ClassLocalDeclLevel) top;
 			boolean added = aux.addAttr(a);
 			if (added) {
+
 				//publish it in the publics list
 				VarLocation loc = new VarLocation(aux.getName()+"."+a.getId());
 				loc.setRef(a);
 				publics.add(loc);
 			}
+			else {
+				System.out.println("not added attrib"); //elim
+			}
 			return added;
 		}
 		else {
+			System.out.println("top is not an instanceof ClassLocalDeclLevel"); //elim
 			return false;
 		}
 	}
@@ -96,6 +102,7 @@ public class SymbolTable {
 		else if (top instanceof ClassLocalDeclLevel) {
 			return addAttr(v);
 		}
+		System.out.println("top neither a block nor ClassLocalDeclLevel"); //elim
 		return false;
 	}
 
@@ -142,5 +149,16 @@ public class SymbolTable {
 			}
 		}
 		return has;
+	}
+
+	public boolean searchClass(String c){
+		if (top instanceof ClassesLevel) {
+			ClassesLevel aux = (ClassesLevel)top;
+			return aux.searchClass(c); 
+		}
+		else {
+			ClassesLevel aux = (ClassesLevel)table.get(table.size()-1);
+			return aux.searchClass(c);
+		}
 	}
 }
