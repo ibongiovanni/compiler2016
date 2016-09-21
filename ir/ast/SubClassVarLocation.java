@@ -10,7 +10,7 @@ public class SubClassVarLocation extends VarLocation {
 	private String[] splitted;
 
 	public SubClassVarLocation(String calls){
-		splitted = calls.split(".");
+		splitted = calls.split("[.]");
 		classes = new LinkedList<String> (Arrays.asList(splitted));
 		this.id = classes.remove(classes.size()-1);
 	}

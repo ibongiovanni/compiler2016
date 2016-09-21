@@ -10,7 +10,7 @@ public class SubClassArrayLocation extends ArrayLocation {
 	private String[] splitted;
 
 	public SubClassArrayLocation(String calls, Expression ind){
-		splitted = calls.split(".");	//Split string into array
+		splitted = calls.split("[.]");	//Split string into array
 		classes = new LinkedList<String> (Arrays.asList(splitted));	//transform array into list
 		this.id = classes.remove(classes.size()-1);	//Remove array id from list
 		index = ind;		
