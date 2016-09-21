@@ -48,8 +48,28 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 			else {
 				res = false;
 				//repeated class name
+				addError(c,"Repeated Class Name: '"+c.getId()+"'");
 			}
 		}
+		// Search for main class
+		if (res && !stack.searchClass("main")) {
+			res=false;
+			addError(dec,"There's no main class declared");
+		}
+		if (res) {
+			VarLocation pub = stack.searchPublic("main.","main");
+			if (pub!=null) {
+				if (!(pub.getRef() instanceof MethodDecl)) {
+					res=false;
+					addError(dec,"main class should have declared a main method");
+				}
+			}
+			else {
+				res=false;
+				addError(dec,"main class should have declared a main method");
+			}
+		}
+
 		return res;
 	}
 
@@ -107,7 +127,10 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 			}
 			stack.closeLevel();
 		}
-		else { res=false; }
+		else { 
+			res=false;
+			addError(dec,"Cannot add method '"+dec.getId()+"'. Identifier already used");
+		}
 		return res;
 	}
 
@@ -115,6 +138,9 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 	public Boolean visit(VarDecl dec){
 		Boolean res=true;
 		res=stack.addVar(dec);
+		if(!res){
+			addError(dec,"Cannot add var '"+dec.getId()+"'. Identifier already used");
+		}
 		return res;
 	}
 
@@ -122,6 +148,9 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 	public Boolean visit(ArrayDecl dec){
 		Boolean res=true;
 		res=stack.addVar(dec);
+		if (!res) {
+			addError(dec,"Cannot add array '"+dec.getId()+"'. Identifier already used");
+		}
 		return res;
 	}
 
@@ -129,6 +158,9 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 	public Boolean visit(FormalParam dec){
 		Boolean res=true;
 		res=stack.addArg(dec);
+		if (!res) {
+			addError(dec,"Cannot add param '"+dec.getId()+"'. Identifier already used");
+		}
 		return res;
 	}
 
@@ -427,15 +459,46 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 		Boolean res=true;
 		//search for method declaration
 		VarLocation method=expr.getMethod();
-		MethodDecl dec=stack.searchMethod(method.getId());
-		if (dec!=null) {
-			expr.setType(dec.getType());
-			method.setType(dec.getType());
-			method.setRef(dec);
+		if (method instanceof SubClassVarLocation) {
+			String cl="";
+			List<String> classes = ((SubClassVarLocation)method).getClasses();
+			if (classes.size()>1) {
+				res=false;
+				addError(expr,"Navigation not allowed");
+			}
+			else {
+				cl = classes.get(0)+".";
+				VarLocation pub = stack.searchPublic(cl,method.getId());
+				if (pub!=null) {
+					if (!(pub.getRef() instanceof MethodDecl)) {
+						res=false;
+						addError(expr,"Missused location. Identifier '"+method.getId()+"' is not declared as a method");
+					}
+				}
+				else {
+					res=false;
+					cl = classes.get(0);
+					if (stack.searchClass(cl)) {
+						addError(expr,"Cannot find method '"+method.getId()+"' in class '"+cl+"'");
+					}
+					else {
+						addError(expr,"Cannot find class '"+cl+"'");
+					}
+				}
+			}
 		}
-		else{
-			//Not found method
-			res=false;
+		else {
+			MethodDecl dec=stack.searchMethod(method.getId());
+			if (dec!=null) {
+				expr.setType(dec.getType());
+				method.setType(dec.getType());
+				method.setRef(dec);
+			}
+			else{
+				//Not found method		
+				res=false;
+				addError(expr,"Cannot find method '"+method.getId()+"'");
+			}
 		}
 		//Check arguments
 		List<Expression> params=expr.getParams();
@@ -480,6 +543,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 			if (decl instanceof ArrayDecl) {
 				//Incorrect type of location
 				res=false;
+				addError(loc,"Incorrect type of var '"+loc.getId()+"'. Found Array, Expected Var");
 			}
 			else {
 				if (decl instanceof FormalParam) { //The location refers a param
@@ -497,6 +561,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 		else {
 			//Not found location
 			res=false;
+			addError(loc,"Cannot find variable '"+loc.getId()+"'");
 		}
 		return res;
 	}
@@ -506,31 +571,38 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 		Boolean res=true;
 		String cl="";
 		List<String> classes = loc.getClasses();
-		for ( String c : classes ) {
-			cl += c+".";
+		if (classes.size()>1) {
+			res=false;
+			addError(loc,"Navigation not allowed");
 		}
-		VarLocation pub = stack.searchPublic(cl,loc.getId());
-		if (pub!=null) {
-			if (pub.getRef() instanceof VarDecl) {
-				if (pub.getRef() instanceof ArrayDecl) {
-					//incorrect type location
-					res = false;
+		else {
+			cl = classes.get(0)+".";
+			VarLocation pub = stack.searchPublic(cl,loc.getId());
+			if (pub!=null) {
+				if (pub.getRef() instanceof VarDecl) {
+					if (pub.getRef() instanceof ArrayDecl) {
+						//incorrect type location
+						res = false;					
+						addError(loc,"Incorrect type of var '"+cl+loc.getId()+"'. Found Array, Expected Var");
+					}
+					else {
+						VarDecl v = (VarDecl) pub.getRef();
+						loc.setType(v.getType());
+						loc.setRef(v);
+					}
 				}
 				else {
-					VarDecl v = (VarDecl) pub.getRef();
-					loc.setType(v.getType());
-					loc.setRef(v);
+					if (pub.getRef() instanceof MethodDecl) {
+						res = false;
+						addError(loc,"Missused location. Identifier '"+cl+loc.getId()+"' is not declared as a attribute");
+					}
 				}
 			}
 			else {
-				if (pub.getRef() instanceof MethodDecl) {
-					
-				}
+				res=false;
+				//Not found location
+				addError(loc,"Cannot find variable '"+cl+loc.getId()+"'");
 			}
-		}
-		else {
-			res=false;
-			//Not found location
 		}
 		return res;
 	}
@@ -543,6 +615,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 			if (!(decl instanceof ArrayDecl)) {
 				//Incorrect type of location
 				res=false;
+				addError(loc,"Incorrect type of array '"+loc.getId()+"'. Found Var, Expected Array");
 			}
 			else {
 				ArrayDecl v = (ArrayDecl) decl;
@@ -553,6 +626,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 		else {
 			//Not found location
 			res=false;
+			addError(loc,"Cannot find array '"+loc.getId()+"'");
 		}
 		return res;
 	}
@@ -562,26 +636,32 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 		Boolean res=true;
 		String cl="";
 		List<String> classes = loc.getClasses();
-		for ( String c : classes ) {
-			cl += c+".";
-		}
-		VarLocation pub = stack.searchPublic(cl,loc.getId());
-		if (pub!=null) {
-			if (pub.getRef() instanceof ArrayDecl) {
-				ArrayDecl v = (ArrayDecl) pub.getRef();
-				loc.setType(v.getType());
-				loc.setRef(v);
-			}
-			else {
-				if (pub.getRef() instanceof VarDecl) {
-					res = false;
-					//incorrect type location
-				}
-			}
+		if (classes.size()>1) {
+			res=false;
+			addError(loc,"Navigation not allowed");
 		}
 		else {
-			res=false;
-			//Not found location
+			cl = classes.get(0)+".";
+			VarLocation pub = stack.searchPublic(cl,loc.getId());
+			if (pub!=null) {
+				if (pub.getRef() instanceof ArrayDecl) {
+					ArrayDecl v = (ArrayDecl) pub.getRef();
+					loc.setType(v.getType());
+					loc.setRef(v);
+				}
+				else {
+					if (pub.getRef() instanceof VarDecl) {
+						res = false;
+						//incorrect type location
+						addError(loc,"Incorrect type of array '"+cl+loc.getId()+"'. Found Var, Expected Array");					
+					}
+				}
+			}
+			else {
+				res=false;
+				//Not found location
+				addError(loc,"Cannot find array '"+cl+loc.getId()+"'");
+			}
 		}
 		return res;
 	}
