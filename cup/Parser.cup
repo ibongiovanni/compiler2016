@@ -12,7 +12,10 @@ import ir.semcheck.*;
 
 parser code {:
     
-    //public 
+    public void setLocation(AST a, Location l){
+    	a.setLineNumber(l.getLine()); 
+    	a.setColumnNumber(l.getColumn());
+    } 
 
     /* internal function to get a symbol's name
     */
@@ -126,8 +129,8 @@ precedence left ELSE;
 program 	::= class_decl_lst:lst 	{:RESULT= new Program(lst); :}
 			;
 
-class_decl_lst 	::=  class_decl_lst:clst class_decl:cd	{:clst.add(cd); RESULT=clst; System.out.println("R1 - More than one class");:}	//More than one class 
-				|	 class_decl:cd			{:List<ClassDecl> dec = new LinkedList<ClassDecl>(); dec.add(cd); RESULT=dec; System.out.println("R2 - One single class");:}	//One single class
+class_decl_lst 	::=  class_decl_lst:clst class_decl:cd	{: parser.setLocation(cd,cdxleft); clst.add(cd); RESULT=clst; System.out.println("R1 - More than one class, '"+cd.getId()+"' in line: "+cd.getLineNumber());:}	//More than one class 
+				|	 class_decl:cd			{: cd.setLineNumber(cdxleft.getLine()); cd.setColumnNumber(cdxleft.getColumn()); List<ClassDecl> dec = new LinkedList<ClassDecl>(); dec.add(cd); RESULT=dec; System.out.println("R2 - One single class '"+cd.getId()+"', in line: "+cd.getLineNumber()+" column: "+cd.getColumnNumber());:}	//One single class
 				;
 
 class_decl	::=  CLASS ID:id LBRACE RBRACE									{:RESULT= new ClassDecl(id); System.out.println("R3 - class with no field or methods");:}
@@ -136,35 +139,35 @@ class_decl	::=  CLASS ID:id LBRACE RBRACE									{:RESULT= new ClassDecl(id); S
 			|	 CLASS ID:id LBRACE field_decl_lst:fields method_decl_lst:methods RBRACE	{:RESULT= new ClassDecl(id,fields,methods); System.out.println("R6 - class with one or more field and one or more methods");:}
 			;
 
-field_decl_lst 	::=	field_decl_lst:fields field_decl:f 		{:fields.add(f); RESULT=fields; System.out.println("R7 - more than one field");:}
-				|	field_decl:f 						{:List<FieldDecl> fields = new LinkedList<FieldDecl>(); fields.add(f); RESULT=fields; System.out.println("R8 - one single field");:}
+field_decl_lst 	::=	field_decl_lst:fields field_decl:f 		{:f.setLineNumber(fxleft.getLine()); f.setColumnNumber(fxleft.getColumn()); fields.add(f); RESULT=fields; System.out.println("R7 - more than one field");:}
+				|	field_decl:f 						{:f.setLineNumber(fxleft.getLine()); f.setColumnNumber(fxleft.getColumn()); List<FieldDecl> fields = new LinkedList<FieldDecl>(); fields.add(f); RESULT=fields; System.out.println("R8 - one single field");:}
 				;
 
 field_decl 	::=	type:t var_or_array_lst:els SEMI 		{:RESULT= new FieldDecl(t,els) ; System.out.println("R9 - field declaration of type '"+t+"'");:}
 			;
 
-var_or_array_lst	::=	var_or_array_lst:lst COMA var_or_array:v 	{:lst.add(v); RESULT=lst; System.out.println("R10 - more than one attr");:}
-					|	var_or_array:v 						{:List<VarDecl> lst= new LinkedList<VarDecl>(); lst.add(v); RESULT=lst; System.out.println("R11 - one single attr");:}
+var_or_array_lst	::=	var_or_array_lst:lst COMA var_or_array:v 	{:v.setLineNumber(vxleft.getLine()); v.setColumnNumber(vxleft.getColumn()); lst.add(v); RESULT=lst; System.out.println("R10 - more than one attr");:}
+					|	var_or_array:v 						{:v.setLineNumber(vxleft.getLine()); v.setColumnNumber(vxleft.getColumn()); List<VarDecl> lst= new LinkedList<VarDecl>(); lst.add(v); RESULT=lst; System.out.println("R11 - one single attr");:}
 					;
 
 var_or_array 	::=	ID:id 							{:RESULT= new VarDecl(id); System.out.println("R12 - var declaration, id: '"+id+"'");:}
 				|	ID:id LBRACK INT_LIT:s RBRACK 		{:RESULT= new ArrayDecl(id,s); System.out.println("R13 - array declaration");:}
 				;
 
-method_decl_lst	::=	method_decl_lst:lst method_decl:m 	{:lst.add(m); RESULT=lst; System.out.println("R14 - more than one method");:} 
-				|	method_decl:m 					{:List<MethodDecl> lst=new LinkedList<MethodDecl>(); lst.add(m); RESULT=lst; System.out.println("R15 - one single method");:}
+method_decl_lst	::=	method_decl_lst:lst method_decl:m 	{:m.setLineNumber(mxleft.getLine()); m.setColumnNumber(mxleft.getColumn()); lst.add(m); RESULT=lst; System.out.println("R14 - more than one method");:} 
+				|	method_decl:m 					{:m.setLineNumber(mxleft.getLine()); m.setColumnNumber(mxleft.getColumn()); List<MethodDecl> lst=new LinkedList<MethodDecl>(); lst.add(m); RESULT=lst; System.out.println("R15 - one single method");:}
 				;
 
 method_decl 	::= type:t ID:m LPAREN RPAREN body:b 			{:RESULT= new MethodDecl(t,m,b); System.out.println("R16 - method: '"+m+"' with no args");:}
 				|	type:t ID:m LPAREN arg_lst:args RPAREN body:b	{:RESULT= new MethodDecl(t,m,args,b); System.out.println("R17 - method: '"+m+"' with at least one arg");:}
 				;
 
-arg_lst	::=	arg_lst:lst COMA type:t ID:id 	{:FormalParam p=new FormalParam(t,id); lst.add(p); RESULT=lst; System.out.println("R18 - more than one arg");:}
-		|	type:t ID:id 				{: List<FormalParam> lst=new LinkedList<FormalParam>(); FormalParam p=new FormalParam(t,id); lst.add(p); RESULT=lst; System.out.println("R19 - one single arg");:}
+arg_lst	::=	arg_lst:lst COMA type:t ID:id 	{:FormalParam p=new FormalParam(t,id); parser.setLocation(p,txleft); lst.add(p); RESULT=lst; System.out.println("R18 - more than one arg");:}
+		|	type:t ID:id 				{: List<FormalParam> lst=new LinkedList<FormalParam>(); FormalParam p=new FormalParam(t,id); parser.setLocation(p,txleft); lst.add(p); RESULT=lst; System.out.println("R19 - one single arg");:}
 		;
 
 
-body	::=	block:b		{:RESULT= new Body(b); System.out.println("R20 - body block");:}
+body	::=	block:b		{:RESULT= new Body(b); parser.setLocation(b,bxleft); System.out.println("R20 - body block");:}
 		|	EXTERN SEMI	{:RESULT= new Body(); System.out.println("R21 - extern body");:}
 		;
 
@@ -181,22 +184,22 @@ type 	::=	ID:id {: RESULT=Type.UNDEFINED;:}				//R26
 		|	VOID {: RESULT=Type.VOID;:}			//R30
 		;
 
-statement_lst	::=	statement_lst:lst statement:s 	{:lst.add(s); RESULT=lst; System.out.println("R31 - one statement and recursion");:}
-				|	statement:s 					{:List<Statement> lst=new LinkedList<Statement>(); lst.add(s); RESULT=lst; System.out.println("R32 - one single statement");:}
+statement_lst	::=	statement_lst:lst statement:s 	{:parser.setLocation(s,sxleft); lst.add(s); RESULT=lst; System.out.println("R31 - one statement and recursion");:}
+				|	statement:s 					{:parser.setLocation(s,sxleft); List<Statement> lst=new LinkedList<Statement>(); lst.add(s); RESULT=lst; System.out.println("R32 - one single statement");:}
 				;
 
-statement 	::=	location:l assign_op:op expr:e SEMI					{:RESULT= new AssignStmt(l,op,e); System.out.println("R33 - assignement statement");:}
-			|	method_call:mc SEMI								{:RESULT= new MethodCallStmt(mc); System.out.println("R34 - method call statement");:}
-			|	IF LPAREN expr:con RPAREN statement:ifs 				{:RESULT= new IfStmt(con,ifs); System.out.println("R35 - if (not else) statement");:}
-			|	IF LPAREN expr:con RPAREN statement:ifs ELSE statement:els 	{:RESULT= new IfStmt(con,ifs,els); System.out.println("R36 - if then else statement");:}
-			|	FOR ID:id ASSIGN expr:e1 COMA expr:e2 statement:st 			{:RESULT= new ForStmt(id,e1,e2,st); System.out.println("R37 - for statement");:}
-			|	WHILE expr:cond statement:st 							{:RESULT= new WhileStmt(cond, st); System.out.println("R38 - while statement");:}
+statement 	::=	location:l assign_op:op expr:e SEMI					{:parser.setLocation(l,lxleft); parser.setLocation(e,exleft); RESULT= new AssignStmt(l,op,e); System.out.println("R33 - assignement statement");:}
+			|	method_call:mc SEMI								{:parser.setLocation(mc,mcxleft); RESULT= new MethodCallStmt(mc); System.out.println("R34 - method call statement");:}
+			|	IF LPAREN expr:con RPAREN statement:ifs 				{:parser.setLocation(ifs,ifsxleft); parser.setLocation(con,conxleft); RESULT= new IfStmt(con,ifs); System.out.println("R35 - if (not else) statement");:}
+			|	IF LPAREN expr:con RPAREN statement:ifs ELSE statement:els 	{:parser.setLocation(els,elsxleft); parser.setLocation(ifs,ifsxleft); parser.setLocation(con,conxleft); RESULT= new IfStmt(con,ifs,els); System.out.println("R36 - if then else statement");:}
+			|	FOR ID:id ASSIGN expr:e1 COMA expr:e2 statement:st 			{:parser.setLocation(st,stxleft); parser.setLocation(e1,e1xleft); parser.setLocation(e2,e2xleft); RESULT= new ForStmt(id,e1,e2,st); System.out.println("R37 - for statement");:}
+			|	WHILE expr:cond statement:st 							{:parser.setLocation(st, stxleft); parser.setLocation(cond,condxleft); RESULT= new WhileStmt(cond, st); System.out.println("R38 - while statement");:}
 			|	RETURN SEMI 									{:RESULT= new ReturnStmt(); System.out.println("R39 - return nothing statement");:}
-			|	RETURN expr:e SEMI								{:RESULT= new ReturnStmt(e); System.out.println("R40 - return an expresion statement");:}
+			|	RETURN expr:e SEMI								{:parser.setLocation(e,exleft); RESULT= new ReturnStmt(e); System.out.println("R40 - return an expresion statement");:}
 			|	BREAK SEMI										{:RESULT= new BreakStmt(); System.out.println("R41 - break statement");:}
 			|	CONTINUE SEMI									{:RESULT= new ContinueStmt(); System.out.println("R42 - continue statement");:}	
 			|	SEMI											{:RESULT= new EmptyStmt(); System.out.println("R43 - empty statement");:}
-			|	block:b											{:RESULT= b ; System.out.println("R44 - inner block statement");:}
+			|	block:b											{:parser.setLocation(b,bxleft); RESULT= b ; System.out.println("R44 - inner block statement");:}
 			;
 
 assign_op	::=	ASSIGN 		{:RESULT=AssignOpType.ASSIGN;:} //R45 - =
@@ -216,34 +219,34 @@ sub_call_lst	::=	sub_call_lst:h DOT ID:id 		{:RESULT=h+"."+id; System.out.printl
 
 location	::=	ID:id 									{:RESULT= new VarLocation(id); System.out.println("R54 - single var '"+id+"' location");:}
 			|	ID:id sub_call_lst:sc							{:RESULT= new SubClassVarLocation(id+"."+sc); System.out.println("R55 - sub class var location");:}
-			|	ID:id LBRACK expr:e RBRACK					{:RESULT= new ArrayLocation(id,e); System.out.println("R56 - single array location");:}
-			|	ID:id sub_call_lst:sc	LBRACK expr:e RBRACK		{:RESULT= new SubClassArrayLocation(id+"."+sc,e); System.out.println("R57 - sub class array location");:}
+			|	ID:id LBRACK expr:e RBRACK					{:parser.setLocation(e,exleft); RESULT= new ArrayLocation(id,e); System.out.println("R56 - single array location");:}
+			|	ID:id sub_call_lst:sc	LBRACK expr:e RBRACK		{:parser.setLocation(e,exleft); RESULT= new SubClassArrayLocation(id+"."+sc,e); System.out.println("R57 - sub class array location");:}
 			;
 
-expr 	::=	location:l					{:RESULT=l; System.out.println("R58 - location expr");:}
-		|	method_call:mc					{:RESULT=mc; System.out.println("R59 - method call expr");:}
-		|	literal:l 					{:RESULT=l; System.out.println("R60 - literal expr");:}
-		|	expr:le PLUS 	expr:re 	{:RESULT=new BinPlusExpr(le,re); System.out.println("R71 - aritmetical bin expr");:}
-		|	expr:le MINUS 	expr:re 	{:RESULT=new BinMinusExpr(le,re); System.out.println("R72 - aritmetical bin expr");:}
-		|	expr:le TIMES 	expr:re 	{:RESULT=new BinTimesExpr(le,re); System.out.println("R73 - aritmetical bin expr");:}
-		|	expr:le DIVIDE 	expr:re 	{:RESULT=new BinDivideExpr(le,re); System.out.println("R74 - aritmetical bin expr");:}
-		|	expr:le MOD 	expr:re 	{:RESULT=new BinModExpr(le,re); System.out.println("R75 - aritmetical bin expr");:}
-		|	expr:le LT 		expr:re 	{:RESULT=new BinLTExpr(le,re); System.out.println("R76 - relational bin expr");:}
-		|	expr:le GT 		expr:re 	{:RESULT=new BinGTExpr(le,re); System.out.println("R77 - relational bin expr");:}
-		|	expr:le LOET 	expr:re 	{:RESULT=new BinLOETExpr(le,re); System.out.println("R78 - relational bin expr");:}
-		|	expr:le GOET 	expr:re 	{:RESULT=new BinGOETExpr(le,re); System.out.println("R79 - relational bin expr");:}
-		|	expr:le EQUAL 	expr:re 	{:RESULT=new BinEqualExpr(le,re); System.out.println("R80 - comparision bin expr");:}
-		|	expr:le NOTEQ 	expr:re 	{:RESULT=new BinNotEqualExpr(le,re); System.out.println("R81 - comparision bin expr");:}
-		|	expr:le AND 	expr:re 	{:RESULT=new BinAndExpr(le,re); System.out.println("R82 - conditional bin expr");:}
-		|	expr:le OR 		expr:re 	{:RESULT=new BinOrExpr(le,re); System.out.println("R83 - conditional bin expr");:}
-		|	MINUS expr:e 					{:RESULT= new MinusExpr(e); System.out.println("R62 - minus expr");:}
+expr 	::=	location:l					{:parser.setLocation(l,lxleft); RESULT=l; System.out.println("R58 - location expr");:}
+		|	method_call:mc					{:parser.setLocation(mc,mcxleft); RESULT=mc; System.out.println("R59 - method call expr");:}
+		|	literal:l 					{:parser.setLocation(l,lxleft); RESULT=l; System.out.println("R60 - literal expr");:}
+		|	expr:le PLUS 	expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinPlusExpr(le,re); System.out.println("R71 - aritmetical bin expr");:}
+		|	expr:le MINUS 	expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinMinusExpr(le,re); System.out.println("R72 - aritmetical bin expr");:}
+		|	expr:le TIMES 	expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinTimesExpr(le,re); System.out.println("R73 - aritmetical bin expr");:}
+		|	expr:le DIVIDE 	expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinDivideExpr(le,re); System.out.println("R74 - aritmetical bin expr");:}
+		|	expr:le MOD 	expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinModExpr(le,re); System.out.println("R75 - aritmetical bin expr");:}
+		|	expr:le LT 		expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinLTExpr(le,re); System.out.println("R76 - relational bin expr");:}
+		|	expr:le GT 		expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinGTExpr(le,re); System.out.println("R77 - relational bin expr");:}
+		|	expr:le LOET 	expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinLOETExpr(le,re); System.out.println("R78 - relational bin expr");:}
+		|	expr:le GOET 	expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinGOETExpr(le,re); System.out.println("R79 - relational bin expr");:}
+		|	expr:le EQUAL 	expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinEqualExpr(le,re); System.out.println("R80 - comparision bin expr");:}
+		|	expr:le NOTEQ 	expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinNotEqualExpr(le,re); System.out.println("R81 - comparision bin expr");:}
+		|	expr:le AND 	expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinAndExpr(le,re); System.out.println("R82 - conditional bin expr");:}
+		|	expr:le OR 		expr:re 	{:parser.setLocation(le,lexleft); parser.setLocation(re,rexleft); RESULT=new BinOrExpr(le,re); System.out.println("R83 - conditional bin expr");:}
+		|	MINUS expr:e 					{:parser.setLocation(e,exleft); RESULT= new MinusExpr(e); System.out.println("R62 - minus expr");:}
 				%prec UMINUS
-		|	NOT expr:e 				{:RESULT=new NegatedExpr(e); System.out.println("R63 - negated expr");:}
-		|	LPAREN expr:e RPAREN		{:RESULT=new BracketExpr(e); System.out.println("R64 - (expr)");:}
+		|	NOT expr:e 				{:parser.setLocation(e,exleft); RESULT=new NegatedExpr(e); System.out.println("R63 - negated expr");:}
+		|	LPAREN expr:e RPAREN		{:parser.setLocation(e,exleft); RESULT=new BracketExpr(e); System.out.println("R64 - (expr)");:}
 		;
 
-expr_lst	::=	expr_lst:lst COMA expr:e 	{:lst.add(e); RESULT=lst; System.out.println("R65 - expresion and recursion");:}
-			|	expr:e 				{:List<Expression> lst=new LinkedList<Expression>(); lst.add(e); RESULT=lst; System.out.println("R66 - one single expresion");:}
+expr_lst	::=	expr_lst:lst COMA expr:e 	{:parser.setLocation(e,exleft); lst.add(e); RESULT=lst; System.out.println("R65 - expresion and recursion");:}
+			|	expr:e 				{:parser.setLocation(e,exleft);List<Expression> lst=new LinkedList<Expression>(); lst.add(e); RESULT=lst; System.out.println("R66 - one single expresion");:}
 			;
 
 literal ::=	INT_LIT:l 		{:RESULT=new IntLiteral(l); System.out.println("R84 - int literal: "+l);:}
