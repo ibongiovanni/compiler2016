@@ -1,0 +1,14 @@
+class main {
+	integer x;
+
+	integer add(integer a, bool a){
+		x = x+1;
+		return x;
+	}
+
+	void notmain(){
+		x=0;
+		add();
+	}
+	
+}

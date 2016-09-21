@@ -1,0 +1,15 @@
+class main {
+	integer x;
+	bool main;
+
+	integer add(){
+		x = x+1;
+		return x;
+	}
+
+	void notmain(){
+		x=0;
+		add();
+	}
+	
+}

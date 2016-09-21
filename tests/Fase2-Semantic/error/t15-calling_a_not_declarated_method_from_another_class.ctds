@@ -1,0 +1,22 @@
+class aux{
+	integer y;
+
+	bool greater_than_zero(){
+		return true;
+	}
+}
+
+class main {
+	integer x;
+
+	integer add(){
+		x = x+1;
+		return x;
+	}
+
+	void main(){
+		x=0;
+		aux.x();
+	}
+	
+}
