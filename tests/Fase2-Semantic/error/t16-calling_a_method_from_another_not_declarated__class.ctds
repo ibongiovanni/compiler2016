@@ -15,8 +15,9 @@ class main {
 	}
 
 	void main(){
+		maux var;
 		x=0;
-		maux.x();
+		var.greater_than_zero();
 	}
 	
 }

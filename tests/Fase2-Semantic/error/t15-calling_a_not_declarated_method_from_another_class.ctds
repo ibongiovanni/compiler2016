@@ -15,8 +15,9 @@ class main {
 	}
 
 	void main(){
+		aux var;
 		x=0;
-		aux.x();
+		var.less_than_one();
 	}
 	
 }

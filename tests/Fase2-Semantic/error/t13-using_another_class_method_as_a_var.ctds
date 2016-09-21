@@ -15,8 +15,9 @@ class main {
 	}
 
 	void main(){
-		x=0;
-		aux.greater_than_zero = 3;
+		aux var;
+		x=0;		
+		var.greater_than_zero = 3;
 	}
 	
 }
