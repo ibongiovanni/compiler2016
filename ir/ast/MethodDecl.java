@@ -8,14 +8,14 @@ public class MethodDecl extends NamedDecl {
 	protected List<FormalParam> args;
 	protected Body body;
 
-	public MethodDecl(Type t, String id, Body body){
+	public MethodDecl(String t, String id, Body body){
 		setType(t);
 		this.id = id;
 		this.args = new LinkedList<FormalParam>();
 		this.body = body;
 	}
 
-	public MethodDecl(Type t, String id, List<FormalParam> args, Body body){
+	public MethodDecl(String t, String id, List<FormalParam> args, Body body){
 		setType(t);
 		this.id = id;
 		this.args = args;

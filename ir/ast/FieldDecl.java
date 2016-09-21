@@ -7,7 +7,7 @@ import java.util.List;
 public class FieldDecl extends Declaration {
 	protected List<VarDecl> elements;
 
-	public FieldDecl(Type t, List<VarDecl> elements){
+	public FieldDecl(String t, List<VarDecl> elements){
 		setType(t);
 		this.elements = elements;
 		assignTypes(); 
@@ -25,16 +25,16 @@ public class FieldDecl extends Declaration {
 		}
 	}
 
-	private Type toArrayType(Type t){
+	private String toArrayType(String t){
 		switch (t) {
-			case INT:
-				return Type.INTARRAY;
-			case FLOAT:
-				return Type.FLOATARRAY;
-			case BOOL:
-				return Type.BOOLARRAY;
+			case "INT":
+				return "INTARRAY";
+			case "FLOAT":
+				return "FLOATARRAY";
+			case "BOOL":
+				return "BOOLARRAY";
 			}
-		return Type.UNDEFINED;
+		return "UNDEFINED";
 	}
 
 	public List<VarDecl> getElements(){

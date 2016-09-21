@@ -8,7 +8,8 @@ public class SymbolTable {
 
 	private List<TableLevel> table;
 	private TableLevel top;
-	private List<VarLocation> publics; //Each method and attrib decl is 'published' for other classes
+	private List<VarLocation> publics; 	//Each method and attrib decl is 'published' for other classes
+										//Each location is identified as "classname.identifier"
 	
 	public SymbolTable(){
 		table = new LinkedList<TableLevel>();
@@ -142,7 +143,7 @@ public class SymbolTable {
 
 	public VarLocation searchPublic(String cl, String id){
 		VarLocation has=null;
-		String n = cl+id;
+		String n = cl+"."+id;
 		for (int i = 0; has==null && i<publics.size(); i++ ) {
 			if ( n.equals( publics.get(i).getId() ) ) {
 				has=publics.get(i);

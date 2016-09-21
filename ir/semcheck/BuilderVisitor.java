@@ -467,22 +467,25 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 				addError(expr,"Navigation not allowed");
 			}
 			else {
-				cl = classes.get(0)+".";
-				VarLocation pub = stack.searchPublic(cl,method.getId());
-				if (pub!=null) {
-					if (!(pub.getRef() instanceof MethodDecl)) {
-						res=false;
-						addError(expr,"Missused location. Identifier '"+method.getId()+"' is not declared as a method");
-					}
-				}
-				else {
-					res=false;
-					cl = classes.get(0);
-					if (stack.searchClass(cl)) {
-						addError(expr,"Cannot find method '"+method.getId()+"' in class '"+cl+"'");
+				VarLocation varloc = new VarLocation(classes.get(0)); //Search for local declaration
+				if (varloc.accept(this)) {
+					// Now search for public attribute
+					cl = varloc.getType(); //Get class name
+					VarLocation pub = stack.searchPublic(cl,method.getId());
+					if (pub!=null) {
+						if (!(pub.getRef() instanceof MethodDecl)) {
+							res=false;
+							addError(expr,"Missused location. Identifier '"+method.getId()+"' is not declared as a method");
+						}
 					}
 					else {
-						addError(expr,"Cannot find class '"+cl+"'");
+						res=false;
+						if (stack.searchClass(cl)) {
+							addError(expr,"Cannot find method '"+method.getId()+"' in class '"+cl+"'");
+						}
+						else {
+							addError(expr,"Cannot find class '"+cl+"'");
+						}
 					}
 				}
 			}
@@ -576,32 +579,36 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 			addError(loc,"Navigation not allowed");
 		}
 		else {
-			cl = classes.get(0)+".";
-			VarLocation pub = stack.searchPublic(cl,loc.getId());
-			if (pub!=null) {
-				if (pub.getRef() instanceof VarDecl) {
-					if (pub.getRef() instanceof ArrayDecl) {
-						//incorrect type location
-						res = false;					
-						addError(loc,"Incorrect type of var '"+cl+loc.getId()+"'. Found Array, Expected Var");
+			VarLocation varloc = new VarLocation(classes.get(0)); //Search for local declaration
+			if (varloc.accept(this)) {
+				// Now search for public attribute
+				cl = varloc.getType(); //Get class name
+				VarLocation pub = stack.searchPublic(cl,loc.getId());
+				if (pub!=null) {
+					if (pub.getRef() instanceof VarDecl) {
+						if (pub.getRef() instanceof ArrayDecl) {
+							//incorrect type location
+							res = false;					
+							addError(loc,"Incorrect type of var '"+cl+loc.getId()+"'. Found Array, Expected Var");
+						}
+						else {
+							VarDecl v = (VarDecl) pub.getRef();
+							loc.setType(v.getType());
+							loc.setRef(v);
+						}
 					}
 					else {
-						VarDecl v = (VarDecl) pub.getRef();
-						loc.setType(v.getType());
-						loc.setRef(v);
+						if (pub.getRef() instanceof MethodDecl) {
+							res = false;
+							addError(loc,"Missused location. Identifier '"+cl+"."+loc.getId()+"' is not declared as a attribute");
+						}
 					}
 				}
 				else {
-					if (pub.getRef() instanceof MethodDecl) {
-						res = false;
-						addError(loc,"Missused location. Identifier '"+cl+loc.getId()+"' is not declared as a attribute");
-					}
+					res=false;
+					//Not found location
+					addError(loc,"Cannot find variable '"+cl+"."+loc.getId()+"'");
 				}
-			}
-			else {
-				res=false;
-				//Not found location
-				addError(loc,"Cannot find variable '"+cl+loc.getId()+"'");
 			}
 		}
 		return res;
@@ -641,26 +648,30 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 			addError(loc,"Navigation not allowed");
 		}
 		else {
-			cl = classes.get(0)+".";
-			VarLocation pub = stack.searchPublic(cl,loc.getId());
-			if (pub!=null) {
-				if (pub.getRef() instanceof ArrayDecl) {
-					ArrayDecl v = (ArrayDecl) pub.getRef();
-					loc.setType(v.getType());
-					loc.setRef(v);
-				}
-				else {
-					if (pub.getRef() instanceof VarDecl) {
-						res = false;
-						//incorrect type location
-						addError(loc,"Incorrect type of array '"+cl+loc.getId()+"'. Found Var, Expected Array");					
+			VarLocation varloc = new VarLocation(classes.get(0)); //Search for local declaration
+			if (varloc.accept(this)) {
+				// Now search for public attribute
+				cl = varloc.getType(); //Get class name
+				VarLocation pub = stack.searchPublic(cl,loc.getId());
+				if (pub!=null) {
+					if (pub.getRef() instanceof ArrayDecl) {
+						ArrayDecl v = (ArrayDecl) pub.getRef();
+						loc.setType(v.getType());
+						loc.setRef(v);
+					}
+					else {
+						if (pub.getRef() instanceof VarDecl) {
+							res = false;
+							//incorrect type location
+							addError(loc,"Incorrect type of array '"+cl+"."+loc.getId()+"'. Found Var, Expected Array");					
+						}
 					}
 				}
-			}
-			else {
-				res=false;
-				//Not found location
-				addError(loc,"Cannot find array '"+cl+loc.getId()+"'");
+				else {
+					res=false;
+					//Not found location
+					addError(loc,"Cannot find array '"+cl+"."+loc.getId()+"'");
+				}
 			}
 		}
 		return res;

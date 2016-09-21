@@ -93,7 +93,7 @@ non terminal 	List<ClassDecl> class_decl_lst;
 non terminal 	ClassDecl	class_decl;
 non terminal 	FieldDecl	field_decl;
 non terminal 	List<FieldDecl>	field_decl_lst;
-non terminal 	Type	type;
+non terminal 	String	type;
 non terminal 	MethodDecl	method_decl;
 non terminal 	List<MethodDecl>	method_decl_lst;
 non terminal 	Body	body;
@@ -177,11 +177,11 @@ block	::=	LBRACE RBRACE 								{:RESULT= new Block(1); System.out.println("R22 
 		|	LBRACE field_decl_lst:f statement_lst:s RBRACE 	{:RESULT= new Block(1,f,s); System.out.println("R25 - block with one or more field and one or more statement");:}	
 		;
 
-type 	::=	ID:id {: RESULT=Type.UNDEFINED;:}				//R26
-		|	INTEGER_TYPE {: RESULT=Type.INT;:}	//R27
-		|	FLOAT_TYPE {: RESULT=Type.FLOAT;:}		//R28
-		|	BOOL {: RESULT=Type.BOOL;:}			//R29
-		|	VOID {: RESULT=Type.VOID;:}			//R30
+type 	::=	ID:id {: RESULT=id;:}				//R26
+		|	INTEGER_TYPE {: RESULT="INT";:}	//R27
+		|	FLOAT_TYPE {: RESULT="FLOAT";:}		//R28
+		|	BOOL {: RESULT="BOOL";:}			//R29
+		|	VOID {: RESULT="VOID";:}			//R30
 		;
 
 statement_lst	::=	statement_lst:lst statement:s 	{:parser.setLocation(s,sxleft); lst.add(s); RESULT=lst; System.out.println("R31 - one statement and recursion");:}

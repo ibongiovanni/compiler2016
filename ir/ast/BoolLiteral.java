@@ -7,7 +7,7 @@ public class BoolLiteral extends Literal {
 
 	public BoolLiteral(Boolean value) {
 		this.value = value;
-		setType(Type.BOOL);
+		setType("BOOL");
 	}
 
 	public void setValue(Boolean newValue) {

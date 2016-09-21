@@ -13,14 +13,14 @@ public class IntLiteral extends Literal {
 	public IntLiteral(String val){
 		rawValue = val; // Will convert to int value in semantic check
 		value = null;
-		setType(Type.INT);
+		setType("INT");
 
 	}
 
 	public IntLiteral(Integer val){
 		rawValue = val.toString();
 		value = val;
-		setType(Type.INT);
+		setType("INT");
 	}
 
 

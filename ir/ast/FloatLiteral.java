@@ -7,12 +7,12 @@ public class FloatLiteral extends Literal {
 
 	public FloatLiteral(Float value) {
 		this.value = value;
-		setType(Type.FLOAT);
+		setType("FLOAT");
 	}
 
 	public FloatLiteral(String value) {
 		this.value = new Float(value);
-		setType(Type.FLOAT);
+		setType("FLOAT");
 	}
 
 	public void setValue(Float newValue) {

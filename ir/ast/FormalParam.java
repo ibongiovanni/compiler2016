@@ -4,7 +4,7 @@ import ir.ASTVisitor;
 
 public class FormalParam extends NamedDecl {
 
-	public FormalParam(Type t, String id){
+	public FormalParam(String t, String id){
 		setType(t);
 		this.id = id;
 	}

@@ -1,13 +1,13 @@
 package ir.ast;
 
 public abstract class Declaration extends AST {
-	protected Type type;
+	protected String type;
 	
-	public Type getType() {
+	public String getType() {
 		return this.type;
 	}
 	
-	public void setType(Type t) {
+	public void setType(String t) {
 		this.type = t;
 	}
 }
