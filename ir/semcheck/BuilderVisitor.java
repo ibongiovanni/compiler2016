@@ -57,11 +57,11 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 			addError(dec,"There's no main class declared");
 		}
 		if (res) {
-			VarLocation pub = stack.searchPublic("main.","main");
+			VarLocation pub = stack.searchPublic("main","main");
 			if (pub!=null) {
 				if (!(pub.getRef() instanceof MethodDecl)) {
 					res=false;
-					addError(dec,"main class should have declared a main method");
+					addError(dec,"main class should have declared a main method, not an attribute");
 				}
 			}
 			else {
@@ -99,12 +99,18 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 	@Override
 	public Boolean visit(FieldDecl dec){
 		Boolean res=true;
-		List<VarDecl> elements = dec.getElements();
-		Iterator<VarDecl> eit = elements.iterator();
-		VarDecl v;
-		while (eit.hasNext()&&res) {
-			v = eit.next();
-			res=res&&v.accept(this);
+		if (stack.isCurrentLevelClassDeclarations() && !Type.isBasic(dec.getType())) {
+			res=false;
+			addError(dec,"Attributes should be of a basic type");
+		}
+		else{
+			List<VarDecl> elements = dec.getElements();
+			Iterator<VarDecl> eit = elements.iterator();
+			VarDecl v;
+			while (eit.hasNext()&&res) {
+				v = eit.next();
+				res=res&&v.accept(this);
+			}
 		}
 		return res;
 	}
@@ -137,10 +143,19 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 	@Override
 	public Boolean visit(VarDecl dec){
 		Boolean res=true;
-		res=stack.addVar(dec);
-		if(!res){
-			addError(dec,"Cannot add var '"+dec.getId()+"'. Identifier already used");
+		String t = dec.getType();
+		if (!Type.isBasic(t)) {
+			res &= stack.searchClass(t);
 		}
+		if (res) {
+				res=stack.addVar(dec);
+				if(!res){
+					addError(dec,"Cannot add var '"+dec.getId()+"'. Identifier already used");
+				}
+		}
+		else {
+			addError(dec, "Not declared class '"+t+"'");	
+		}	
 		return res;
 	}
 
@@ -477,6 +492,11 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 							res=false;
 							addError(expr,"Missused location. Identifier '"+method.getId()+"' is not declared as a method");
 						}
+						else {
+							expr.setType(pub.getRef().getType());
+							method.setType(pub.getRef().getType());
+							method.setRef(pub.getRef());
+						}
 					}
 					else {
 						res=false;
@@ -490,6 +510,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 				}
 			}
 		}
+		//Local method
 		else {
 			MethodDecl dec=stack.searchMethod(method.getId());
 			if (dec!=null) {
@@ -504,12 +525,22 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 			}
 		}
 		//Check arguments
-		List<Expression> params=expr.getParams();
-		Iterator<Expression> pit = params.iterator();
-		Expression p;
-		while (pit.hasNext()&&res) {
-			p=pit.next();
-			res &= p.accept(this);
+		if(res){
+			List<Expression> arguments=expr.getParams();
+			//Check number of arguments is same as params declared
+			MethodDecl m = (MethodDecl) method.getRef();
+			res &= (m.getArgs().size())==arguments.size();
+			if(res){	
+				Iterator<Expression> ait = arguments.iterator();
+				Expression a;
+				while (ait.hasNext()&&res) {
+					a=ait.next();
+					res &= a.accept(this);
+				}
+			}
+			else {
+				addError(expr,"Actual and formal argument lists for method '"+method.getId()+"' differ in length, expected: "+m.getArgs().size()+", found: "+arguments.size());
+			}
 		}
 		return res;
 	}

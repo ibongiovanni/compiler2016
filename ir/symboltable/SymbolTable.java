@@ -39,6 +39,10 @@ public class SymbolTable {
 		top = table.get(0);
 	}
 
+	public boolean isCurrentLevelClassDeclarations(){
+		return (top instanceof ClassLocalDeclLevel);
+	}
+
 	public void insertId(AST id){ //(String id, Type t)
 
 	}
