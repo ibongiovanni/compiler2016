@@ -1,0 +1,16 @@
+class main {
+	integer x;
+	nobasic e;
+
+
+	integer add(){
+		x = x+1;
+		return x;
+	}
+
+	void main(){
+		x=0;
+		add();
+	}
+	
+}
