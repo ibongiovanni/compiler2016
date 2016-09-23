@@ -63,6 +63,10 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 					res=false;
 					addError(dec,"main class should have declared a main method, not an attribute");
 				}
+				else if (!pub.getRef().getType().equals("VOID")) {
+					res =false;
+					addError(pub.getRef(),"main method should be of type 'VOID'");
+				}
 			}
 			else {
 				res=false;
