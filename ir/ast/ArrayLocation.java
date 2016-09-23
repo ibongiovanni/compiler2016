@@ -23,6 +23,10 @@ public class ArrayLocation extends Location {
 	public void setBlockId(int blockId) {
 		this.blockId = blockId;
 	}
+
+	public Expression getIndex(){
+		return index;
+	}
 	
 	
 	@Override

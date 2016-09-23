@@ -10,6 +10,10 @@ public class ArrayDecl extends VarDecl {
 		this.size = size.intValue();
 	}
 
+	public int getSize(){
+		return size;
+	}
+
 	@Override
 	public String toString() {
 		return id+"["+size+"]";
