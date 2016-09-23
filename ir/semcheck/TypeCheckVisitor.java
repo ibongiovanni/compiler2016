@@ -236,13 +236,13 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 		Expression expr1 = stmt.getExpr1();
 		String te1 = expr1.accept(this);
 		if (!Type.areCompatible("INT",te1)) {
-			addError(stmt,"For's initialization must to be integer type");
+			addError(stmt,"For's initialization must be integer type");
 		}
 		else{
 			Expression expr2 = stmt.getExpr2();
 			String te2 = expr2.accept(this);
 			if (!Type.areCompatible("INT",te2)) {
-				addError(stmt,"For's finalization must to be integer type");
+				addError(stmt,"For's limit expression must be integer type");
 			}
 			else{
 				Statement body = stmt.getBody();
@@ -312,7 +312,7 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 				addError(rOperand,et+" expressions must be used with numerical types");
 			}
 			else {
-				if (!Type.areCompatible(tl,tl)) {
+				if (!Type.areCompatible(tl,tr)) {
 					addError(expr,"Incompatible types in "+et+" expression: '"+tl+"' & '"+tr+"'");
 				}
 				else {
@@ -381,7 +381,7 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 		Expression rOperand=expr.getRightOperand();
 		String tl = lOperand.accept(this);
 		String tr = rOperand.accept(this);
-		if (!Type.areCompatible(tl,tl)) {
+		if (!Type.areCompatible(tl,tr)) {
 			addError(expr,"Incompatible types in comparison expression: '"+tl+"' & '"+tr+"'");
 		}
 		else {
