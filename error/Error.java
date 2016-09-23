@@ -14,7 +14,7 @@ public class Error {
 
 	@Override
 	public String toString(){
-		return "ERROR, in line: "+line+", column: "+col+". '"+msg+"'";	
+		return "ERROR, in line: "+line+", column: "+col+".\t["+msg+"]";	
 	}
 
 }
