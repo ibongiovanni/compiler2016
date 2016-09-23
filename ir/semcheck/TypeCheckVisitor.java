@@ -149,9 +149,9 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 		Location location=stmt.getLocation();
 		Expression expr=stmt.getExpression();
 		AssignOpType operator=stmt.getOperator();
-		String lt = location.getType();
+		String lt = location.accept(this);
 		if (!Type.isBasic(lt)) {
-			addError(stmt,"Assignments must be done over basic types");
+			addError(stmt,"Assignments must be done over basic types, found: '"+lt+"'");
 		}
 		else{
 			String et = expr.accept(this);
@@ -525,11 +525,24 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 
 	@Override
 	public String visit(ArrayLocation loc){
+		Expression index = loc.getIndex();
+		String it = index.accept(this);
+		if (!it.equals("INT")) {
+			addError(loc,"Array's index must be of type 'INT', found: '"+it+"'");
+			return "VOID";
+		}
 		return loc.getType();
 	}
 
 	@Override
 	public String visit(SubClassArrayLocation loc){
+		Expression index = loc.getIndex();
+		String it = index.accept(this);
+
+		if (!it.equals("INT")) {
+			addError(loc,"Array's index must be of type 'INT', found: '"+it+"'");
+			return "VOID";
+		}
 		return loc.getType();
 	}
 

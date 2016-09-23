@@ -59,14 +59,22 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 		if (res) {
 			VarLocation pub = stack.searchPublic("main","main");
 			if (pub!=null) {
-				if (!(pub.getRef() instanceof MethodDecl)) {
+				Declaration mdec = pub.getRef();
+				if (!(mdec instanceof MethodDecl)) {
 					res=false;
 					addError(dec,"main class should have declared a main method, not an attribute");
 				}
-				else if (!pub.getRef().getType().equals("VOID")) {
-					res =false;
-					addError(pub.getRef(),"main method should be of type 'VOID'");
-				}
+				else if (!mdec.getType().equals("VOID")) {
+						res =false;
+						addError(mdec,"main method should be of type 'VOID'");
+					}
+					else {
+						List<FormalParam> params = ((MethodDecl)mdec).getArgs();
+						if (params.size()>0) {
+							res=false;
+							addError(mdec,"main method cannot have parameters");
+						}
+					}
 			}
 			else {
 				res=false;
@@ -166,9 +174,15 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 	@Override
 	public Boolean visit(ArrayDecl dec){
 		Boolean res=true;
-		res=stack.addVar(dec);
-		if (!res) {
-			addError(dec,"Cannot add array '"+dec.getId()+"'. Identifier already used");
+		if (dec.getSize()<=0) {
+			res=false;
+			addError(dec,"Array size must be greater than 0");
+		}
+		else{
+			res=stack.addVar(dec);
+			if (!res) {
+				addError(dec,"Cannot add array '"+dec.getId()+"'. Identifier already used");
+			}
 		}
 		return res;
 	}
