@@ -1,0 +1,21 @@
+class aux {
+
+}
+
+class main {
+    integer x;
+    
+
+    integer add( integer b){
+        integer a;
+        a = x+b;
+        for i = 0, 10.3 break;
+        return a;
+    }
+
+    void main(){
+        x=0;
+        add(2);
+    }
+    
+}

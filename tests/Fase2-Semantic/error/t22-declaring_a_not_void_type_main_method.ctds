@@ -1,0 +1,15 @@
+class main {
+	integer x;
+	
+
+	integer add( integer b){
+		x = x+b;
+		return x;
+	}
+
+	integer main(){
+		x=0;
+		add(2);
+	}
+	
+}

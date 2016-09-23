@@ -1,0 +1,20 @@
+class aux {
+
+}
+
+class main {
+    integer x;
+    
+
+    integer add( integer b){
+        integer a;
+        a = !x;
+        return a;
+    }
+
+    void main(){
+        x=0;
+        add(2);
+    }
+    
+}

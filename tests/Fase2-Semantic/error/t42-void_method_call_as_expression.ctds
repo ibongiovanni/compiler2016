@@ -1,0 +1,21 @@
+class aux {
+
+}
+
+class main {
+    integer x;
+    
+    void method(){}
+
+    integer add( integer b){
+        integer a;
+        a = x+method();
+        return a;
+    }
+
+    void main(){
+        x=0;
+        add(2);
+    }
+    
+}
