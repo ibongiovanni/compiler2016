@@ -13,23 +13,42 @@ public class JavaParser {
 	
 	public static void print(Program prog){
 		ASTVisitor<String> pv = new PrintVisitor();
-		String programRep="== PROGRAM REPRESENTATION ==\n\n";
+		String programRep="\n== PROGRAM REPRESENTATION ==\n\n";
 		programRep += pv.visit(prog)+"\n\n";
 		System.out.println(programRep);
 	}
 
-	public static void build(Program prog){
+	public static boolean build(Program prog){
 		BuilderVisitor bv = new BuilderVisitor();
-		System.out.println("=== Building References ===\n");
+		System.out.println("\n=== Building References ===\n");
 		if (prog.accept(bv)) {
 			System.out.println(" -Succesfuly Checked References");
+			return true;
 		}
 		else {
 			List<Error> errors = bv.getErrors();
 			for ( Error e : errors ) {
 				System.out.println(e.toString());
 			}
+			return false;
 		}
+	}
+
+	public static boolean checkTypes(Program prog){
+		System.out.println("\n=== Checking Types ===\n");
+		TypeCheckVisitor tv = new TypeCheckVisitor();
+		prog.accept(tv);
+		List<Error> errors = tv.getErrors();
+		if (errors.isEmpty()) {
+			System.out.println(" -Succesfuly Checked Types");
+			return true;
+		}
+		else {
+		 	for ( Error e : errors ) {
+		 		System.out.println(e.toString());
+		 	}
+		 	return false;
+		 } 
 	}
 
 	public static void main(String args[]) throws Exception {
@@ -47,7 +66,8 @@ public class JavaParser {
 
 		Program prog = (Program) s.value; 
 		print(prog);
-		build(prog);
-
+		if(build(prog)){
+			checkTypes(prog);
+		}
     }
 }
