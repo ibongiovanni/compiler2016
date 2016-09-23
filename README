@@ -8,10 +8,10 @@ Luego de que se genero el analizador léxico y sintáctico , compila y arma un J
 
 - Para ejecutar, por ejemplo los tests y mostrar la salida por consola:
 
-   > ./runTests.sh
+   > ./runSyntaxTests.sh
+   > ./runSemanticTests.sh
 
 - O para ejecutar los tests y guardar la salida en un archivo:
    
-   > ./runTests.sh > tests-results.txt 2>&1
-
- Y en el archivo tests-results.txt ver los resultados de las pruebas
+   > ./runSyntaxTests.sh > syntax-tests-results.txt 2>&1
+   > ./runSemanticTests.sh > semantic-tests-results.txt 2>&1
