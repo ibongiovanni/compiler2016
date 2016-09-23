@@ -1,0 +1,22 @@
+class aux {
+    integer arr[5];
+}
+
+class main {
+    integer x;
+    integer arr[10];
+
+    integer add( integer b){
+        integer a;
+        a = x+b;
+        return a;
+    }
+
+    void main(){
+        aux var;
+        x=0;
+        var.arr[true]=x;
+        add(2);
+    }
+    
+}
