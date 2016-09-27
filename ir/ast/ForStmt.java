@@ -3,19 +3,21 @@ package ir.ast;
 import ir.ASTVisitor;
 
 public class ForStmt extends Statement {
-	private String id;
+	private VarDecl id;
 	private Expression expr1;
 	private Expression expr2;
 	private Statement body;
 
 	public ForStmt(String id, Expression e1, Expression e2, Statement b){
-		this.id = id;
+		VarDecl vd = new VarDecl(id);
+		vd.setType("INT");
+		this.id = vd;
 		expr1 = e1;
 		expr2 = e2;
 		body = b;
 	}
 
-	public String getId(){
+	public VarDecl getId(){
 		return id;
 	}
 

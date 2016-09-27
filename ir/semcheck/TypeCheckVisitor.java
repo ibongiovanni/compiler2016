@@ -182,7 +182,7 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 		}
 		else {
 			String res = expression.accept(this);
-			if (!context.equals(res)) {
+			if (!Type.areCompatible(context,res)) {
 				addError(stmt,"Bad return type ('"+res+"'), in  context: '"+context+"'");
 			}
 			return res;

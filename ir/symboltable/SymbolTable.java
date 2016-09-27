@@ -29,7 +29,10 @@ public class SymbolTable {
 			table.add(0,new MethodArgsLevel());
 		}
 		if (caller instanceof Block ) {
-			table.add(0,new BlockLevel((Block)caller));
+			table.add(0,new BlockLevel());
+		}
+		if (caller instanceof ForStmt ) {
+			table.add(0,new BlockLevel());
 		}
 		top = table.get(0);
 	} //hace falta un metodo para cada tipo?

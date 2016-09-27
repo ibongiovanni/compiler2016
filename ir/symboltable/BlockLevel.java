@@ -7,7 +7,7 @@ import ir.ast.*;
 public class BlockLevel extends TableLevel {
 	private List<VarDecl> locals;
 
-	public BlockLevel(Block dec){
+	public BlockLevel(){
 		locals = new LinkedList<VarDecl>();
 		// List<FieldDecl> fields = dec.getFields();
 		// for ( FieldDecl f : fields ) {

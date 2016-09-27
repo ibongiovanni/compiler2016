@@ -64,11 +64,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 					res=false;
 					addError(dec,"main class should have declared a main method, not an attribute");
 				}
-				else if (!mdec.getType().equals("VOID")) {
-						res =false;
-						addError(mdec,"main method should be of type 'VOID'");
-					}
-					else {
+				else {
 						List<FormalParam> params = ((MethodDecl)mdec).getArgs();
 						if (params.size()>0) {
 							res=false;
@@ -291,12 +287,15 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 	@Override
 	public Boolean visit(ForStmt stmt){
 		Boolean res=true;
-		Expression expr1 = stmt.getExpr1();
-		Expression expr2 = stmt.getExpr2();
-		Statement body = stmt.getBody();
-		res &= expr1.accept(this);
-		res &= expr2.accept(this);
-		res &= body.accept(this);
+		stack.newLevel(stmt);
+			res &= stack.addVar(stmt.getId());
+			Expression expr1 = stmt.getExpr1();
+			Expression expr2 = stmt.getExpr2();
+			Statement body = stmt.getBody();
+			res &= expr1.accept(this);
+			res &= expr2.accept(this);
+			res &= body.accept(this);
+		stack.closeLevel();
 		return res;
 	}
 
@@ -677,6 +676,11 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 				ArrayDecl v = (ArrayDecl) decl;
 				loc.setType(v.getType());
 				loc.setRef(v);
+				//Index treatment
+				Expression index = loc.getIndex();
+				if (!index.accept(this)) {
+					res = false;
+				}
 			}
 		}
 		else {
