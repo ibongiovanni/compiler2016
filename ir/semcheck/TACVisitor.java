@@ -14,6 +14,9 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	private boolean addInst(Inst inst, Object op1, AST op2, VarDecl res){
 		return instls.add(new TAC(inst,op1,op2,res));
 	}
+	public List<TAC> getList(){
+		return instls;
+	}
 
 	/***********************************************************************
 	*	temporaly variables management
@@ -122,9 +125,9 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	@Override
 	public VarDecl visit(VarDecl dec){
 		switch (dec.getType()) {
-			case "INT": addInst(Inst.DECVARINT,dec,null,null);
-			case "FLOAT": addInst(Inst.DECVARFLT,dec,null,null);
-			case "BOOL": addInst(Inst.DECVARBOOL,dec,null,null);
+			case "INT": addInst(Inst.DECVARINT,dec,null,null); break;
+			case "FLOAT": addInst(Inst.DECVARFLT,dec,null,null); break;
+			case "BOOL": addInst(Inst.DECVARBOOL,dec,null,null); break;
 		}
 
 		return new VarDecl("null");
@@ -133,9 +136,9 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	@Override
 	public VarDecl visit(ArrayDecl dec){
 		switch (dec.getType()) {
-			case "INTARRAY": addInst(Inst.DECVARINTARRAY,dec,null,null);
-			case "FLOATARRAY": addInst(Inst.DECVARFLTARRAY,dec,null,null);
-			case "BOOLARRAY": addInst(Inst.DECVARBOOLARRAY,dec,null,null);
+			case "INTARRAY": addInst(Inst.DECVARINTARRAY,dec,null,null); break;
+			case "FLOATARRAY": addInst(Inst.DECVARFLTARRAY,dec,null,null); break;
+			case "BOOLARRAY": addInst(Inst.DECVARBOOLARRAY,dec,null,null); break;
 		}
 		return new VarDecl("null");
 	}
@@ -143,12 +146,12 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	@Override
 	public VarDecl visit(FormalParam dec){
 		switch (dec.getType()) {
-			case "INT": addInst(Inst.DECVARINT,dec,null,null);
-			case "FLOAT": addInst(Inst.DECVARFLT,dec,null,null);
-			case "BOOL": addInst(Inst.DECVARBOOL,dec,null,null);
-			case "INTARRAY": addInst(Inst.DECVARINTARRAY,dec,null,null);
-			case "FLOATARRAY": addInst(Inst.DECVARFLTARRAY,dec,null,null);
-			case "BOOLARRAY": addInst(Inst.DECVARBOOLARRAY,dec,null,null);
+			case "INT": addInst(Inst.DECVARINT,dec,null,null); break;
+			case "FLOAT": addInst(Inst.DECVARFLT,dec,null,null); break;
+			case "BOOL": addInst(Inst.DECVARBOOL,dec,null,null); break;
+			case "INTARRAY": addInst(Inst.DECVARINTARRAY,dec,null,null); break;
+			case "FLOATARRAY": addInst(Inst.DECVARFLTARRAY,dec,null,null); break;
+			case "BOOLARRAY": addInst(Inst.DECVARBOOLARRAY,dec,null,null); break;
 		}
 		return new VarDecl("null");
 	}
@@ -440,7 +443,9 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	@Override
 	public VarDecl visit(MinusExpr expr){
 		VarDecl op1 = expr.getExpression().accept(this);
+		System.out.println("1");
 		VarDecl res = newTemp();
+		System.out.println("2");
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.UMINUSINT,op1,null,res); break;
 			case "FLOAT": addInst(Inst.UMINUSFLT,op1,null,res); break;
@@ -497,9 +502,9 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	private VarDecl locationVisit(Location loc){
 		VarDecl res = newTemp();
 		switch (loc.getType()) {
-			case "INT": addInst(Inst.LMINT,loc,null,res);
-			case "FLOAT": addInst(Inst.LMFLT,loc,null,res);
-			case "BOOL": addInst(Inst.LMBOOL,loc,null,res);
+			case "INT": addInst(Inst.LMINT,loc,null,res); break; 
+			case "FLOAT": addInst(Inst.LMFLT,loc,null,res); break;
+			case "BOOL": addInst(Inst.LMBOOL,loc,null,res); break;
 		}
 		return res;
 	}
