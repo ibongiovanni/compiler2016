@@ -4,11 +4,11 @@ import ir.ast.*;
 
 public class TAC {
 	private Inst inst;
-	private AST op1;
+	private Object op1; //Can be an AST or a plane String
 	private AST op2;
-	private VarDecl res;
+	private VarDecl res; //When a result is returned, it is stored in a VarDecl
 
-	public TAC(Inst inst, AST op1, AST op2, VarDecl res){
+	public TAC(Inst inst, Object op1, AST op2, VarDecl res){
 		this.inst = inst;
 		this.op1 = op1;
 		this.op2 = op2;
@@ -21,6 +21,10 @@ public class TAC {
 
 	@Override
 	public String toString(){
-		return "[ "+inst+" | "+op1+" | "+op2+" | "+res+" ]";
+		String rep=  "[ "+inst+" | ";
+		rep += (op1==null)? ("- | "):(op1+" | ");
+		rep += (op2==null)? ("- | "):(op2+" | ");
+		rep += (res==null)? ("- ]"):(res+" ]");
+		return rep;
 	}
 }
