@@ -12,14 +12,23 @@ public enum Inst{
 	CMP ("CMP"), //Compare
 	//Jumps
 	JMP ("JMP"), 	//jump
+	JF ("JF"), 		//jump if false
 	JZ ("JZ"),		//jump if zero
 	JNZ ("JNZ"),	//jump if not zero
 	JE ("JE"),		//jump if equals
 	JNE ("JNE"), 	//jump if not equals
 	JL ("JL"), 	//jump if less
+	JG ("JG"),
+	JGE ("JGE"),
 
 	ASSIGN ("ASSIGN"), //Assignment
+	RETURN ("RETURN"),
+	NULLRETURN ("NULLRETURN"),
 
+	BREAK ("BREAK"),
+	CONTINUE ("CONTINUE"),
+
+	ADDCONST ("ADDCONST"),
 	PLUSINT ("PLUSINT"),
 	PLUSFLT ("PLUSFLT"),
 	MINUSINT ("MINUSINT"),
@@ -51,7 +60,31 @@ public enum Inst{
 	GTINT ("GTINT"),
 	GTFLT ("GTFLT"),
 	GOETINT ("GOETINT"),
-	GOETFLT ("GOETFLT")
+	GOETFLT ("GOETFLT"),
+
+
+	LABEL ("LABEL"),
+
+	PROGRAMINIT ("PROGRAMINIT"),
+	PROGRAMEND ("PROGRAMEND"),
+	
+	CLASSINIT ("CLASSINIT"),
+	CLASSEND ("CLASSEND"),
+
+	METHODINIT ("METHODINIT"),
+	METHODEND ("METHODEND"),
+	EXTERNBODY ("EXTERNBODY"),
+	CALLEXPR ("CALLEXPR"),
+	CALLSTMT ("CALLSTMT"),
+
+	DECVARINT ("DECVARINT"),
+	DECVARFLT ("DECVARFLT"),
+	DECVARBOOL ("DECVARBOOL"),
+	DECVARINTARRAY ("DECVARINTARRAY"),
+	DECVARFLTARRAY ("DECVARFLTARRAY"),
+	DECVARBOOLARRAY ("DECVARBOOLARRAY")
+
+
 ;
 
 	private String name;
