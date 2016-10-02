@@ -27,6 +27,13 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 		return new VarDecl("t"+temps);
 	}
 
+	private VarDecl newTemp(String t){
+		temps++;
+		VarDecl r = new VarDecl("t"+temps);
+		r.setType(t);
+		return r;
+	}
+
 	/***********************************************************************/
 
 	/***********************************************************************
@@ -171,7 +178,24 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 // visit statements
 	@Override
 	public VarDecl visit(AssignStmt stmt){
-		addInst(Inst.ASSIGN,stmt.getExpression().accept(this),null,stmt.getLocation().accept(this));
+		VarDecl e = stmt.getExpression().accept(this);
+		VarDecl loc = stmt.getLocation().accept(this);
+		switch (stmt.getOperator()){
+			case ASSIGN: addInst(Inst.ASSIGN,e,null,loc);break;
+			case INCREMENT: {
+				switch (loc.getType()) {
+					case "INT": addInst(Inst.PLUSINT,loc,e,loc); break;
+					case "FLOAT": addInst(Inst.PLUSFLT,loc,e,loc); break;
+				}
+			} break;
+			case DECREMENT: {
+				switch (loc.getType()) {
+					case "INT": addInst(Inst.MINUSINT,loc,e,loc); break;
+					case "FLOAT": addInst(Inst.MINUSFLT,loc,e,loc); break;
+				}
+			} break;
+
+		}
 		return new VarDecl("null");
 	}
 	
@@ -194,12 +218,14 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 		Statement elseStmt = stmt.getElseStmt();
 		VarDecl condRes = condition.accept(this);
 		int ifid=newIf();
-		addInst(Inst.JF,"EndIf"+ifid,condRes,null);
+		addInst(Inst.JF,"ElseIf"+ifid,condRes,null);
 		ifStmt.accept(this);
-		addInst(Inst.LABEL,"EndIf"+ifid,null,null);
+		addInst(Inst.JMP,"EndIf"+ifid,null,null);
+		addInst(Inst.LABEL,"ElseIf"+ifid,null,null);
 		if (elseStmt!=null) {
 			elseStmt.accept(this);
 		}
+		addInst(Inst.LABEL,"EndIf"+ifid,null,null);
 
 		return new VarDecl("null");
 	}
@@ -253,6 +279,11 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	
 	@Override
 	public VarDecl visit(MethodCallStmt stmt){
+		List<Expression> params=stmt.getCall().getParams();
+		for ( Expression p : params ) {
+			VarDecl arg = p.accept(this);
+			addInst(Inst.ARGUMENT,arg,null,null);
+		}
 		addInst(Inst.CALLSTMT,stmt.getCall().getMethod().getId(),null,null);
 		return new VarDecl("null");
 	}
@@ -279,7 +310,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinPlusExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.PLUSINT,op1,op2,res); break;
 			case "FLOAT": addInst(Inst.PLUSFLT,op1,op2,res); break;
@@ -291,7 +322,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinMinusExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.MINUSINT,op1,op2,res); break;
 			case "FLOAT": addInst(Inst.MINUSFLT,op1,op2,res); break;
@@ -303,7 +334,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinTimesExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.TIMESINT,op1,op2,res); break;
 			case "FLOAT": addInst(Inst.TIMESFLT,op1,op2,res); break;
@@ -315,7 +346,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinDivideExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.DIVIDEINT,op1,op2,res); break;
 			case "FLOAT": addInst(Inst.DIVIDEFLT,op1,op2,res); break;
@@ -327,7 +358,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinModExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.MODINT,op1,op2,res); break;
 			case "FLOAT": addInst(Inst.MODFLT,op1,op2,res); break;
@@ -340,7 +371,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinGTExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.GTINT,op1,op2,res); break;
 			case "FLOAT": addInst(Inst.GTFLT,op1,op2,res); break;
@@ -352,7 +383,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinGOETExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.GOETINT,op1,op2,res); break;
 			case "FLOAT": addInst(Inst.GOETFLT,op1,op2,res); break;
@@ -364,7 +395,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinLTExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.LTINT,op1,op2,res); break;
 			case "FLOAT": addInst(Inst.LTFLT,op1,op2,res); break;
@@ -376,7 +407,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinLOETExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.LOETINT,op1,op2,res); break;
 			case "FLOAT": addInst(Inst.LOETFLT,op1,op2,res); break;
@@ -389,7 +420,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinEqualExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.EQINT,op1,op2,res); break;
 			case "FLOAT": addInst(Inst.EQFLT,op1,op2,res); break;
@@ -402,7 +433,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinNotEqualExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.NEQINT,op1,op2,res); break;
 			case "FLOAT": addInst(Inst.NEQFLT,op1,op2,res); break;
@@ -416,7 +447,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinAndExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		addInst(Inst.AND,op1,op2,res);
 		return res;
 	}
@@ -425,7 +456,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinOrExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		addInst(Inst.OR,op1,op2,res);
 		return res;
 	}
@@ -434,7 +465,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(BinOpExpr expr){
 		VarDecl op1 = expr.getLeftOperand().accept(this);
 		VarDecl op2 = expr.getRightOperand().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		addInst(null,op1,op2,res);
 		return res;
 	}
@@ -443,9 +474,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	@Override
 	public VarDecl visit(MinusExpr expr){
 		VarDecl op1 = expr.getExpression().accept(this);
-		System.out.println("1");
-		VarDecl res = newTemp();
-		System.out.println("2");
+		VarDecl res = newTemp(op1.getType());
 		switch (op1.getType()) {
 			case "INT": addInst(Inst.UMINUSINT,op1,null,res); break;
 			case "FLOAT": addInst(Inst.UMINUSFLT,op1,null,res); break;
@@ -456,7 +485,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	@Override
 	public VarDecl visit(NegatedExpr expr){
 		VarDecl op1 = expr.getExpression().accept(this);
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(op1.getType());
 		addInst(Inst.NOT,op1,null,res);
 		return res;
 	}
@@ -468,7 +497,12 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	
 	@Override
 	public VarDecl visit(MethodCallExpr expr){
-		VarDecl res = newTemp();
+		List<Expression> params=expr.getParams();
+		for ( Expression p : params ) {
+			VarDecl arg = p.accept(this);
+			addInst(Inst.ARGUMENT,arg,null,null);
+		}
+		VarDecl res = newTemp(expr.getType());
 		addInst(Inst.CALLEXPR,expr.getMethod().getId(),null,res);
 		return res;
 	}
@@ -478,21 +512,21 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 // visit literals	
 	@Override
 	public VarDecl visit(IntLiteral lit){
-		VarDecl res = newTemp();
+		VarDecl res = newTemp("INT");
 		addInst(Inst.LCINT,lit,null,res);
 		return res;
 	}
 	
 	@Override
 	public VarDecl visit(FloatLiteral lit){
-		VarDecl res = newTemp();
+		VarDecl res = newTemp("FLOAT");
 		addInst(Inst.LCFLT,lit,null,res);
 		return res;
 	}
 	
 	@Override
 	public VarDecl visit(BoolLiteral lit){
-		VarDecl res = newTemp();
+		VarDecl res = newTemp("BOOL");
 		addInst(Inst.LCBOOL,lit,null,res);
 		return res;
 	}
@@ -500,7 +534,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 
 // visit locations
 	private VarDecl locationVisit(Location loc){
-		VarDecl res = newTemp();
+		VarDecl res = newTemp(loc.getType());
 		switch (loc.getType()) {
 			case "INT": addInst(Inst.LMINT,loc,null,res); break; 
 			case "FLOAT": addInst(Inst.LMFLT,loc,null,res); break;
@@ -518,15 +552,25 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(SubClassVarLocation loc){
 		return locationVisit(loc);
 	}
+
+	private VarDecl arrayLocationVisit(ArrayLocation loc){
+		VarDecl res = newTemp(loc.getType());
+		switch (loc.getType()) {
+			case "INT": addInst(Inst.LMARRINT,loc.getIndex().accept(this),loc,res); break; 
+			case "FLOAT": addInst(Inst.LMARRFLT,loc.getIndex().accept(this),loc,res); break;
+			case "BOOL": addInst(Inst.LMARRBOOL,loc.getIndex().accept(this),loc,res); break;
+		}
+		return res;
+	}
 	
 	@Override
 	public VarDecl visit(ArrayLocation loc){
-		return locationVisit(loc);
+		return  arrayLocationVisit(loc);
 	}
 	
 	@Override
 	public VarDecl visit(SubClassArrayLocation loc){
-		return locationVisit(loc);
+		return arrayLocationVisit(loc);
 	}
 	
 	
