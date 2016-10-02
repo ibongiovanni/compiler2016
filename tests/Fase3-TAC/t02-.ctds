@@ -1,0 +1,9 @@
+class main {
+	integer x;
+	bool eq(integer a, integer b){
+		return a==b;
+	}
+	void main(){
+
+	}
+}

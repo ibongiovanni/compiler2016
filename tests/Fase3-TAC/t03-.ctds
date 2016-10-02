@@ -1,0 +1,11 @@
+class main {
+	integer arX[10];
+
+	integer get(integer i){
+		return arX[i];
+	}
+
+	void main(){
+
+	}
+}

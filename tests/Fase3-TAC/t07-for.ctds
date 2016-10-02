@@ -1,0 +1,18 @@
+class main {
+	integer arX[10];
+	integer x;
+
+	integer get(integer i){
+		integer sum;
+		for c = 0,(i*3){
+			sum += arX[i];
+		}
+		return sum;
+	}
+
+	void main(){
+		integer a;
+		a=3;
+		x= get(a);
+	}
+}

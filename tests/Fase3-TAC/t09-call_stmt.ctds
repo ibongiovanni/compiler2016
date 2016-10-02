@@ -1,0 +1,18 @@
+class main {
+	integer arX[10];
+	integer x;
+
+	integer get(integer i,bool f,float r){
+		integer sum;
+		sum=arX[x];
+		f= sum == i;
+		return sum;
+	}
+
+	void main(){
+		integer a;
+		bool f;
+		a=3;
+		get(a,f,2.5);
+	}
+}

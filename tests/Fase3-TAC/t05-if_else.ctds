@@ -1,0 +1,16 @@
+class main {
+	integer arX[10];
+
+	integer get(integer i){
+		if (i>0){
+			return arX[i];
+		}
+		else{
+			return arX[-i];
+		}
+	}
+
+	void main(){
+
+	}
+}
