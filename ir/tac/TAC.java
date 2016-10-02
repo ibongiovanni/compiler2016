@@ -21,7 +21,7 @@ public class TAC {
 
 	@Override
 	public String toString(){
-		String rep=  "[ "+inst+" | ";
+		String rep=  "[ "+inst+" \t| ";
 		rep += (op1==null)? ("- | "):(op1+" | ");
 		rep += (op2==null)? ("- | "):(op2+" | ");
 		rep += (res==null)? ("- ]"):(res+" ]");
