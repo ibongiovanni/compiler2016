@@ -674,7 +674,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 			}
 			else {
 				ArrayDecl v = (ArrayDecl) decl;
-				loc.setType(v.getType());
+				loc.setType(Type.toSingle(v.getType()));
 				loc.setRef(v);
 				//Index treatment
 				Expression index = loc.getIndex();
@@ -709,7 +709,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 				if (pub!=null) {
 					if (pub.getRef() instanceof ArrayDecl) {
 						ArrayDecl v = (ArrayDecl) pub.getRef();
-						loc.setType(v.getType());
+						loc.setType(Type.toSingle(v.getType()));
 						loc.setRef(v);
 					}
 					else {
