@@ -7,6 +7,7 @@ import java_cup.runtime.*;
 import ir.ast.*;
 import ir.ASTVisitor;
 import ir.semcheck.*;
+import ir.tac.*;
 import error.Error;
 
 public class JavaParser {
@@ -31,6 +32,16 @@ public class JavaParser {
 				System.out.println(e.toString());
 			}
 			return false;
+		}
+	}
+
+	public static void taclist(Program prog){
+		TACVisitor tacv = new TACVisitor();
+		System.out.println("\n=== TAC List ===\n");
+		prog.accept(tacv);
+		List<TAC> tacls = tacv.getList();
+		for ( TAC tac : tacls ) {
+			System.out.println(tac);
 		}
 	}
 
@@ -67,7 +78,9 @@ public class JavaParser {
 		Program prog = (Program) s.value; 
 		print(prog);
 		if(build(prog)){
-			checkTypes(prog);
+			if (checkTypes(prog)) {
+				taclist(prog);
+			}
 		}
     }
 }
