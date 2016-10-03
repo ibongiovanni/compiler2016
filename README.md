@@ -4,8 +4,10 @@ La documentación se encuentra en la carpeta `doc`.
 
 ##Instrucciones:
    - Compilar 
+   
    ```
    ant
+   
    ```
 
 Luego de que se genero el analizador léxico y sintáctico , compila y arma un JAR, llamado "Compiler.jar", dentro de la carpeta  "dist/".
@@ -15,6 +17,7 @@ Luego de que se genero el analizador léxico y sintáctico , compila y arma un J
     ./runSyntaxTests.sh
    
     ./runSemanticTests.sh
+   
    ```
    ---
    - O para ejecutar los tests y guardar la salida en un archivo:
@@ -22,4 +25,5 @@ Luego de que se genero el analizador léxico y sintáctico , compila y arma un J
    ./runSyntaxTests.sh > syntax-tests-results.txt 2>&1
    
    ./runSemanticTests.sh > semantic-tests-results.txt 2>&1
+   
    ```
