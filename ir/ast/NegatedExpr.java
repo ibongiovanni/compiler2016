@@ -10,7 +10,7 @@ public class NegatedExpr extends Expression {
 
 	@Override
 	public String toString() {
-		return "-"+expr;
+		return "!"+expr;
 	}
 
 	@Override
