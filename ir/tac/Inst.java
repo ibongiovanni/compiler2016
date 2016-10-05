@@ -6,23 +6,23 @@ public enum Inst{
 	LCFLT ("LC-FLT"),
 	LCBOOL ("LC-BOOL"),
 	LMINT ("LM-INT"), //load from memory
-	LMFLT ("LM-FLT"),
+	LMFLT ("LM-FLT"), //('var'|'null'|'res')
 	LMBOOL ("LM-BOOL"),
 	LMARRINT ("LM-ARR-INT"), //load from array
-	LMARRFLT ("LM-ARR-FLT"), //('position'|'array'|null)
+	LMARRFLT ("LM-ARR-FLT"), //('position'|'array'|'res')
 	LMARRBOOL ("LM-ARR-BOOL"),
 
-	CMP ("CMP"), //Compare
+	CMP ("CMP\t"), //Compare
 	//Jumps
-	JMP ("JMP"), 	//jump
-	JF ("JF"), 		//jump if false
-	JZ ("JZ"),		//jump if zero
-	JNZ ("JNZ"),	//jump if not zero
-	JE ("JE"),		//jump if equals
-	JNE ("JNE"), 	//jump if not equals
-	JL ("JL"), 	//jump if less
-	JG ("JG"),
-	JGE ("JGE"),
+	JMP ("JMP\t"), 	//jump
+	JF ("JF\t"), 		//jump if false
+	JZ ("JZ\t"),		//jump if zero
+	JNZ ("JNZ\t"),	//jump if not zero
+	JE ("JE\t"),		//jump if equals
+	JNE ("JNE\t"), 	//jump if not equals
+	JL ("JLv"), 	//jump if less
+	JG ("JG\t"),
+	JGE ("JGE\t"),
 
 	ASSIGN ("ASSIGN"), //Assignment
 	RETURN ("RETURN"),
@@ -45,9 +45,9 @@ public enum Inst{
 	MODINT ("MOD-INT"),
 	MODFLT ("MOD-FLT"),
 
-	AND ("AND"),
-	OR ("OR"),
-	NOT ("NOT"),
+	AND ("AND\t"),
+	OR ("OR\t"),
+	NOT ("NOT\t"),
 
 	EQINT ("EQ-INT"),
 	EQFLT ("EQ-FLT"),
