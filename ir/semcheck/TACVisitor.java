@@ -45,10 +45,14 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 		return ifcount;
 	}
 
-	private int whilecount;		
+	private int whilecount,whilecurr;		
 	private int newWhile(){
 		whilecount++;
+		whilecurr=whilecount;
 		return whilecount;
+	}
+	private void endWhile(){
+		whilecurr--;
 	}
 
 	private int forcount;		
@@ -232,13 +236,13 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	
 	@Override
 	public VarDecl visit(BreakStmt stmt){
-		addInst(Inst.BREAK,null,null,null);
+		addInst(Inst.BREAK,"EndWhile"+whilecurr,null,null);
 		return new VarDecl("null");
 	}
 	
 	@Override
 	public VarDecl visit(ContinueStmt stmt){
-		addInst(Inst.CONTINUE,null,null,null);
+		addInst(Inst.CONTINUE,"InitWhile"+whilecurr,null,null);
 		return new VarDecl("null");
 	}
 	
@@ -274,6 +278,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 		stmt.getBody().accept(this);
 		addInst(Inst.JMP,"InitWhile"+whileid,null,null);
 		addInst(Inst.LABEL,"EndWhile"+whileid,null,null);
+		endWhile();
 		return new VarDecl("null");
 	}
 	
