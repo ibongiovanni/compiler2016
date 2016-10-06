@@ -34,6 +34,9 @@
     <copy todir="${src}" overwrite="true">
       <fileset dir="error"/>
     </copy>
+    <copy todir="${src}/asm" overwrite="true">
+      <fileset dir="asm"/>
+    </copy>
     <javac srcdir="${src}" destdir="${classes}">
       <classpath refid="libraries" />
     </javac>
