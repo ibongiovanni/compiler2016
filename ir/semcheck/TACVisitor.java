@@ -31,9 +31,25 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 		temps++;
 		VarDecl r = new VarDecl("t"+temps);
 		r.setType(t);
+		r.setOffset(newOffset());
 		return r;
 	}
 
+	/***********************************************************************/
+
+	/***********************************************************************
+	*	offset and param-number management
+	*/
+	private int offsetCount;		//temporal vars counter
+	private int newOffset(){
+		offsetCount+=8; //8 is the size of each word
+		return offsetCount;
+	}
+
+	//When a method-decl ends it should restart the offset counter
+	private void resetOffset(){ 
+		offsetCount=0;
+	}
 	/***********************************************************************/
 
 	/***********************************************************************
@@ -123,12 +139,16 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	
 	@Override
 	public VarDecl visit(MethodDecl dec){
-		addInst(Inst.METHODINIT,dec.getId(),null,null);
+		resetOffset();
+		addInst(Inst.METHODINIT,dec,null,null);
 		List<FormalParam> args = dec.getArgs();
+		int i=0;
 		for ( FormalParam a : args ) {
 			a.accept(this);
+			a.setNumber(++i);
 		} 
 		dec.getBody().accept(this);
+		dec.setOffset(offsetCount); //Set the number of vars declared
 		addInst(Inst.METHODEND,null,null,null);
 		return new VarDecl("null");
 	}
@@ -140,7 +160,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 			case "FLOAT": addInst(Inst.DECVARFLT,dec,null,null); break;
 			case "BOOL": addInst(Inst.DECVARBOOL,dec,null,null); break;
 		}
-
+		dec.setOffset(newOffset());
 		return new VarDecl("null");
 	}
 		
@@ -151,6 +171,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 			case "FLOATARRAY": addInst(Inst.DECVARFLTARRAY,dec,null,null); break;
 			case "BOOLARRAY": addInst(Inst.DECVARBOOLARRAY,dec,null,null); break;
 		}
+		dec.setOffset(newOffset());
 		return new VarDecl("null");
 	}
 		
@@ -164,6 +185,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 			case "FLOATARRAY": addInst(Inst.DECVARFLTARRAY,dec,null,null); break;
 			case "BOOLARRAY": addInst(Inst.DECVARBOOLARRAY,dec,null,null); break;
 		}
+		dec.setOffset(newOffset());
 		return new VarDecl("null");
 	}
 	
