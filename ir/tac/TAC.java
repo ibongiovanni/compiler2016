@@ -15,6 +15,13 @@ public class TAC {
 		this.res = res;
 	}
 
+	public Inst getInst(){
+		return inst;
+	}
+
+	public Object getOp1(){ return op1; }
+	public AST getOp2(){ return op2; }
+
 	public VarDecl getRes(){
 		return res;
 	}
