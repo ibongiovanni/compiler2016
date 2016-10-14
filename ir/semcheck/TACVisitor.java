@@ -525,9 +525,11 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	@Override
 	public VarDecl visit(MethodCallExpr expr){
 		List<Expression> params=expr.getParams();
+		int n = 0; //argument counter
 		for ( Expression p : params ) {
+			n++;
 			VarDecl arg = p.accept(this);
-			addInst(Inst.ARGUMENT,arg,null,null);
+			addInst(Inst.ARGUMENT,n,arg,null);
 		}
 		VarDecl res = newTemp(expr.getType());
 		addInst(Inst.CALLEXPR,expr.getMethod().getId(),null,res);
