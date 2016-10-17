@@ -19,16 +19,23 @@ public class AsmGen {
 	File file;
 	FileWriter fw;
 	BufferedWriter bw;
+	String fName;
 
 
-	public AsmGen(List<TAC> list){
+	public AsmGen(List<TAC> list,String fpath){
 		this.list =list;
+		String sep = File.separator; 				//Get system-dependent separator ('/' in unix)
+		String[] paths = fpath.split("["+sep+"]"); 	//Disect path in directories and filename
+		String nam = paths[paths.length-1]; 		//get last element (the filename)
+		fName = nam; 								//nam is the filename with extension
 		try{
-			file = new File("program.asm");
+			String fnNoExt = nam.split("[.]")[0]; 	//get filename without extension
+			file = new File("out"+sep+fnNoExt+".s");
 			// if file doesnt exists, then create it
 			if (!file.exists()) {
 				file.createNewFile();
 			}
+			System.out.println("\nFile created at: "+file.getAbsolutePath());
 			fw = new FileWriter(file.getAbsoluteFile());
 			bw = new BufferedWriter(fw);
 		}
@@ -136,7 +143,7 @@ public class AsmGen {
 		IntLiteral lit = (IntLiteral)tac.getOp1();
 		int val = lit.getValue();
 		int off = tac.getRes().getOffset();
-		ord = "mov $"+val+", -"+off+"(%rbp)";
+		ord = "movq $"+val+", -"+off+"(%rbp)";
 		write(ord);
 	}
 
@@ -155,18 +162,21 @@ public class AsmGen {
 		BoolLiteral lit = (BoolLiteral)tac.getOp1();
 		int val = (lit.getValue())? 1:0; //1=true 0=false
 		int off = tac.getRes().getOffset();
-		ord = "mov $"+val+", -"+off+"(%rbp)";
+		ord = "movq $"+val+", -"+off+"(%rbp)";
 		write(ord);
 	}
 
 /** Load Vars */
 	private void loadMemInt(TAC tac){
 		String ord;
-		int varOff = ((VarDecl)((VarLocation)tac.getOp1()).getRef()).getOffset();
+		int varOff = ((NamedDecl)((VarLocation)tac.getOp1()).getRef()).getOffset();
 		int tempOff = tac.getRes().getOffset();
-		//mov -varOff(%rbp), -tempOff(%rbp)
-		ord = "mov -"+varOff+"(%rbp), -"+tempOff+"(%rbp)";
-		write(ord);
+		
+		//mov var to r10
+		write("mov -"+varOff+"(%rbp), %r10");
+		//move r10 to mem
+		write("mov %r10, -"+tempOff+"(%rbp)");
+		
 	}
 
 	private void loadMemFlt(TAC tac){
@@ -202,15 +212,6 @@ public class AsmGen {
 		
 		//compare them
 		write("cmp %r10, %r11");
-		/*
-		//set register r11 to return value
-		write("mov $0, %r11");
-		write("mov $1, %r10");
-		write("cmove %r10, %r11");
-
-		//move return value to mem
-		int resOff = tac.getRes().getOffset();
-		*/
 	}
 	
 	private void jmp(TAC tac){
@@ -300,7 +301,7 @@ public class AsmGen {
 		write("mov -"+op1Off+"(%rbp), %r10");
 
 		//perform add over r10
-		write("add %r10, -"+op2Off+"-(%rbp)");
+		write("add %r10, -"+op2Off+"(%rbp)");
 
 		//move result to mem
 		write("mov %r10, -"+resOff+"(%rbp)");
@@ -322,7 +323,7 @@ public class AsmGen {
 		write("mov -"+op1Off+"(%rbp), %r10");
 
 		//perform substract over r10
-		write("sub %r10, -"+op2Off+"-(%rbp)");
+		write("sub %r10, -"+op2Off+"(%rbp)");
 
 		//move result to mem
 		write("mov %r10, -"+resOff+"(%rbp)");
@@ -365,7 +366,7 @@ public class AsmGen {
 		write("mov -"+op1Off+"(%rbp), %r10");
 
 		//perform multiply over r10
-		write("imul %r10, -"+op2Off+"-(%rbp)");
+		write("imul %r10, -"+op2Off+"(%rbp)");
 
 		//move result to mem
 		write("mov %r10, -"+resOff+"(%rbp)");
@@ -391,7 +392,7 @@ public class AsmGen {
 		write("mov -"+op1Off+"(%rbp), %rax");
 
 		//perform division over rax
-		write("imul -"+op2Off+"-(%rbp)");
+		write("imul -"+op2Off+"(%rbp)");
 
 		//move quotient to mem
 		write("mov %rax, -"+resOff+"(%rbp)");
@@ -417,7 +418,7 @@ public class AsmGen {
 		write("mov -"+op1Off+"(%rbp), %rax");
 
 		//perform division over rax
-		write("imul -"+op2Off+"-(%rbp)");
+		write("imul -"+op2Off+"(%rbp)");
 
 		//move remainder to mem
 		write("mov %rdx, -"+resOff+"(%rbp)");
@@ -440,7 +441,7 @@ public class AsmGen {
 		write("mov -"+op1Off+"(%rbp), %r10");
 
 		//perform multiply over r10
-		write(inst+" %r10, -"+op2Off+"-(%rbp)");
+		write(inst+" %r10, -"+op2Off+"(%rbp)");
 
 		//move result to mem
 		write("mov %r10, -"+resOff+"(%rbp)");
@@ -570,7 +571,7 @@ public class AsmGen {
 	}
 
 	private void progInit(TAC tac){
-		write(".file ");
+		write(".file \""+fName+"\"");
 		write(".text");
 		write(".globl main");
 		write(".type main, @function");
@@ -660,10 +661,10 @@ public class AsmGen {
 /** Declarations */
 	private void decVarInt(TAC tac){
 		//get var offset
-		int varOff = ((VarDecl)tac.getOp1()).getOffset();
+		int varOff = ((NamedDecl)tac.getOp1()).getOffset();
 
 		//initialize var with 0;
-		write("mov $0, -"+varOff+"(%rbp)");
+		write("movq $0, -"+varOff+"(%rbp)");
 	}
 
 	private void decVarFlt(TAC tac){
