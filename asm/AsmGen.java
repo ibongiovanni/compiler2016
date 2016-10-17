@@ -47,6 +47,11 @@ public class AsmGen {
 	}
 
 	private void write(String s){
+		//Indent string
+		for (int i=0; i<indentLvl ;i++) {
+			s="\t"+s;
+		}
+		//try to write the line
 		try{
 			bw.write(s);
 			bw.newLine();
@@ -55,6 +60,14 @@ public class AsmGen {
 			e.printStackTrace();
 		}
 
+	}
+
+	private int indentLvl;
+	private void incIndent(){
+		indentLvl++;
+	}
+	private void decIndent(){
+		indentLvl--;
 	}
 
 	public void run(){
@@ -593,6 +606,7 @@ public class AsmGen {
 	private void methodInit(TAC tac){
 		String lbl = ((MethodDecl)tac.getOp1()).getId();
 		write(lbl+":");
+		incIndent();
 		int methOff = ((MethodDecl)tac.getOp1()).getOffset();
 		write("enter $"+methOff+",$0");
 
@@ -612,7 +626,8 @@ public class AsmGen {
 
 	private void methodEnd(TAC tac){
 		write("leave");
-		write("ret");
+		write("ret\n");
+		decIndent();
 	}
 
 	private void extern(TAC tac){
