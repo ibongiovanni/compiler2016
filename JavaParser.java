@@ -9,9 +9,17 @@ import ir.ASTVisitor;
 import ir.semcheck.*;
 import ir.tac.*;
 import error.Error;
+import asm.*;
 
 public class JavaParser {
 	
+	private static List<TAC> tacls;
+
+	public static void genAsm(String fpath){
+		AsmGen gen = new AsmGen(tacls,fpath);
+		gen.run();
+	}
+
 	public static void print(Program prog){
 		ASTVisitor<String> pv = new PrintVisitor();
 		String programRep="\n== PROGRAM REPRESENTATION ==\n\n";
@@ -39,7 +47,7 @@ public class JavaParser {
 		TACVisitor tacv = new TACVisitor();
 		System.out.println("\n=== TAC List ===\n");
 		prog.accept(tacv);
-		List<TAC> tacls = tacv.getList();
+		tacls = tacv.getList();
 		for ( TAC tac : tacls ) {
 			System.out.println(tac);
 		}
@@ -80,6 +88,7 @@ public class JavaParser {
 		if(build(prog)){
 			if (checkTypes(prog)) {
 				taclist(prog);
+				genAsm(args[0]);
 			}
 		}
     }
