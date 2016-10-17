@@ -140,16 +140,17 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	@Override
 	public VarDecl visit(MethodDecl dec){
 		resetOffset();
-		addInst(Inst.METHODINIT,dec,null,null);
-		List<FormalParam> args = dec.getArgs();
-		int i=0;
-		for ( FormalParam a : args ) {
-			a.accept(this);
-			a.setNumber(++i);
-		} 
-		dec.getBody().accept(this);
-		dec.setOffset(offsetCount); //Set the number of vars declared
-		addInst(Inst.METHODEND,null,null,null);
+		if(!dec.isExternal()){	addInst(Inst.METHODINIT,dec,null,null);
+			List<FormalParam> args = dec.getArgs();
+			int i=0;
+			for ( FormalParam a : args ) {
+				a.accept(this);
+				a.setNumber(++i);
+			} 
+			dec.getBody().accept(this);
+			dec.setOffset(offsetCount); //Set the number of vars declared
+			addInst(Inst.METHODEND,null,null,null);
+		}
 		return new VarDecl("null");
 	}
 	
@@ -307,9 +308,11 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	@Override
 	public VarDecl visit(MethodCallStmt stmt){
 		List<Expression> params=stmt.getCall().getParams();
+		int n = 0; //argument counter
 		for ( Expression p : params ) {
+			n++;
 			VarDecl arg = p.accept(this);
-			addInst(Inst.ARGUMENT,arg,null,null);
+			addInst(Inst.ARGUMENT,n,arg,null);
 		}
 		addInst(Inst.CALLSTMT,stmt.getCall().getMethod().getId(),null,null);
 		return new VarDecl("null");
