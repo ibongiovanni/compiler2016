@@ -206,10 +206,15 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	@Override
 	public VarDecl visit(AssignStmt stmt){
 		VarDecl e = stmt.getExpression().accept(this);
-		VarDecl loc = stmt.getLocation().accept(this);
+		Location loc = stmt.getLocation(); 
+		NamedDecl locRef = (NamedDecl)loc.getRef();
+		VarDecl arrExpr=null;
+		if (loc instanceof ArrayLocation) {
+			arrExpr= ((ArrayLocation)loc).getIndex().accept(this);
+		}
 		switch (stmt.getOperator()){
-			case ASSIGN: addInst(Inst.ASSIGN,e,null,loc);break;
-			case INCREMENT: {
+			case ASSIGN: addInst(Inst.ASSIGN,arrExpr,loc,e);break;
+			/*case INCREMENT: {
 				switch (loc.getType()) {
 					case "INT": addInst(Inst.PLUSINT,loc,e,loc); break;
 					case "FLOAT": addInst(Inst.PLUSFLT,loc,e,loc); break;
@@ -220,7 +225,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 					case "INT": addInst(Inst.MINUSINT,loc,e,loc); break;
 					case "FLOAT": addInst(Inst.MINUSFLT,loc,e,loc); break;
 				}
-			} break;
+			} break;*/
 
 		}
 		return new VarDecl("null");
