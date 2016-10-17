@@ -1,0 +1,7 @@
+class main{
+	integer main(){
+		integer x;
+		x=15;
+		return x;
+	}
+}

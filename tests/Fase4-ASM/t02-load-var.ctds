@@ -1,0 +1,6 @@
+class main{
+	integer main(){
+		integer x;
+		return x;
+	}
+}

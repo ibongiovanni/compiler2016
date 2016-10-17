@@ -1,0 +1,10 @@
+class main{
+	bool notlocal(integer a) extern;
+
+	integer main(){
+		integer x;
+		x=15;
+		notlocal(x);
+		return x;
+	}
+}

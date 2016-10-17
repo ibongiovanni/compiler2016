@@ -1,0 +1,11 @@
+class main{
+	integer inc(integer a){
+		return a+1;
+	}
+
+	integer main(){
+		integer x;
+		x=15;
+		return inc(x);
+	}
+}

@@ -1,0 +1,5 @@
+class main{
+	integer main(){
+		return 0;
+	}
+}
