@@ -100,10 +100,10 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 			if(checkParam){
 				Body body = dec.getBody();
 				String res = body.accept(this);
+				if (res == "ExternalBody") {
+					dec.setExternal();	
+				}
 				/*if (!t.equals(res)) {
-					if (res == "ExternalBody") {
-						
-					}
 					else {
 						addError(dec,"Incorrect type of return, expected '"+t+"', obtained '"+res+"'");
 					}
