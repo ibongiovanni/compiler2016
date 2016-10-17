@@ -24,7 +24,7 @@ public enum Inst{
 	JG ("JG\t"),
 	JGE ("JGE\t"),
 
-	ASSIGN ("ASSIGN"), //Assignment
+	ASSIGN ("ASSIGN"), //Assignment [ ArrayExpression? - location - expressionToAssign ]
 	RETURN ("RETURN"),
 	NULLRETURN ("NULL-RETURN"),
 
