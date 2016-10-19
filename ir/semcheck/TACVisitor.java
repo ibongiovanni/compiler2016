@@ -172,7 +172,12 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 			case "FLOATARRAY": addInst(Inst.DECVARFLTARRAY,dec,null,null); break;
 			case "BOOLARRAY": addInst(Inst.DECVARBOOLARRAY,dec,null,null); break;
 		}
-		dec.setOffset(newOffset());
+		int size = dec.getSize();
+		int off = 0;
+		for (int i = 0 ;i<size ;i++ ) {
+			off = newOffset();
+		}
+		dec.setOffset(off);
 		return new VarDecl("null");
 	}
 		
