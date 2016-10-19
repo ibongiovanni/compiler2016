@@ -585,7 +585,7 @@ public class AsmGen {
 		write("mov -"+op2Off+"(%rbp), %r11");
 
 		//compare them
-		write("cmp %r10, %r11");
+		write("cmp %r11, %r10");
 
 		//set register r11 to return value
 		write("mov $0, %r11");
@@ -622,7 +622,7 @@ public class AsmGen {
 
 /** Realational Operations */
 	private void ltInt(TAC tac){
-		compAux(tac,"g");
+		compAux(tac,"l");
 	}
 
 	private void ltFlt(TAC tac){
@@ -630,7 +630,7 @@ public class AsmGen {
 	}
 
 	private void loetInt(TAC tac){
-		compAux(tac,"ge");
+		compAux(tac,"le");
 	}
 
 	private void loetFlt(TAC tac){
@@ -638,7 +638,7 @@ public class AsmGen {
 	}
 
 	private void gtInt(TAC tac){
-		compAux(tac,"l");
+		compAux(tac,"g");
 	}
 
 	private void gtFlt(TAC tac){
@@ -646,7 +646,7 @@ public class AsmGen {
 	}
 
 	private void goetInt(TAC tac){
-		compAux(tac,"le");
+		compAux(tac,"ge");
 	}
 
 	private void goetFlt(TAC tac){
@@ -656,7 +656,14 @@ public class AsmGen {
 /** Labels */
 	private void label(TAC tac){
 		String lbl = (String)tac.getOp1();
+		// String t = lbl.substring(0,3);
+		// if (t.equals("End")) {
+		// 	decIndent();
+		// }
 		write(lbl+":");
+		// if (t.equals("Ini")) {
+		// 	incIndent();
+		// }
 	}
 
 	private void progInit(TAC tac){
