@@ -70,9 +70,9 @@ public class AsmGen {
 		indentLvl--;
 	}
 
-	private String arrayLoc(ArrayLocation al, VarDecl e){
+	private String arrayLoc(ArrayDecl al, VarDecl e){
 		int word = 8;
-		int arrOff = ((NamedDecl)al.getRef()).getOffset();
+		int arrOff = al.getOffset();
 		int exprOff = e.getOffset();
 		//move expression to rax
 		write("mov -"+exprOff+"(%rbp), %rax");
@@ -216,7 +216,7 @@ public class AsmGen {
 		int tempOff = tac.getRes().getOffset();
 		ArrayLocation al = (ArrayLocation)tac.getOp2();
 		VarDecl arExpr = (VarDecl)tac.getOp1();
-		String arDir = arrayLoc(al,arExpr);
+		String arDir = arrayLoc((ArrayDecl)al.getRef(),arExpr);
 		//move var to r10
 		write("mov "+arDir+", %r10");
 
@@ -243,7 +243,7 @@ public class AsmGen {
 		write("mov -"+op2Off+"(%rbp), %r11");
 		
 		//compare them
-		write("cmp %r10, %r11");
+		write("cmp %r11, %r10");
 	}
 	
 	private void jmp(TAC tac){
@@ -273,12 +273,12 @@ public class AsmGen {
 /** Assignment and Return Stmts */
 	private void assign(TAC tac){
 		//get expression offset
-		int eOff = tac.getRes().getOffset();
+		int eOff = ((VarDecl)tac.getOp1()).getOffset();
 
 		//move expr to r10
 		write("mov -"+eOff+"(%rbp), %r10");
 
-		NamedDecl dec = (NamedDecl)((Location)tac.getOp2()).getRef();
+		NamedDecl dec = (NamedDecl)tac.getRes();
 		if (dec instanceof VarDecl && !(dec instanceof ArrayDecl)) {
 			//get location offset
 			int locOff = dec.getOffset();
@@ -287,7 +287,7 @@ public class AsmGen {
 			write("mov %r10, -"+locOff+"(%rbp)");
 		}
 		if (dec instanceof ArrayDecl) {
-			String arrOff = arrayLoc((ArrayLocation)tac.getOp2(), (VarDecl)tac.getOp1());
+			String arrOff = arrayLoc((ArrayDecl)tac.getRes(), (VarDecl)tac.getOp2());
 			//move r10 content to memory
 			write("mov %r10, "+arrOff);
 		}
