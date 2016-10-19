@@ -1,0 +1,24 @@
+class main{
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+
+	integer main(){
+		//integer x;
+		//x=5;
+		print_bool(true&&true);
+		print_bool(false&&true);
+		print_bool(true&&false);
+		print_bool(false&&false);
+		print_line();
+		print_bool(true||true);
+		print_bool(false||true);
+		print_bool(true||false);
+		print_bool(false||false);
+		print_line();
+		print_bool(!true);
+		print_bool(!false);	
+		return 0;
+	}
+}

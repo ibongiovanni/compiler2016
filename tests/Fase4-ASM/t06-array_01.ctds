@@ -1,0 +1,13 @@
+class main{
+	void print_int(integer n) extern;
+
+	integer main(){
+		integer x;
+		integer ar[10];
+
+		x=5;
+		ar[3]=x;
+		print_int(ar[3]);
+		return 0;
+	}
+}

@@ -1,0 +1,22 @@
+class main{
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+
+	integer main(){
+		print_int(2+1);
+		print_line();
+		print_int(3-4);
+		print_line();
+		print_int(-2);
+		print_line();
+		print_int(2*3);
+		print_line();
+		print_int(6/3);
+		print_line();
+		print_int(7%4);
+		print_line();
+		return 0;
+	}
+}

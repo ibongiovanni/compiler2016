@@ -1,0 +1,21 @@
+class main{
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;
+
+	integer main(){
+		//integer x;
+		//x=5;
+		print_bool(true);
+		if (true){
+			print_int(1);
+		}
+		if(!true){
+			print_int(1);
+		}
+		else{
+			print_int(0);
+		}
+		
+		return 0;
+	}
+}
