@@ -70,6 +70,17 @@ public class AsmGen {
 		indentLvl--;
 	}
 
+	private String arrayLoc(ArrayLocation al, VarDecl e){
+		int word = 8;
+		int arrOff = ((NamedDecl)al.getRef()).getOffset();
+		int exprOff = e.getOffset();
+		//move expression to rax
+		write("mov -"+exprOff+"(%rbp), %rax");
+		
+		return "-"+arrOff+"(%rbp,%rax,"+word+")";
+
+	}
+
 	public void run(){
 		for ( TAC tac : list ) {
 			switch (tac.getInst()) {
@@ -202,7 +213,15 @@ public class AsmGen {
 
 /** Load Arrays */
 	private void loadArrInt(TAC tac){
+		int tempOff = tac.getRes().getOffset();
+		ArrayLocation al = (ArrayLocation)tac.getOp2();
+		VarDecl arExpr = (VarDecl)tac.getOp1();
+		String arDir = arrayLoc(al,arExpr);
+		//move var to r10
+		write("mov "+arDir+", %r10");
 
+		//move r10 to mem
+		write("mov %r10, -"+tempOff+"(%rbp)");
 	}
 
 	private void loadArrFlt(TAC tac){
@@ -210,7 +229,7 @@ public class AsmGen {
 	}
 
 	private void loadArrBool(TAC tac){
-
+		loadArrInt(tac);
 	}
 
 /** Conditional and Jumps */
@@ -254,16 +273,24 @@ public class AsmGen {
 /** Assignment and Return Stmts */
 	private void assign(TAC tac){
 		//get expression offset
-		int eOff = ((VarDecl)tac.getOp1()).getOffset();
-
-		//get result offset
-		int resOff = tac.getRes().getOffset();
+		int eOff = tac.getRes().getOffset();
 
 		//move expr to r10
 		write("mov -"+eOff+"(%rbp), %r10");
 
-		//move r10 content to memory
-		write("mov %r10, -"+resOff+"(%rbp)");
+		NamedDecl dec = (NamedDecl)((Location)tac.getOp2()).getRef();
+		if (dec instanceof VarDecl && !(dec instanceof ArrayDecl)) {
+			//get location offset
+			int locOff = dec.getOffset();
+
+			//move r10 content to memory
+			write("mov %r10, -"+locOff+"(%rbp)");
+		}
+		if (dec instanceof ArrayDecl) {
+			String arrOff = arrayLoc((ArrayLocation)tac.getOp2(), (VarDecl)tac.getOp1());
+			//move r10 content to memory
+			write("mov %r10, "+arrOff);
+		}
 	}
 
 	private void retExpr(TAC tac){
@@ -313,11 +340,14 @@ public class AsmGen {
 		//move op1 to r10
 		write("mov -"+op1Off+"(%rbp), %r10");
 
+		//move op2 to r11
+		write("mov -"+op2Off+"(%rbp), %r11");
+
 		//perform add over r10
-		write("add %r10, -"+op2Off+"(%rbp)");
+		write("add %r10, %r11");
 
 		//move result to mem
-		write("mov %r10, -"+resOff+"(%rbp)");
+		write("mov %r11, -"+resOff+"(%rbp)");
 	}
 
 	private void plusFlt(TAC tac){
@@ -332,14 +362,17 @@ public class AsmGen {
 		//get result offset
 		int resOff = tac.getRes().getOffset();
 
-		//move op1 to r10
-		write("mov -"+op1Off+"(%rbp), %r10");
+		//move op1 to r11
+		write("mov -"+op1Off+"(%rbp), %r11");
 
-		//perform substract over r10
-		write("sub %r10, -"+op2Off+"(%rbp)");
+		//move op2 to r10
+		write("mov -"+op2Off+"(%rbp), %r10");
+
+		//perform sub over r11 =  r10-r11
+		write("sub %r10, %r11");
 
 		//move result to mem
-		write("mov %r10, -"+resOff+"(%rbp)");
+		write("mov %r11, -"+resOff+"(%rbp)");
 
 	}
 
@@ -378,8 +411,11 @@ public class AsmGen {
 		//move op1 to r10
 		write("mov -"+op1Off+"(%rbp), %r10");
 
+		//move op2 to r11
+		write("mov -"+op2Off+"(%rbp), %r11");
+
 		//perform multiply over r10
-		write("imul %r10, -"+op2Off+"(%rbp)");
+		write("imul %r11, %r10");
 
 		//move result to mem
 		write("mov %r10, -"+resOff+"(%rbp)");
@@ -405,7 +441,7 @@ public class AsmGen {
 		write("mov -"+op1Off+"(%rbp), %rax");
 
 		//perform division over rax
-		write("imul -"+op2Off+"(%rbp)");
+		write("idivq -"+op2Off+"(%rbp)");
 
 		//move quotient to mem
 		write("mov %rax, -"+resOff+"(%rbp)");
@@ -431,7 +467,7 @@ public class AsmGen {
 		write("mov -"+op1Off+"(%rbp), %rax");
 
 		//perform division over rax
-		write("imul -"+op2Off+"(%rbp)");
+		write("idivq -"+op2Off+"(%rbp)");
 
 		//move remainder to mem
 		write("mov %rdx, -"+resOff+"(%rbp)");
@@ -453,19 +489,59 @@ public class AsmGen {
 		//move op1 to r10
 		write("mov -"+op1Off+"(%rbp), %r10");
 
-		//perform multiply over r10
-		write(inst+" %r10, -"+op2Off+"(%rbp)");
+		//move op2 to r11
+		write("mov -"+op2Off+"(%rbp), %r11");
+
+		//perform inst over r10
+		write(inst+" %r10, %r11");
 
 		//move result to mem
 		write("mov %r10, -"+resOff+"(%rbp)");
 	}
 
 	private void and(TAC tac){
-		auxInst(tac,"and");
+		//auxInst(tac,"and");
+		//get op1 offset
+		int op1Off = ((VarDecl)tac.getOp1()).getOffset();
+		//get op2 offset
+		int op2Off = ((VarDecl)tac.getOp2()).getOffset();
+		//get result offset
+		int resOff = tac.getRes().getOffset();
+
+		//move op1 to r10
+		write("mov -"+op1Off+"(%rbp), %r10");
+		//move op2 to r11
+		write("mov -"+op2Off+"(%rbp), %r11");
+		write("mov $0, %r12");
+
+		write("cmp %r10, %r11");
+		write("cmovne %r12, %r10"); //if op1<>op2 -> op1&&op2=false
+
+		//move result to mem
+		write("mov %r10, -"+resOff+"(%rbp)");
+
 	}
 
 	private void or(TAC tac){
-		auxInst(tac,"or");
+		//auxInst(tac,"or");
+		//get op1 offset
+		int op1Off = ((VarDecl)tac.getOp1()).getOffset();
+		//get op2 offset
+		int op2Off = ((VarDecl)tac.getOp2()).getOffset();
+		//get result offset
+		int resOff = tac.getRes().getOffset();
+
+		//move op1 to r10
+		write("mov -"+op1Off+"(%rbp), %r10");
+		//move op2 to r11
+		write("mov -"+op2Off+"(%rbp), %r11");
+		write("mov $1, %r12");
+
+		write("cmp %r10, %r11");
+		write("cmovne %r12, %r10"); //if op1<>op2 -> op1||op2=true
+
+		//move result to mem
+		write("mov %r10, -"+resOff+"(%rbp)");
 	}
 
 	private void not(TAC tac){
@@ -546,7 +622,7 @@ public class AsmGen {
 
 /** Realational Operations */
 	private void ltInt(TAC tac){
-		compAux(tac,"l");
+		compAux(tac,"g");
 	}
 
 	private void ltFlt(TAC tac){
@@ -554,7 +630,7 @@ public class AsmGen {
 	}
 
 	private void loetInt(TAC tac){
-		compAux(tac,"le");
+		compAux(tac,"ge");
 	}
 
 	private void loetFlt(TAC tac){
@@ -562,7 +638,7 @@ public class AsmGen {
 	}
 
 	private void gtInt(TAC tac){
-		compAux(tac,"g");
+		compAux(tac,"l");
 	}
 
 	private void gtFlt(TAC tac){
@@ -570,7 +646,7 @@ public class AsmGen {
 	}
 
 	private void goetInt(TAC tac){
-		compAux(tac,"ge");
+		compAux(tac,"le");
 	}
 
 	private void goetFlt(TAC tac){
