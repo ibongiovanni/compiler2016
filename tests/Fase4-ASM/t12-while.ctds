@@ -1,0 +1,20 @@
+class main{
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+
+	integer main(){
+		integer i,sum,max;
+		max=10;
+		i=0;
+		while(i<max){
+			i=i+1;
+			sum=sum+i;
+			print_int(i);
+		}
+		print_line();
+		print_int(sum);
+		return 0;
+	}
+}
