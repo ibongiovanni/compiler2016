@@ -218,7 +218,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 			arrExpr= ((ArrayLocation)loc).getIndex().accept(this);
 		}
 		switch (stmt.getOperator()){
-			case ASSIGN: addInst(Inst.ASSIGN,arrExpr,loc,e);break;
+			case ASSIGN: addInst(Inst.ASSIGN,e,arrExpr,(VarDecl)locRef);break;
 			/*case INCREMENT: {
 				switch (loc.getType()) {
 					case "INT": addInst(Inst.PLUSINT,loc,e,loc); break;
