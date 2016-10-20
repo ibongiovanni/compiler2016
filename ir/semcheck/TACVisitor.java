@@ -219,19 +219,39 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 				arrExpr= ((ArrayLocation)loc).getIndex().accept(this);
 			}
 			switch (stmt.getOperator()){
-				case ASSIGN: addInst(Inst.ASSIGN,e,arrExpr,(VarDecl)locRef);break;
-				/*case INCREMENT: {
+				case ASSIGN: addInst(Inst.ASSIGN,e,arrExpr,locRef);break;
+				case INCREMENT: {
 					switch (loc.getType()) {
-						case "INT": addInst(Inst.PLUSINT,loc,e,loc); break;
-						case "FLOAT": addInst(Inst.PLUSFLT,loc,e,loc); break;
+						case "INT": {
+							VarDecl tempRes = newTemp("INT");
+							if (loc instanceof ArrayLocation) {
+								VarDecl arrRes = ((ArrayLocation)loc).accept(this);
+								addInst(Inst.PLUSINT,arrRes,e,tempRes);
+							}else{
+								addInst(Inst.PLUSINT,locRef,e,tempRes);
+							}
+							addInst(Inst.ASSIGN,tempRes,arrExpr,locRef); 
+							break;
+						}
+						case "FLOAT": addInst(Inst.PLUSFLT,loc,e,locRef); break;
 					}
 				} break;
 				case DECREMENT: {
 					switch (loc.getType()) {
-						case "INT": addInst(Inst.MINUSINT,loc,e,loc); break;
-						case "FLOAT": addInst(Inst.MINUSFLT,loc,e,loc); break;
+						case "INT": {
+							VarDecl tempRes = newTemp("INT");
+							if (loc instanceof ArrayLocation) {
+								VarDecl arrRes = ((ArrayLocation)loc).accept(this);
+								addInst(Inst.MINUSINT,arrRes,e,tempRes);
+							}else{
+								addInst(Inst.MINUSINT,locRef,e,tempRes);
+							}
+							addInst(Inst.ASSIGN,tempRes,arrExpr,locRef); 
+							break;
+						}
+						case "FLOAT": addInst(Inst.MINUSFLT,loc,e,locRef); break;
 					}
-				} break;*/
+				} break;
 
 			}
 		}
