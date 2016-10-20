@@ -5,10 +5,11 @@ class main{
 
 
 	integer main(){
-		integer i,sum,max;
+		integer sum,max;
 		max=10;
 		for i=1, max {
 			sum=sum+i;
+			i=0;
 			print_int(i);
 		}
 		print_line();
