@@ -212,26 +212,28 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(AssignStmt stmt){
 		VarDecl e = stmt.getExpression().accept(this);
 		Location loc = stmt.getLocation(); 
-		NamedDecl locRef = (NamedDecl)loc.getRef();
-		VarDecl arrExpr=null;
-		if (loc instanceof ArrayLocation) {
-			arrExpr= ((ArrayLocation)loc).getIndex().accept(this);
-		}
-		switch (stmt.getOperator()){
-			case ASSIGN: addInst(Inst.ASSIGN,e,arrExpr,(VarDecl)locRef);break;
-			/*case INCREMENT: {
-				switch (loc.getType()) {
-					case "INT": addInst(Inst.PLUSINT,loc,e,loc); break;
-					case "FLOAT": addInst(Inst.PLUSFLT,loc,e,loc); break;
-				}
-			} break;
-			case DECREMENT: {
-				switch (loc.getType()) {
-					case "INT": addInst(Inst.MINUSINT,loc,e,loc); break;
-					case "FLOAT": addInst(Inst.MINUSFLT,loc,e,loc); break;
-				}
-			} break;*/
+		VarDecl locRef = (VarDecl)loc.getRef();
+		if(!locRef.isLocked()){//Check if var location is not locked for assignment
+			VarDecl arrExpr=null;
+			if (loc instanceof ArrayLocation) {
+				arrExpr= ((ArrayLocation)loc).getIndex().accept(this);
+			}
+			switch (stmt.getOperator()){
+				case ASSIGN: addInst(Inst.ASSIGN,e,arrExpr,(VarDecl)locRef);break;
+				/*case INCREMENT: {
+					switch (loc.getType()) {
+						case "INT": addInst(Inst.PLUSINT,loc,e,loc); break;
+						case "FLOAT": addInst(Inst.PLUSFLT,loc,e,loc); break;
+					}
+				} break;
+				case DECREMENT: {
+					switch (loc.getType()) {
+						case "INT": addInst(Inst.MINUSINT,loc,e,loc); break;
+						case "FLOAT": addInst(Inst.MINUSFLT,loc,e,loc); break;
+					}
+				} break;*/
 
+			}
 		}
 		return new VarDecl("null");
 	}
@@ -288,6 +290,8 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	public VarDecl visit(ForStmt stmt){
 		VarDecl inicRes = stmt.getExpr1().accept(this);
 		VarDecl i = stmt.getId();
+		i.setOffset(newOffset());
+		i.lock(); //inhibit index of being modified by user code
 		addInst(Inst.ASSIGN,inicRes,null,i);
 		VarDecl limit = stmt.getExpr2().accept(this);
 		int forid = newFor();
