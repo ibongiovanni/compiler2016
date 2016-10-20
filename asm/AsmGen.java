@@ -278,8 +278,8 @@ public class AsmGen {
 		//move expr to r10
 		write("mov -"+eOff+"(%rbp), %r10");
 
-		NamedDecl dec = (NamedDecl)tac.getRes();
-		if (dec instanceof VarDecl && !(dec instanceof ArrayDecl)) {
+		VarDecl dec = (VarDecl)tac.getRes();
+		if (!(dec instanceof ArrayDecl)) {
 			//get location offset
 			int locOff = dec.getOffset();
 
