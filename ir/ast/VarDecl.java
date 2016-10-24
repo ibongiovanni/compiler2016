@@ -6,6 +6,9 @@ public class VarDecl extends NamedDecl {
 	
 	protected boolean locked;
 
+	protected boolean isAtt;
+	protected int attPos;
+
 	public VarDecl(String id){
 		this.id = id;
 	}
@@ -25,6 +28,22 @@ public class VarDecl extends NamedDecl {
 
 	public boolean isLocked(){
 		return locked;
+	}
+
+	public void newAtt(){
+		isAtt=true;
+	}
+
+	public boolean isAtt(){
+		return isAtt;
+	}
+
+	public void setAttPos(int pos){
+		attPos=pos;
+	}
+
+	public int getAttPos(){
+		return attPos;
 	}
 
 	@Override

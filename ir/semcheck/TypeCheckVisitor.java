@@ -64,6 +64,14 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 		List<MethodDecl> methods = dec.getMethods();
 		for ( FieldDecl f : fields ) {
 			f.accept(this);
+			//Set Vars as attributes
+			List<VarDecl> attribs = f.getElements();
+			int pos=0;
+			for ( VarDecl att : attribs ) {
+				att.newAtt();
+				att.setAttPos(pos);
+				pos++;
+			}
 		}
 		for ( MethodDecl m : methods ) {
 			m.accept(this);
