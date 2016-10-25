@@ -50,7 +50,7 @@ public class SymbolTable {
 
 	}
 
-	public boolean addClass(String id){
+	public boolean addClass(ClassDecl id){
 		ClassesLevel aux = (ClassesLevel)table.get(table.size()-1); //¿Podria castear top,es seguro?
 		return aux.addClass(id);
 	}
@@ -159,7 +159,8 @@ public class SymbolTable {
 		return has;
 	}
 
-	public boolean searchClass(String c){
+	public ClassDecl searchClass(String c){
+		ClassDecl res = null;
 		if (top instanceof ClassesLevel) {
 			ClassesLevel aux = (ClassesLevel)top;
 			return aux.searchClass(c); 
