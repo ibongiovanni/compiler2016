@@ -9,6 +9,8 @@ public class VarDecl extends NamedDecl {
 	protected boolean isAtt;
 	protected int attPos;
 
+	protected ClassDecl cl;
+
 	public VarDecl(String id){
 		this.id = id;
 	}
@@ -44,6 +46,14 @@ public class VarDecl extends NamedDecl {
 
 	public int getAttPos(){
 		return attPos;
+	}
+
+	public void bindToClass(ClassDecl cl){
+		this.cl = cl;
+	}
+
+	public ClassDecl getClassDecl(){
+		return cl;
 	}
 
 	@Override
