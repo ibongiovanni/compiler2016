@@ -149,6 +149,7 @@ public class AsmGen {
 				case DECVARINTARRAY 	: decArrInt(tac); break;
 				case DECVARFLTARRAY 	: decArrFlt(tac); break;
 				case DECVARBOOLARRAY 	: decArrBool(tac); break;
+				case DECOBJ 	: decObj(tac); break;
 			}
 		}
 		try{
@@ -669,8 +670,6 @@ public class AsmGen {
 	private void progInit(TAC tac){
 		write(".file \""+fName+"\"");
 		write(".text");
-		write(".globl main");
-		write(".type main, @function");
 	}
 
 	private void progEnd(TAC tac){
@@ -688,6 +687,10 @@ public class AsmGen {
 
 	private void methodInit(TAC tac){
 		String lbl = ((MethodDecl)tac.getOp1()).getId();
+		incIndent();
+		write(".globl "+lbl);
+		write(".type "+lbl+", @function");
+		decIndent();
 		write(lbl+":");
 		incIndent();
 		int methOff = ((MethodDecl)tac.getOp1()).getOffset();
@@ -782,6 +785,10 @@ public class AsmGen {
 	}
 
 	private void decArrBool(TAC tac){
+
+	}
+
+	private void decObj(TAC tac){
 
 	}
 
