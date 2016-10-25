@@ -10,6 +10,8 @@ public class ClassDecl extends AST {
 	private List<FieldDecl> fields;
 	private List<MethodDecl> methods;
 
+	protected int size; //Size as object
+
 	public ClassDecl(String id){
 		this.id = id;
 		this.fields = new LinkedList<FieldDecl>();
@@ -47,6 +49,9 @@ public class ClassDecl extends AST {
 	public String getId(){ return id; }
 	public List<FieldDecl> getFields(){ return fields; }
 	public List<MethodDecl> getMethods() { return methods; }
+
+	public void setSize(int s){ size=s; }
+	public int getSize(){return size;}
 
 	@Override
 	public String toString() {

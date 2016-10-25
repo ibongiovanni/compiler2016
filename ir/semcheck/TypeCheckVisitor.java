@@ -67,11 +67,18 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 			//Set Vars as attributes
 			List<VarDecl> attribs = f.getElements();
 			int pos=0;
+			int size=0;
 			for ( VarDecl att : attribs ) {
 				att.newAtt();
 				att.setAttPos(pos);
 				pos++;
+				if (att instanceof ArrayDecl) {
+					size+=((ArrayDecl)att).getSize();
+				}
+				else{ size++; }
 			}
+			//Set size of class
+			dec.setSize(size);
 		}
 		for ( MethodDecl m : methods ) {
 			m.accept(this);
