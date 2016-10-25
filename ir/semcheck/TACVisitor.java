@@ -160,8 +160,19 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 			case "INT": addInst(Inst.DECVARINT,dec,null,null); break;
 			case "FLOAT": addInst(Inst.DECVARFLT,dec,null,null); break;
 			case "BOOL": addInst(Inst.DECVARBOOL,dec,null,null); break;
+			default: addInst(Inst.DECOBJ,dec,null,null);break;
 		}
-		dec.setOffset(newOffset());
+		if (!Type.isBasic(dec.getType())) { //is an object declaration?
+			int size = dec.getClassDecl().getSize();
+			int off = 0;
+			for (int i = 0 ;i<size ;i++ ) {
+				off = newOffset();
+			}
+			dec.setOffset(off);
+		}
+		else{
+			dec.setOffset(newOffset());
+		}
 		return new VarDecl("null");
 	}
 		
