@@ -42,7 +42,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 		ClassDecl c;
 		while (it.hasNext() && res) {
 			c = it.next();
-			if ( stack.addClass( c.getId() ) ) {
+			if ( stack.addClass( c ) ) {
 				res = res&&c.accept(this);	
 			}
 			else {
@@ -52,7 +52,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 			}
 		}
 		// Search for main class
-		if (res && !stack.searchClass("main")) {
+		if (res && stack.searchClass("main")==null) {
 			res=false;
 			addError(dec,"There's no main class declared");
 		}
@@ -153,7 +153,12 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 		Boolean res=true;
 		String t = dec.getType();
 		if (!Type.isBasic(t)) {
-			res &= stack.searchClass(t);
+			ClassDecl cl =stack.searchClass(t);
+			res &= (cl!=null);
+			//Bind to ClassDecl
+			if (res) {
+				dec.bindToClass(cl);
+			}
 		}
 		if (res) {
 				res=stack.addVar(dec);
@@ -517,7 +522,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 					}
 					else {
 						res=false;
-						if (stack.searchClass(cl)) {
+						if (stack.searchClass(cl)!=null) {
 							addError(expr,"Cannot find method '"+method.getId()+"' in class '"+cl+"'");
 						}
 						else {
