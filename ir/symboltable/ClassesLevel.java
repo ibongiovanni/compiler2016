@@ -13,7 +13,7 @@ public class ClassesLevel extends TableLevel {
 
 	public boolean addClass(ClassDecl c){
 		ClassDecl aux = searchClass (c.getId());
-		return (aux != null)?  classes.add(c) : false;
+		return (aux == null)?  classes.add(c) : false;
 	}
 
 	public ClassDecl searchClass(String c){
