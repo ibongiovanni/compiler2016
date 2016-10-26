@@ -81,6 +81,19 @@ public class AsmGen {
 
 	}
 
+	private String attribLoc(VarDecl att, VarDecl ae){
+		int word = 8;
+		int pos = att.getAttPos();
+		//Move position to rax
+		write("mov $"+pos+", %rax");
+		if (ae != null) {
+			int aeOff = ae.getOffset();
+			//add array offset to current offset
+			write("add -"+aeOff+"(%rbp), %rax");
+		}
+		return "(%rcx,%rax,"+word+")";
+	}
+
 	public void run(){
 		for ( TAC tac : list ) {
 			switch (tac.getInst()) {
@@ -150,7 +163,9 @@ public class AsmGen {
 				case DECVARFLTARRAY 	: decArrFlt(tac); break;
 				case DECVARBOOLARRAY 	: decArrBool(tac); break;
 				case DECOBJ 	: decObj(tac); break;
+				case LOBJ 	: lObj(tac); break;
 			}
+			write("");
 		}
 		try{
 		    if(bw!=null)
@@ -194,14 +209,22 @@ public class AsmGen {
 /** Load Vars */
 	private void loadMemInt(TAC tac){
 		String ord;
-		int varOff = ((NamedDecl)((VarLocation)tac.getOp1()).getRef()).getOffset();
-		int tempOff = tac.getRes().getOffset();
+		VarLocation vl = (VarLocation)tac.getOp1();
+		VarDecl vd = (VarDecl)vl.getRef();
+		if (vd.isAtt()) {
+			String attOff = attribLoc(vd,null);
+			//move att to r10
+			write("mov "+attOff+", %r10");
+		}
+		else {
+			int varOff = vd.getOffset();	
+			//mov var to r10
+			write("mov -"+varOff+"(%rbp), %r10");
+		}
 		
-		//mov var to r10
-		write("mov -"+varOff+"(%rbp), %r10");
+		int tempOff = tac.getRes().getOffset();
 		//move r10 to mem
 		write("mov %r10, -"+tempOff+"(%rbp)");
-		
 	}
 
 	private void loadMemFlt(TAC tac){
@@ -210,6 +233,14 @@ public class AsmGen {
 
 	private void loadMemBool(TAC tac){
 		loadMemInt(tac);
+	}
+
+/** Load Objects */
+	private void lObj(TAC tac){
+		VarDecl obj = ((SubClassVarLocation)tac.getOp1()).getObjRef();
+		int objOff = obj.getOffset();
+		//Load object's effective address in rcx
+		write("leaq -"+objOff+"(%rbp), %rcx");
 	}
 
 /** Load Arrays */
@@ -281,11 +312,17 @@ public class AsmGen {
 
 		VarDecl dec = (VarDecl)tac.getRes();
 		if (!(dec instanceof ArrayDecl)) {
-			//get location offset
-			int locOff = dec.getOffset();
-
-			//move r10 content to memory
-			write("mov %r10, -"+locOff+"(%rbp)");
+			if (dec.isAtt()) {
+				String attOff = attribLoc(dec,null);
+				//move r10 content to memory
+				write("mov %r10, "+attOff);
+			}
+			else{
+				//get location offset
+				int locOff = dec.getOffset();
+				//move r10 content to memory
+				write("mov %r10, -"+locOff+"(%rbp)");
+			}
 		}
 		if (dec instanceof ArrayDecl) {
 			String arrOff = arrayLoc((ArrayDecl)tac.getRes(), (VarDecl)tac.getOp2());
@@ -762,10 +799,15 @@ public class AsmGen {
 /** Declarations */
 	private void decVarInt(TAC tac){
 		//get var offset
-		int varOff = ((NamedDecl)tac.getOp1()).getOffset();
-
-		//initialize var with 0;
-		write("movq $0, -"+varOff+"(%rbp)");
+		VarDecl vd = (VarDecl)tac.getOp1();
+		int varOff = vd.getOffset();
+		if (!vd.isAtt() && !(vd instanceof FormalParam)) {
+			//initialize var with 0;
+			write("movq $0, -"+varOff+"(%rbp)");
+		}
+		else if(!(vd instanceof FormalParam)){
+				write("\t# attribute "+vd+" declared");
+			}
 	}
 
 	private void decVarFlt(TAC tac){
@@ -789,7 +831,8 @@ public class AsmGen {
 	}
 
 	private void decObj(TAC tac){
-
+		VarDecl obj = (VarDecl)tac.getOp1();
+		write("# object "+obj+" declared with size: "+obj.getClassDecl().getSize());
 	}
 
 
