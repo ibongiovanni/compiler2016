@@ -8,6 +8,15 @@ import java.util.Arrays;
 public class SubClassArrayLocation extends ArrayLocation {
 	private List<String> classes;
 	private String[] splitted;
+	protected VarDecl objRef; //Reference to object
+	
+	public void setObjRef(VarDecl cd){
+		objRef=cd;
+	}
+
+	public VarDecl getObjRef(){
+		return objRef;
+	}
 
 	public SubClassArrayLocation(String calls, Expression ind){
 		splitted = calls.split("[.]");	//Split string into array

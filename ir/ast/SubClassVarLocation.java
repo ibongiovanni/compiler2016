@@ -8,6 +8,7 @@ import java.util.Arrays;
 public class SubClassVarLocation extends VarLocation {
 	private List<String> classes;
 	private String[] splitted;
+	protected VarDecl objRef; //Reference to object
 
 	public SubClassVarLocation(String calls){
 		splitted = calls.split("[.]");
@@ -17,6 +18,14 @@ public class SubClassVarLocation extends VarLocation {
 
 	public List<String> getClasses(){
 		return classes;
+	}
+
+	public void setObjRef(VarDecl cd){
+		objRef=cd;
+	}
+
+	public VarDecl getObjRef(){
+		return objRef;
 	}
 
 	@Override
