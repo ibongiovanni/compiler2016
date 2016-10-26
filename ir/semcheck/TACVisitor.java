@@ -230,7 +230,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 				arrExpr= ((ArrayLocation)loc).getIndex().accept(this);
 			}
 			//Check if is an object's location
-			if (loc instanceof SubClassVarLocation) {
+			if (loc instanceof SubClassVarLocation || loc instanceof SubClassArrayLocation ) {
 				addInst(Inst.LOBJ,loc,null,null);
 			}
 			switch (stmt.getOperator()){
@@ -660,6 +660,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	
 	@Override
 	public VarDecl visit(SubClassArrayLocation loc){
+		addInst(Inst.LOBJ,loc,null,null);
 		return arrayLocationVisit(loc);
 	}
 	
