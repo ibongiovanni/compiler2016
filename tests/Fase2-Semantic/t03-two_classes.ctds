@@ -1,0 +1,10 @@
+class persona{
+	integer dni;
+
+}
+
+class main{
+	void main(){
+		persona p;
+	}
+}

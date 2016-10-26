@@ -1,0 +1,11 @@
+class aux{
+	integer x;
+	integer arr[3];
+	integer z,p;
+
+}
+
+class main{
+	void main(){
+	}
+}

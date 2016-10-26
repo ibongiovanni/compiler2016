@@ -1,0 +1,14 @@
+class main{
+	integer x;
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+
+	integer main(){
+		integer y;
+		x=3;
+		y=x;
+		return 0;
+	}
+}

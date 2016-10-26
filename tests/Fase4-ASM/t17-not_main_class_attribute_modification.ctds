@@ -1,0 +1,25 @@
+class persona{
+	integer x,z,w[7];
+	void set(integer y){
+		x=y;
+	}
+
+}
+
+class main{
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+
+	integer main(){
+		persona p;
+		integer i;
+		p.z=24;
+		i=p.z;
+		print_int(i);
+		p.set(13);
+		print_int(p.x);
+		return 0;
+	}
+}
