@@ -237,7 +237,14 @@ public class AsmGen {
 
 /** Load Objects */
 	private void lObj(TAC tac){
-		VarDecl obj = ((SubClassVarLocation)tac.getOp1()).getObjRef();
+		Location ol = (Location)tac.getOp1();
+		VarDecl obj;
+		if (ol instanceof SubClassVarLocation) {
+			obj = ((SubClassVarLocation)ol).getObjRef();
+		}
+		else{
+			obj = ((SubClassArrayLocation)ol).getObjRef();
+		}
 		int objOff = obj.getOffset();
 		//Load object's effective address in rcx
 		write("leaq -"+objOff+"(%rbp), %rcx");
@@ -247,10 +254,18 @@ public class AsmGen {
 	private void loadArrInt(TAC tac){
 		int tempOff = tac.getRes().getOffset();
 		ArrayLocation al = (ArrayLocation)tac.getOp2();
+		VarDecl ad = (VarDecl)al.getRef();
 		VarDecl arExpr = (VarDecl)tac.getOp1();
-		String arDir = arrayLoc((ArrayDecl)al.getRef(),arExpr);
-		//move var to r10
-		write("mov "+arDir+", %r10");
+		if (ad.isAtt()) {
+			String attOff = attribLoc(ad,arExpr);
+			//move att to r10
+			write("mov "+attOff+", %r10");
+		}
+		else{
+			String arDir = arrayLoc((ArrayDecl)al.getRef(),arExpr);
+			//move var to r10
+			write("mov "+arDir+", %r10");
+		}
 
 		//move r10 to mem
 		write("mov %r10, -"+tempOff+"(%rbp)");
@@ -325,9 +340,16 @@ public class AsmGen {
 			}
 		}
 		if (dec instanceof ArrayDecl) {
-			String arrOff = arrayLoc((ArrayDecl)tac.getRes(), (VarDecl)tac.getOp2());
-			//move r10 content to memory
-			write("mov %r10, "+arrOff);
+			if(dec.isAtt()){
+				String attOff = attribLoc(dec,(VarDecl)tac.getOp2());
+				//move r10 content to memory
+				write("mov %r10, "+attOff);
+			}
+			else{	
+				String arrOff = arrayLoc((ArrayDecl)tac.getRes(), (VarDecl)tac.getOp2());
+				//move r10 content to memory
+				write("mov %r10, "+arrOff);
+			}
 		}
 	}
 
