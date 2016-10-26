@@ -506,6 +506,9 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 			else {
 				VarLocation varloc = new VarLocation(classes.get(0)); //Search for local declaration
 				if (varloc.accept(this)) {
+
+					((SubClassVarLocation)method).setObjRef((VarDecl)varloc.getRef());
+					
 					// Now search for public attribute
 					cl = varloc.getType(); //Get class name
 					VarLocation pub = stack.searchPublic(cl,method.getId());
@@ -634,6 +637,7 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 		else {
 			VarLocation varloc = new VarLocation(classes.get(0)); //Search for local declaration
 			if (varloc.accept(this)) {
+				loc.setObjRef((VarDecl)varloc.getRef());
 				// Now search for public attribute
 				cl = varloc.getType(); //Get class name
 				VarLocation pub = stack.searchPublic(cl,loc.getId());
@@ -708,6 +712,10 @@ public class BuilderVisitor implements ASTVisitor<Boolean> {
 		else {
 			VarLocation varloc = new VarLocation(classes.get(0)); //Search for local declaration
 			if (varloc.accept(this)) {
+				
+
+				loc.setObjRef((VarDecl)varloc.getRef());
+
 				// Now search for public attribute
 				cl = varloc.getType(); //Get class name
 				VarLocation pub = stack.searchPublic(cl,loc.getId());
