@@ -229,6 +229,10 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 			if (loc instanceof ArrayLocation) {
 				arrExpr= ((ArrayLocation)loc).getIndex().accept(this);
 			}
+			//Check if is an object's location
+			if (loc instanceof SubClassVarLocation) {
+				addInst(Inst.LOBJ,loc,null,null);
+			}
 			switch (stmt.getOperator()){
 				case ASSIGN: addInst(Inst.ASSIGN,e,arrExpr,locRef);break;
 				case INCREMENT: {
@@ -358,6 +362,10 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 			n++;
 			VarDecl arg = p.accept(this);
 			addInst(Inst.ARGUMENT,n,arg,null);
+		}
+		VarLocation method=stmt.getCall().getMethod();
+		if (method instanceof SubClassVarLocation) {
+			addInst(Inst.LOBJ,method,null,null);
 		}
 		addInst(Inst.CALLSTMT,stmt.getCall().getMethod().getId(),null,null);
 		return new VarDecl("null");
@@ -580,6 +588,10 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 			addInst(Inst.ARGUMENT,n,arg,null);
 		}
 		VarDecl res = newTemp(expr.getType());
+		VarLocation method=expr.getMethod();
+		if (method instanceof SubClassVarLocation) {
+			addInst(Inst.LOBJ,method,null,null);
+		}
 		addInst(Inst.CALLEXPR,expr.getMethod().getId(),null,res);
 		return res;
 	}
@@ -627,6 +639,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	
 	@Override
 	public VarDecl visit(SubClassVarLocation loc){
+		addInst(Inst.LOBJ,loc,null,null);
 		return locationVisit(loc);
 	}
 
