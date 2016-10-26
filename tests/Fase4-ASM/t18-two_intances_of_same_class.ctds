@@ -13,18 +13,14 @@ class main{
 
 
 	integer main(){
-		persona p;
-		integer i;
-		p.z=24;
-		i=p.z;
-		print_int(i);
-		p.set(13);
-		print_int(p.x);
-		print_line();
+		persona p1,p2;
 
-		p.w[5]=2;
-		i = p.w[5];
-		print_int(i);
+		p1.set(5);
+		p2.set(7);
+
+		print_int(p1.x);
+		print_int(p2.x);
+
 		return 0;
 	}
 }
