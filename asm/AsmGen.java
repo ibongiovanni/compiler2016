@@ -76,9 +76,32 @@ public class AsmGen {
 		int exprOff = e.getOffset();
 		//move expression to rax
 		write("mov -"+exprOff+"(%rbp), %rax");
-		
+		checkBounds(al);
 		return "-"+arrOff+"(%rbp,%rax,"+word+")";
 
+	}
+
+	private int checkNmbr;
+	private void checkBounds(ArrayDecl ar){
+		write("# check array bounds");
+		incIndent();
+		//Check if greater of equal to zero
+		write("cmp $0, %rax");
+		write("jge almost_alright"+checkNmbr);
+		write("call alert");
+		decIndent();
+		write("almost_alright"+checkNmbr+":");
+
+		incIndent();
+		//Check if less than array size
+		int size = ar.getSize();
+		write("cmp $"+size+", %rax");
+		write("jl alright"+checkNmbr);
+		write("call alert");
+		decIndent();
+		write("alright"+checkNmbr+":");
+		write("# end of check array bounds");
+		checkNmbr++;
 	}
 
 	private String attribLoc(VarDecl att, VarDecl ae){
@@ -92,6 +115,7 @@ public class AsmGen {
 				int aeOff = ae.getOffset();
 				//move array offset to rax
 				write("mov -"+aeOff+"(%rbp), %rax");
+				checkBounds((ArrayDecl)att);
 				return id+"(,%rax,"+word+")";
 			}
 		}
@@ -103,6 +127,7 @@ public class AsmGen {
 				int aeOff = ae.getOffset();
 				//add array offset to current offset
 				write("add -"+aeOff+"(%rbp), %rax");
+				checkBounds((ArrayDecl)att);
 			}
 			return "(%rcx,%rax,"+word+")";
 		}
