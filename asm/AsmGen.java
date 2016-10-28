@@ -83,18 +83,45 @@ public class AsmGen {
 
 	private String attribLoc(VarDecl att, VarDecl ae){
 		int word = 8;
-		int pos = att.getAttPos();
-		//Move position to rax
-		write("mov $"+pos+", %rax");
-		if (ae != null) {
-			int aeOff = ae.getOffset();
-			//add array offset to current offset
-			write("add -"+aeOff+"(%rbp), %rax");
+		if (att.isStc()) {
+			String id = att.getId();
+			if (ae==null) {
+				return id+"(%rip)";
+			}
+			else{
+				int aeOff = ae.getOffset();
+				//move array offset to rax
+				write("mov -"+aeOff+"(%rbp), %rax");
+				return id+"(,%rax,"+word+")";
+			}
 		}
-		return "(%rcx,%rax,"+word+")";
+		else{	
+			int pos = att.getAttPos();
+			//Move position to rax
+			write("mov $"+pos+", %rax");
+			if (ae != null) {
+				int aeOff = ae.getOffset();
+				//add array offset to current offset
+				write("add -"+aeOff+"(%rbp), %rax");
+			}
+			return "(%rcx,%rax,"+word+")";
+		}
 	}
 
 	public void run(){
+		List<TAC> toDel = new LinkedList<TAC>();
+		for ( TAC tac : list ) {
+			switch (tac.getInst()) {
+				case DECSTCATT: {
+					decStcAtt(tac);
+					toDel.add(tac);
+					break;
+				}
+			}
+		}
+		//Remove static attributes declarations from list
+		list.removeAll(toDel);
+
 		for ( TAC tac : list ) {
 			switch (tac.getInst()) {
 				case LCINT 	: loadConstInt(tac); break;
@@ -855,6 +882,16 @@ public class AsmGen {
 	private void decObj(TAC tac){
 		VarDecl obj = (VarDecl)tac.getOp1();
 		write("# object "+obj+" declared with size: "+obj.getClassDecl().getSize());
+	}
+
+	private void decStcAtt(TAC tac){
+		VarDecl att = (VarDecl)tac.getOp1();
+		String id = att.getId();
+		int len = 8;
+		if (att instanceof ArrayDecl) {
+			len *= ((ArrayDecl)att).getSize();
+		}
+		write(".comm	"+id+","+len);
 	}
 
 
