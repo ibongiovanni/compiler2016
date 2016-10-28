@@ -156,39 +156,49 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	
 	@Override
 	public VarDecl visit(VarDecl dec){
-		switch (dec.getType()) {
-			case "INT": addInst(Inst.DECVARINT,dec,null,null); break;
-			case "FLOAT": addInst(Inst.DECVARFLT,dec,null,null); break;
-			case "BOOL": addInst(Inst.DECVARBOOL,dec,null,null); break;
-			default: addInst(Inst.DECOBJ,dec,null,null);break;
-		}
-		if (!Type.isBasic(dec.getType())) { //is an object declaration?
-			int size = dec.getClassDecl().getSize();
-			int off = 0;
-			for (int i = 0 ;i<size ;i++ ) {
-				off = newOffset();
-			}
-			dec.setOffset(off);
+		if (dec.isStc()) {
+			addInst(Inst.DECSTCATT,dec,null,null);
 		}
 		else{
-			dec.setOffset(newOffset());
+			switch (dec.getType()) {
+				case "INT": addInst(Inst.DECVARINT,dec,null,null); break;
+				case "FLOAT": addInst(Inst.DECVARFLT,dec,null,null); break;
+				case "BOOL": addInst(Inst.DECVARBOOL,dec,null,null); break;
+				default: addInst(Inst.DECOBJ,dec,null,null);break;
+			}
+			if (!Type.isBasic(dec.getType())) { //is an object declaration?
+				int size = dec.getClassDecl().getSize();
+				int off = 0;
+				for (int i = 0 ;i<size ;i++ ) {
+					off = newOffset();
+				}
+				dec.setOffset(off);
+			}
+			else{
+				dec.setOffset(newOffset());
+			}
 		}
 		return new VarDecl("null");
 	}
 		
 	@Override
 	public VarDecl visit(ArrayDecl dec){
-		switch (dec.getType()) {
-			case "INTARRAY": addInst(Inst.DECVARINTARRAY,dec,null,null); break;
-			case "FLOATARRAY": addInst(Inst.DECVARFLTARRAY,dec,null,null); break;
-			case "BOOLARRAY": addInst(Inst.DECVARBOOLARRAY,dec,null,null); break;
+		if (dec.isStc()) {
+			addInst(Inst.DECSTCATT,dec,null,null);
 		}
-		int size = dec.getSize();
-		int off = 0;
-		for (int i = 0 ;i<size ;i++ ) {
-			off = newOffset();
+		else{
+			switch (dec.getType()) {
+				case "INTARRAY": addInst(Inst.DECVARINTARRAY,dec,null,null); break;
+				case "FLOATARRAY": addInst(Inst.DECVARFLTARRAY,dec,null,null); break;
+				case "BOOLARRAY": addInst(Inst.DECVARBOOLARRAY,dec,null,null); break;
+			}
+			int size = dec.getSize();
+			int off = 0;
+			for (int i = 0 ;i<size ;i++ ) {
+				off = newOffset();
+			}
+			dec.setOffset(off);
 		}
-		dec.setOffset(off);
 		return new VarDecl("null");
 	}
 		
