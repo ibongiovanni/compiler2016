@@ -9,6 +9,8 @@ public class VarDecl extends NamedDecl {
 	protected boolean isAtt;
 	protected int attPos;
 
+	protected boolean isStc; //static attribute
+
 	protected ClassDecl cl;
 
 	public VarDecl(String id){
@@ -46,6 +48,14 @@ public class VarDecl extends NamedDecl {
 
 	public int getAttPos(){
 		return attPos;
+	}
+
+	public void makeStc(){
+		isStc=true;
+	}
+
+	public boolean isStc(){
+		return isStc;
 	}
 
 	public void bindToClass(ClassDecl cl){
