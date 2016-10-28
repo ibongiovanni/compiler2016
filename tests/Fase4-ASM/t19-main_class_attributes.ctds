@@ -1,0 +1,22 @@
+class main{
+	
+	integer x;
+	integer arr[7];
+
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+
+	integer main(){
+		
+		x = 5;
+
+		arr[3] = x; 
+
+		print_int(x);
+		print_int(arr[3]);
+
+		return 0;
+	}
+}
