@@ -62,6 +62,8 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 	public String visit(ClassDecl dec){
 		List<FieldDecl> fields= dec.getFields();
 		List<MethodDecl> methods = dec.getMethods();
+		String cId = dec.getId();
+		boolean itsMainClass = cId.equals("main");
 		int pos=0;
 		int size=0;
 		for ( FieldDecl f : fields ) {
@@ -78,6 +80,11 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 					size+=((ArrayDecl)att).getSize();
 				}
 				else{ pos++; size++; }
+
+				//Make main attribs statics
+				if(itsMainClass){
+					att.makeStc();
+				}
 			}
 		}
 		//Set size of class
