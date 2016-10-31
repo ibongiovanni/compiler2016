@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #
-#                           ******************                           
-#*****************************  compilador  ****************************************
-#**                         ******************                                    **
+#                           ********************************                           
+#*****************************  compilador de test fase 4   ************************
+#**                         ********************************                      **
 #**                                                                               **
-#**Descripcion : Script que compila un test en especifico					      **
-#**              SE LE PROVEE EL NUMERO UNICAMENTE, luego compila y guarda un ejecutable     **
-#**              en la carpeta out                                                **
+#**Descripcion : Script que compila un test en especifico de la carpeta Fase4,    **
+#**              SE LE PROVEE EL NUMERO UNICAMENTE, luego compila y genera un     **
+#**              ejecutable en la carpeta out.                                    **
 #***********************************************************************************
 
 comp="dist/Compiler.jar" #nombre del jar.. 
