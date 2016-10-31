@@ -121,13 +121,17 @@ public class AsmGen {
 		}
 		else{	
 			int pos = att.getAttPos();
-			//Move position to rax
-			write("mov $"+pos+", %rax");
 			if (ae != null) {
-				checkBounds((ArrayDecl)att);
+				//move array offset to current offset
 				int aeOff = ae.getOffset();
-				//add array offset to current offset
-				write("add -"+aeOff+"(%rbp), %rax");
+				write("mov -"+aeOff+"(%rbp), %rax");
+				checkBounds((ArrayDecl)att);
+				//add position to rax
+				write("add $"+pos+", %rax");
+			}
+			else{
+				//Move position to rax
+				write("mov $"+pos+", %rax");
 			}
 			return "(%rcx,%rax,"+word+")";
 		}
