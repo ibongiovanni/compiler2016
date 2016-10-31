@@ -377,7 +377,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 		if (method instanceof SubClassVarLocation) {
 			addInst(Inst.LOBJ,method,null,null);
 		}
-		addInst(Inst.CALLSTMT,stmt.getCall().getMethod().getId(),null,null);
+		addInst(Inst.CALLSTMT,((MethodDecl)stmt.getCall().getMethod().getRef()).getId(),null,null);
 		return new VarDecl("null");
 	}
 	
@@ -602,7 +602,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 		if (method instanceof SubClassVarLocation) {
 			addInst(Inst.LOBJ,method,null,null);
 		}
-		addInst(Inst.CALLEXPR,expr.getMethod().getId(),null,res);
+		addInst(Inst.CALLEXPR,((MethodDecl)expr.getMethod().getRef()).getId(),null,res);
 		return res;
 	}
 	
