@@ -17,4 +17,8 @@ public abstract class NamedDecl extends Declaration {
 		return id;
 	}
 
+	public void setId(String newId){
+		id = newId;
+	}
+
 }
