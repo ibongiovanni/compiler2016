@@ -124,10 +124,10 @@ public class AsmGen {
 			//Move position to rax
 			write("mov $"+pos+", %rax");
 			if (ae != null) {
+				checkBounds((ArrayDecl)att);
 				int aeOff = ae.getOffset();
 				//add array offset to current offset
 				write("add -"+aeOff+"(%rbp), %rax");
-				checkBounds((ArrayDecl)att);
 			}
 			return "(%rcx,%rax,"+word+")";
 		}
