@@ -93,6 +93,13 @@ public class TypeCheckVisitor implements ASTVisitor<String> {
 		
 		for ( MethodDecl m : methods ) {
 			m.accept(this);
+
+			//Change name of methods to class_methodID, except for main and external methods
+			if (!m.isExternal()) {
+				if (!itsMainClass || !(m.getId().equals("main")) ) {
+					m.setId(cId+"_"+m.getId());
+				}
+			}
 		}
 		return "ClassDecl";
 	}
