@@ -1,0 +1,21 @@
+class main{
+
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+	integer sum(integer a,integer b,integer c,integer d,integer e,integer f){
+		return a+b+c+d+e+f;
+	}
+
+	integer main(){
+		
+		integer x;
+
+		x = sum(1,2,3,4,5,6);
+
+		print_int(x);
+
+		return 0;
+	}
+}
