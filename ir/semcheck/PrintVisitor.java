@@ -29,7 +29,7 @@ public class PrintVisitor implements ASTVisitor<String> {
 		String rep="";
 		List<ClassDecl> classes=dec.getClasses();
 		for ( ClassDecl c : classes ) {
-			rep += c.toString()+"\n\n";
+			rep += c.accept(this)+"\n\n";
 		}
 		return rep;
 	}
