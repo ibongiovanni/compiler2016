@@ -1,0 +1,34 @@
+class aux {
+	integer a;
+
+	void inc(integer b){
+		a = a + b;
+	}
+}
+
+
+class main{
+	
+	integer x;
+
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+	void inc(integer b){
+		x = x + b;
+	}
+
+	integer main(){
+		
+		aux a;
+
+		a.inc(8);
+		print_int(a.a);
+
+		inc (9);
+		print_int(x);
+
+		return 0;
+	}
+}
