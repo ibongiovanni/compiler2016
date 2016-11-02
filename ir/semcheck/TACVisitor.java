@@ -253,7 +253,8 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 								VarDecl arrRes = ((ArrayLocation)loc).accept(this);
 								addInst(Inst.PLUSINT,arrRes,e,tempRes);
 							}else{
-								addInst(Inst.PLUSINT,locRef,e,tempRes);
+								VarDecl tempOp = ((VarLocation)loc).accept(this);
+								addInst(Inst.PLUSINT,tempOp,e,tempRes);
 							}
 							addInst(Inst.ASSIGN,tempRes,arrExpr,locRef); 
 							break;
@@ -269,7 +270,8 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 								VarDecl arrRes = ((ArrayLocation)loc).accept(this);
 								addInst(Inst.MINUSINT,arrRes,e,tempRes);
 							}else{
-								addInst(Inst.MINUSINT,locRef,e,tempRes);
+								VarDecl tempOp = ((VarLocation)loc).accept(this);
+								addInst(Inst.MINUSINT,tempOp,e,tempRes);
 							}
 							addInst(Inst.ASSIGN,tempRes,arrExpr,locRef); 
 							break;
