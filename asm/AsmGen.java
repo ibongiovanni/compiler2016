@@ -152,6 +152,7 @@ public class AsmGen {
 		list.removeAll(toDel);
 
 		for ( TAC tac : list ) {
+			write("# "+tac);
 			switch (tac.getInst()) {
 				case LCINT 	: loadConstInt(tac); break;
 				case LCFLT 	: loadConstFlt(tac); break;
