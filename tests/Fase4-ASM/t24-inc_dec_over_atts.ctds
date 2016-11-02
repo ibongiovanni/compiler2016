@@ -1,0 +1,31 @@
+class aux {
+
+	integer b;
+
+	void incB(integer x){
+		b += x;
+	}
+
+	void decB(integer x){
+		b -= x;
+	}
+}
+
+
+
+
+
+class main{
+
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+	integer main(){
+		
+		aux a;
+
+
+		return 0;
+	}
+}

@@ -1,0 +1,36 @@
+class clase1 {
+
+	integer a;
+
+}
+
+class clase2 {
+
+	integer b;
+
+	void setA(integer x){
+		clase1 c1;
+		b = x;
+		c1.a=b;
+	}
+}
+
+
+
+
+
+class main{
+
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+	integer main(){
+		
+		clase2 c2;
+
+		c2.setA(2);
+
+		return 0;
+	}
+}
