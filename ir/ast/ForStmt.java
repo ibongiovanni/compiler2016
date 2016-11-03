@@ -25,8 +25,17 @@ public class ForStmt extends Statement {
 		return expr1;
 	}
 
+
 	public Expression getExpr2(){
 		return expr2;
+	}
+
+	public void setExpr1(Expression e){
+		expr1 = e;
+	}
+
+	public void setExpr2(Expression e){
+		expr2 = e;
 	}
 
 	public Statement getBody(){

@@ -27,6 +27,10 @@ public class ArrayLocation extends Location {
 	public Expression getIndex(){
 		return index;
 	}
+
+	public void setIndex(Expression i){
+		index =i;
+	}
 	
 	
 	@Override
