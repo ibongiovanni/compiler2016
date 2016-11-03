@@ -1,0 +1,16 @@
+class main{
+
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+	integer main(){
+		integer arr[10];
+		integer x;
+
+		arr[3*2] = 4-2+5*3;
+		x = arr[3+3];
+
+		return 0*0;
+	}
+}
