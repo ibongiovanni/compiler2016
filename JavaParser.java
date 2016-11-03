@@ -10,6 +10,7 @@ import ir.semcheck.*;
 import ir.tac.*;
 import error.Error;
 import asm.*;
+import ir.opt.*;
 
 public class JavaParser {
 	
@@ -70,6 +71,14 @@ public class JavaParser {
 		 } 
 	}
 
+	public static void constProp(Program prog){
+		System.out.println("\n=== Optimizing Contants Propagation ===\n");
+		ConstPropVisitor cpv = new ConstPropVisitor();
+		prog.accept(cpv);
+		System.out.println("\n RESULT OF OPTIMIZATION \n");
+		print(prog);
+	}
+
 	public static void main(String args[]) throws Exception {
 		ComplexSymbolFactory sf = new ComplexSymbolFactory();
 		Parser par;
@@ -87,6 +96,9 @@ public class JavaParser {
 		print(prog);
 		if(build(prog)){
 			if (checkTypes(prog)) {
+				//Optimization 1, constant propagation
+				constProp(prog);
+
 				taclist(prog);
 				genAsm(args[0]);
 			}
