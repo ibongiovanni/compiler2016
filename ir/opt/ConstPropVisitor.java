@@ -416,7 +416,11 @@ public class ConstPropVisitor implements ASTVisitor<IntLiteral> {
 	
 	@Override
 	public IntLiteral visit(SubClassArrayLocation loc){
-		((ArrayLocation)loc).accept(this);
+		Expression index = loc.getIndex();
+		IntLiteral res = index.accept(this);
+		if (res != null) {
+			loc.setIndex(res);
+		}
 		return null;
 	}
 	
