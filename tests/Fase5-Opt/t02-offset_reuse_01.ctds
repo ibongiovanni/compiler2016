@@ -1,0 +1,22 @@
+class main{
+
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+	integer main(){
+		integer x; //Offset=8
+		if (true){	//Offset=16
+			integer y; //Offset=24
+			integer z; //Offset=32
+			if (false) //Offset=40
+			{
+				integer a; //Off= 48
+				integer b; //Off= 56
+			}
+		}
+		else{
+			integer w; //Offset=24
+		}
+	}
+}
