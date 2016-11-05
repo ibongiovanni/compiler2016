@@ -50,6 +50,19 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	private void resetOffset(){ 
 		offsetCount=0;
 	}
+
+	private List<Integer> oldCounts = new LinkedList<Integer>();
+	private int maxCount;
+	private void openBlock(){
+		oldCounts.add(0,offsetCount);
+	}
+
+	private void closeBlock(){
+		if (offsetCount>maxCount) {
+			maxCount=offsetCount;
+		}
+		offsetCount=oldCounts.remove(0);
+	}
 	/***********************************************************************/
 
 	/***********************************************************************
@@ -79,23 +92,8 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 
 	/***********************************************************************/
 
-	/***********************************************************************
-	*	Error management
-	*/
-	private List<Error> errors;
-	private void addError(AST a, String desc) {
-		errors.add(new Error(a.getLineNumber(), a.getColumnNumber(), desc));
-	}
-	public List<Error> getErrors() {
-		return errors;
-	}
-	public void setErrors(List<Error> errors) {
-		this.errors = errors;
-	}
-	/***********************************************************************/
 
 	public TACVisitor(){
-		errors = new LinkedList<Error>();
 		instls = new LinkedList<TAC>();
 	}
 
@@ -148,7 +146,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 				a.setNumber(++i);
 			} 
 			dec.getBody().accept(this);
-			dec.setOffset(offsetCount); //Set the number of vars declared
+			dec.setOffset(maxCount); //Set the number of vars declared
 			addInst(Inst.METHODEND,null,null,null);
 		}
 		return new VarDecl("null");
@@ -385,6 +383,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	
 	@Override
 	public VarDecl visit(Block stmt){
+		openBlock();
 		List<FieldDecl> declarations = stmt.getFields();
 		for (FieldDecl f: declarations) {
 			f.accept(this);
@@ -394,6 +393,7 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	    for (Statement s: statements) {
 			s.accept(this);
 		}
+		closeBlock();
 		return new VarDecl("null");
 	}
 	
