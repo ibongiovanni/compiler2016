@@ -9,6 +9,8 @@ class main{
 		integer y;
 		x=3;
 		y=x;
+		print_int(x);
+		print_int(y);
 		return 0;
 	}
 }

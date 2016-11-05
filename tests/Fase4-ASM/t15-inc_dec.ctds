@@ -8,17 +8,17 @@ class main{
 		integer x,arr[10];
 		x += 5;
 		x += 3;
-		print_int(x);
+		print_int(x); //8
 		arr[x] = 0;
 		arr[x] += x;
-		print_int(arr[x]);
+		print_int(arr[x]); //8
 		print_line();
-
+		
 		x -= 4;
-		print_int(x);
+		print_int(x); //4
 		arr[x]=0;
 		arr[x] -= x;
-		print_int(arr[x]);  
+		print_int(arr[x]); //-4
 		return 0;
 	}
 }

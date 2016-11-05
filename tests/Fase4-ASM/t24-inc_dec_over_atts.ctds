@@ -24,7 +24,12 @@ class main{
 	integer main(){
 		
 		aux a;
-
+		a.b=0;
+		a.incB(10);
+		print_int(a.b);
+		print_line();
+		a.decB(3);
+		print_int(a.b);
 
 		return 0;
 	}

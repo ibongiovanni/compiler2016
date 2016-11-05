@@ -17,14 +17,14 @@ class main{
 		integer i;
 		p.z=24;
 		i=p.z;
-		print_int(i);
+		print_int(i); //24
 		p.set(13);
-		print_int(p.x);
+		print_int(p.x); //13
 		print_line();
 
 		p.w[5]=2;
 		i = p.w[5];
-		print_int(i);
+		print_int(i); //2
 		return 0;
 	}
 }
