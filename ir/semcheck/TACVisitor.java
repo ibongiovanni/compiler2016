@@ -14,20 +14,18 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 	private boolean addInst(Inst inst, Object op1, AST op2, VarDecl res){
 		return instls.add(new TAC(inst,op1,op2,res));
 	}
-	public List<TAC> getList(){
-		return instls;
-	}
+	
 
 	/***********************************************************************
 	*	temporaly variables management
 	*/
 	private int temps;		//temporal vars counter
-	private VarDecl newTemp(){
+	private VarDecl newTemp(){ //Create a new temp
 		temps++;
 		return new VarDecl("t"+temps);
 	}
 
-	private VarDecl newTemp(String t){
+	private VarDecl newTemp(String t){ //Create a new temp with a given type
 		temps++;
 		VarDecl r = new VarDecl("t"+temps);
 		r.setType(t);
@@ -51,17 +49,21 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 		offsetCount=0;
 	}
 
-	private List<Integer> oldCounts = new LinkedList<Integer>();
-	private int maxCount;
+	private boolean offsetOpt; //is optimization active?
+	
+	private List<Integer> oldCounts = new LinkedList<Integer>(); //stack with offsets to restore
+	private int maxCount;	//maximum offset reached to use in method declaration
 	private void openBlock(){
-		oldCounts.add(0,offsetCount);
+		oldCounts.add(0,offsetCount); //Save actual offset
 	}
 
 	private void closeBlock(){
 		if (offsetCount>maxCount) {
-			maxCount=offsetCount;
+			maxCount=offsetCount; //update maximum offset
 		}
-		offsetCount=oldCounts.remove(0);
+		if (offsetOpt) { // restore old offset only if optimization is active
+			offsetCount=oldCounts.remove(0);
+		}
 	}
 	/***********************************************************************/
 
@@ -92,7 +94,23 @@ public class TACVisitor implements ASTVisitor<VarDecl> {
 
 	/***********************************************************************/
 
+	/**
+	*	Return the list of TAC instruccions
+	*/
+	public List<TAC> getList(){
+		return instls;
+	}
 
+	/**
+	*	Activate Offset Optimization
+	*/
+	public void optimizeOffset(){
+		offsetOpt=true;
+	}
+
+	/**
+	*	Class Constructor
+	*/
 	public TACVisitor(){
 		instls = new LinkedList<TAC>();
 	}
