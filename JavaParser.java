@@ -44,9 +44,10 @@ public class JavaParser {
 		}
 	}
 
-	public static void taclist(Program prog){
+	public static void taclist(Program prog, boolean offsetOpt){
 		TACVisitor tacv = new TACVisitor();
 		System.out.println("\n=== TAC List ===\n");
+		if (offsetOpt) tacv.optimizeOffset();
 		prog.accept(tacv);
 		tacls = tacv.getList();
 		for ( TAC tac : tacls ) {
@@ -99,7 +100,7 @@ public class JavaParser {
 				//Optimization 1, constant propagation
 				constProp(prog);
 
-				taclist(prog);
+				taclist(prog, true);	//Optimization 2, offset reuse
 				genAsm(args[0]);
 			}
 		}
