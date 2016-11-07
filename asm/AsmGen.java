@@ -879,9 +879,13 @@ public class AsmGen {
 /** Calls and Arguments */
 	private void callExpr(TAC tac){
 		//get method name
-		String lbl = (String)tac.getOp1();
+		String lbl = ((MethodDecl)tac.getOp1()).getId();
 		//get result offset
 		String resLoc = varLoc(tac.getRes(),null);
+
+		int argsC = ((MethodDecl)tac.getOp1()).getArgs().size();
+		//Move args to regs
+		moveArgs(argsC);
 
 		//make call
 		write("call "+lbl);
@@ -891,11 +895,27 @@ public class AsmGen {
 
 	private void callStmt(TAC tac){
 		//get method name
-		String lbl = (String)tac.getOp1();
+		String lbl = ((MethodDecl)tac.getOp1()).getId();
+
+		int argsC = ((MethodDecl)tac.getOp1()).getArgs().size();
+		//Move args to regs
+		moveArgs(argsC);
 
 		//make call
 		write("call "+lbl);
 	}
+
+	private void moveArgs(int n){
+		for (int i=0; i<n ; i++ ) {
+			write(argsLs.remove(0));
+		}
+		// for ( String inst : argsLs ) {
+		// 	write(inst);
+		// }
+		// argsLs.clear();
+	}
+
+	private List<String> argsLs = new LinkedList<String>();
 
 	private void argument(TAC tac){
 		int n = (int)tac.getOp1();
@@ -912,7 +932,7 @@ public class AsmGen {
 		}
 		if (reg!=null) {
 			//mov arg to reg
-			write("mov "+argLoc+", %"+reg);
+			argsLs.add(0,"mov "+argLoc+", %"+reg);
 		}
 	}
 
