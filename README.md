@@ -19,4 +19,3 @@ Luego de que se genero el analizador léxico y sintáctico , compila y arma un J
    ```
    
     En la carpeta `out` se habrá generado un archivo ejecutable `test`  
-   ---
