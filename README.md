@@ -12,18 +12,11 @@ La documentación se encuentra en la carpeta `doc`.
 
 Luego de que se genero el analizador léxico y sintáctico , compila y arma un JAR, llamado "Compiler.jar", dentro de la carpeta  "dist/".
 
-   - Para ejecutar, por ejemplo los tests y mostrar la salida por consola:
+   - Para compilar, por ejemplo un archivo "test.ctds" junto con una libreria "mylib.c" :
    ```
-    ./runSyntaxTests.sh
-   
-    ./runSemanticTests.sh
+    ./compiler.sh ruta/hasta/test.ctds ruta/hasta/mylib.c
    
    ```
+   
+    En la carpeta `out` se habrá generado un archivo ejecutable `test`  
    ---
-   - O para ejecutar los tests y guardar la salida en un archivo:
-   ```
-   ./runSyntaxTests.sh > syntax-tests-results.txt 2>&1
-   
-   ./runSemanticTests.sh > semantic-tests-results.txt 2>&1
-   
-   ```
