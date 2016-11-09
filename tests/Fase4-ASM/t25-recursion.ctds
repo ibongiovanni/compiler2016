@@ -1,0 +1,25 @@
+class main{
+
+	void print_int(integer n) extern;
+	void print_bool(bool b) extern;	
+	void print_line() extern;
+
+	integer fact(integer a){
+		integer b;
+		if (a==1)
+		{
+			b=1;
+		}
+		else{
+			b= a*fact(a-1);
+		}
+		return b;
+	}
+
+	integer main(){
+		integer x;
+		x=fact(5);
+		print_int(x);
+		return 0;
+	}
+}
